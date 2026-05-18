@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة الرابعة: Objects with Functions - موسوعة الـ OOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+
+    <style>
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; }
+        .header-nav { position: sticky; z-index: 100; }
+        .floating-shapes {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-shapes span {
+            position: absolute;
+            display: block;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 50%;
+            animation: floatUp 25s linear infinite;
+        }
+        .floating-shapes span:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .floating-shapes span:nth-child(2) { width: 20px; height: 20px; left: 20%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-shapes span:nth-child(3) { width: 60px; height: 60px; left: 35%; animation-delay: 4s; animation-duration: 22s; }
+        .floating-shapes span:nth-child(4) { width: 40px; height: 40px; left: 50%; animation-delay: 0s; animation-duration: 18s; }
+        .floating-shapes span:nth-child(5) { width: 15px; height: 15px; left: 65%; animation-delay: 3s; animation-duration: 30s; }
+        .floating-shapes span:nth-child(6) { width: 90px; height: 90px; left: 75%; animation-delay: 5s; animation-duration: 27s; }
+        .floating-shapes span:nth-child(7) { width: 50px; height: 50px; left: 85%; animation-delay: 7s; animation-duration: 15s; }
+        .floating-shapes span:nth-child(8) { width: 25px; height: 25px; left: 45%; animation-delay: 1s; animation-duration: 35s; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .glow-cursor {
+            position: fixed;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        body:hover .glow-cursor { opacity: 1; }
+        .slide-container {
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .slide-container.vis { opacity: 1; transform: translateY(0); }
+        @media (max-width: 768px) {
+            .container { padding: 1rem !important; }
+            .slide-container { padding: 1.5rem !important; }
+            .header-nav { flex-direction: column; gap: 0.5rem; padding: 0.8rem !important; }
+            .header-nav h2 { font-size: 0.9rem !important; }
+        }
+    </style>
+
+</head>
+<body>
+
+    <div id="particles-js"></div>
+    <div class="floating-shapes">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="glow-cursor" id="glowCursor"></div>
+
+<div class="progress-bar-top" id="progressBar"></div>
+
+    <header class="header-nav">
+        <a href="../index.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            الرجوع للقائمة الرئيسية (Back to Home)
+        </a>
+        <h2 style="margin:0; font-size: 1.2rem;">Lecture 4: Objects with Functions</h2>
+    </header>
+
+    <div class="container">
+        
+        <div class="header" style="margin-top: 2rem;">
+            <h1>المحاضرة الرابعة: الكائنات مع الدوال (Objects with Functions)</h1>
+            <p>الشرح التفصيلي لجميع شرائح المحاضرة (Slide-by-Slide) مدعوم بشرح الأكواد سطراً بسطر (Line-by-Line Code Explanation)</p>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide-container" id="slide4">
+            <h2>Slide 4: تمرير الكائنات كمعاملات (Passing Objects to Functions)</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_04.jpg" alt="Slide 4" class="slide-image">
+            <div class="slide-explanation">
+                <p>إحنا متعودين إننا بنبعت للدوال (Functions) متغيرات عادية زي <code>int</code> و <code>float</code>. بس في الـ OOP، الكائن (Object) نفسه ممكن نعتبره <strong>Data Type</strong> ونبعته كـ Parameter لأي دالة!</p>
+                <p>عملية إرسال الـ Object دي بتتم بطريقتين أساسيتين (زي المتغيرات العادية بالظبط):</p>
+                <ul>
+                    <li><strong class="highlight">Pass by Value (التمرير بالقيمة):</strong> الدالة بتاخد "نسخة" (Copy) من الـ Object. أي تعديل بتعمله الدالة مش هيأثر على الـ Object الأصلي.</li>
+                    <li><strong class="highlight">Pass by Reference (التمرير بالمرجع):</strong> الدالة بتاخد "عنوان" أو "مفتاح" الـ Object الأصلي. أي تعديل جوه الدالة هيتسمّع ويغير في الـ Object الأصلي بره.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide-container" id="slide5">
+            <h2>Slide 5: التمرير بالقيمة وتأثيره (Pass by Value Deep Dive)</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_05.jpg" alt="Slide 5" class="slide-image">
+            <div class="slide-explanation">
+                <p>لما بنستخدم طريقة الـ <strong>Pass by Value</strong>، بيحصل حاجة خطيرة جداً وراء الكواليس (Behind the scenes) لازم تكون فاهمها:</p>
+                <p>بما إن الكمبيوتر بيعمل "نسخة" من الـ Object، فهو بيضطر يشغل الـ <span class="highlight">Copy Constructor</span> أوتوماتيك عشان يكريت النسخة دي! (ودي موضع أسئلة امتحانات: "أي Constructor يتم استدعاؤه عند الـ Pass by Value؟").</p>
+                <p>ولما الدالة بتخلص شغلها، النسخة دي بتموت، فبالتالي الـ <span class="highlight">Destructor</span> بتاع النسخة بيشتغل.</p>
+                <div class="highlight-box">
+                    <strong>⚠️ ملحوظة للأداء (Performance Tip):</strong> تمرير الكائنات الكبيرة جداً بالـ Value بيستهلك مساحة ووقت (عشان بيفضل ينسخ ويهد). المبرمجين المحترفين بيفضلوا التمرير بالـ Reference عشان يوفروا الـ Memory.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide-container" id="slide6">
+            <h2>Slide 6: كود التمرير بالقيمة (Pass by Value Example)</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_06.jpg" alt="Slide 6" class="slide-image">
+            <div class="slide-explanation">
+                <p>تعالوا نشوف إزاي نكتب دالة بتاخد Object بالـ Value:</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Distance</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> feet;
+    <span class="type">float</span> inches;
+<span class="keyword">public</span>:
+    <span class="type">Distance</span>() { feet = <span class="number">0</span>; inches = <span class="number">0.0</span>; } <span class="comment">// Default</span>
+    <span class="type">Distance</span>(<span class="type">int</span> f, <span class="type">float</span> i) { feet = f; inches = i; } <span class="comment">// Parameterized</span>
+    <span class="type">void</span> showDist() { cout &lt;&lt; feet &lt;&lt; <span class="string">"'-"</span> &lt;&lt; inches &lt;&lt; <span class="string">"\""</span>; }
+    
+    <span class="comment">// Function taking an Object as Parameter!</span>
+    <span class="type">void</span> add_dist(<span class="type">Distance</span> d2, <span class="type">Distance</span> d3) {
+        inches = d2.inches + d3.inches;
+        feet = <span class="number">0</span>;
+        <span class="keyword">if</span>(inches >= <span class="number">12.0</span>) {
+            inches -= <span class="number">12.0</span>;
+            feet++;
+        }
+        feet += d2.feet + d3.feet;
+    }
+};
+                </div>
+                
+                <h3 style="margin-top: 1rem; color: var(--primary-color);">شرح الكود سطراً بسطر (Line-by-Line Analysis):</h3>
+                <ul class="line-by-line">
+                    <li>الكلاس ده بيحسب مسافة بالنظام الأمريكي (أقدام وبوصات). البوصة (inch) لو عدت 12، بتتحول لقدم (foot) واحد.</li>
+                    <li><code><span class="type">void</span> add_dist(<span class="type">Distance</span> d2, <span class="type">Distance</span> d3) {</code> : الدالة دي تبع الكلاس، وبتاخد <span class="highlight">كائنين</span> من نوع <code>Distance</code> وهما <code>d2</code> و <code>d3</code> كمعاملات (Parameters) عشان تجمعهم وتخزن الناتج في الـ Object الأساسي اللي نادى على الدالة.</li>
+                    <li>العملية الحسابية بتجمع البوصات الأول، ولو زادت عن 12 بتطرح منها 12 وتزود 1 للـ feet، وبعدين تجمع الـ feet.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 7 -->
+        <div class="slide-container" id="slide7">
+            <h2>Slide 7: تشغيل الكود في الـ Main</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_07.jpg" alt="Slide 7" class="slide-image">
+            <div class="slide-explanation">
+                <p>في الـ Main، إزاي هنستخدم دالة الـ <code>add_dist</code> دي؟</p>
+                
+                <div class="slide-code">
+<span class="type">int</span> main() {
+    <span class="type">Distance</span> dist1(<span class="number">11</span>, <span class="number">6.25</span>); <span class="comment">// Call parameterized</span>
+    <span class="type">Distance</span> dist2(<span class="number">5</span>, <span class="number">5.75</span>);  <span class="comment">// Call parameterized</span>
+    <span class="type">Distance</span> dist3;           <span class="comment">// Call default (0, 0.0)</span>
+
+    <span class="comment">// Here is the magic:</span>
+    dist3.add_dist(dist1, dist2); 
+
+    <span class="comment">// Print results</span>
+    cout &lt;&lt; <span class="string">"dist1 = "</span>; dist1.showDist(); cout &lt;&lt; endl;
+    cout &lt;&lt; <span class="string">"dist2 = "</span>; dist2.showDist(); cout &lt;&lt; endl;
+    cout &lt;&lt; <span class="string">"dist3 = "</span>; dist3.showDist(); cout &lt;&lt; endl;
+    
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+                </div>
+                
+                <div class="code-explanation">
+                    <ul>
+                        <li>عملنا مسافتين <code>dist1</code> و <code>dist2</code> بقيم معينة.</li>
+                        <li>عملنا مسافة فاضية <code>dist3</code> عشان نخزن فيها المجموع.</li>
+                        <li><strong>السطر الأهم:</strong> <code>dist3.add_dist(dist1, dist2);</code> : بنخلي <code>dist3</code> هو اللي ينادي الدالة، ونبعتله <code>dist1</code> و <code>dist2</code> كـ Values يجمعهم جواه.</li>
+                        <li><strong>النتيجة (Output):</strong> <code>dist3</code> هتبقى قيمتها (17 أقدام و 0.0 بوصة).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 1: Passing Objects</h3>
+            
+            <div class="question" data-answer="1">
+                <p>1. When passing an object to a function by VALUE, which special member function is automatically invoked by the compiler?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) Default Constructor</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) Copy Constructor</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) Destructor (immediately before entering the function)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) Parameterized Constructor</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> The compiler invokes the Copy Constructor to create a localized clone of the passed object.
+                </div>
+            </div>
+
+            <div class="question" data-answer="2">
+                <p>2. If a function modifies an object passed to it "by value", does the original object in the `main` function change?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) Yes, because objects share the same memory automatically.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) Yes, if we use the return statement.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) No, because the function only modifies the local copy.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) It throws a Compilation Error.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> Pass by value isolates the function. Changes made to the copy do not affect the original object.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8 -->
+        <div class="slide-container" id="slide8">
+            <h2>Slide 8: التمرير بالمرجع (Pass by Reference)</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_08.jpg" alt="Slide 8" class="slide-image">
+            <div class="slide-explanation">
+                <p>عشان نتفادى مشكلة استهلاك الميموري وتشغيل الـ Copy Constructor اللي ملهاش لازمة، بنستخدم الـ <strong>Pass by Reference</strong>.</p>
+                <p>في الطريقة دي بنبعت للـ Function <strong>عنوان</strong> الكائن، فالدالة بتشتغل على الكائن الأصلي مباشرة! ولو خايف إن الدالة تبوظ الكائن الأصلي أو تغير بياناته (لأنها معاها المفتاح بتاعه)، الحل السحري هو إنك تستخدم كلمة <code>const</code>.</p>
+                <p>استخدام الـ <code>const</code> مع الـ Reference بيحقق حاجتين (ودي أفضل طريقة في البرمجة المتقدمة):</p>
+                <ol>
+                    <li>السرعة وتوفير الذاكرة (لأنه مبينسخش حاجة).</li>
+                    <li>الحماية الكاملة للمتغيرات (لأن الكومبايلر هيمنع الدالة من أي عملية تعديل <code>Read-only</code>).</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 9 -->
+        <div class="slide-container" id="slide9">
+            <h2>Slide 9: كود التمرير بالمرجع (Reference Example Syntax)</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_09.jpg" alt="Slide 9" class="slide-image">
+            <div class="slide-explanation">
+                <p>الفرق في الـ Syntax بين الـ Value والـ Reference بسيط جداً (علامة الـ <code>&amp;</code>).</p>
+                
+                <div class="slide-code">
+<span class="comment">// Method Header with Pass by Reference</span>
+<span class="type">void</span> add_dist(<span class="keyword">const</span> <span class="type">Distance</span> <span class="operator">&amp;</span>d2, <span class="keyword">const</span> <span class="type">Distance</span> <span class="operator">&amp;</span>d3) {
+    inches = d2.inches + d3.inches;
+    feet = <span class="number">0</span>;
+    <span class="keyword">if</span>(inches >= <span class="number">12.0</span>) {
+        inches -= <span class="number">12.0</span>;
+        feet++;
+    }
+    feet += d2.feet + d3.feet;
+    
+    <span class="comment">// d2.feet = 10; // ❌ ERROR: Because d2 is 'const'</span>
+}
+                </div>
+                
+                <div class="code-explanation">
+                    <ul>
+                        <li>حطينا علامة الـ <code>&amp;</code> قبل اسم المتغير (<code>&amp;d2</code>). ده معناه: "يا كومبايلر، متعملش نسخة، ابعت العنوان الأصلي".</li>
+                        <li>حطينا كلمة <code>const</code> في الأول. ده معناه: "اقرا الداتا بس عشان تجمعها، لكن إياك تغير قيمتها!". لو حاولت تكتب سطر زي <code>d2.feet = 10;</code> الكومبايلر هيشتمك ومش هيشغل البرنامج.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10 -->
+        <div class="slide-container" id="slide10">
+            <h2>Slide 10: إرجاع الكائنات من الدوال (Returning Objects from Functions)</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_10.jpg" alt="Slide 10" class="slide-image">
+            <div class="slide-explanation">
+                <p>زي ما بنقدر "نبعت" كائن للدالة، نقدر كمان نخلي الدالة "ترجع" كائن كامل كـ <strong>Return Value</strong>.</p>
+                <p>يعني بدل ما دالة الـ <code>add_dist</code> تجمع النتيجة وتحطها جواها، إحنا ممكن نخليها ترجع Object جديد خالص فيه النتيجة دي، وإحنا في الـ main ناخده ونخزنه في متغير جديد.</p>
+                <p><strong>إزاي نعمل ده؟</strong> بنغير نوع الإرجاع (Return Type) بتاع الدالة من <code>void</code> لاسم الـ <code>Class</code> بتاعنا!</p>
+            </div>
+        </div>
+
+        <!-- Slide 11 -->
+        <div class="slide-container" id="slide11">
+            <h2>Slide 11: كود إرجاع الكائن (Return Object Example)</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_11.jpg" alt="Slide 11" class="slide-image">
+            <div class="slide-explanation">
+                <p>شوف التعديل في الكود عشان الدالة ترجع Object بدلاً من تعديل Object حالي:</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Distance</span> {
+    <span class="comment">// ... Attributes ...</span>
+<span class="keyword">public</span>:
+    <span class="comment">// Notice the return type is 'Distance' not 'void'</span>
+    <span class="type">Distance</span> add_dist(<span class="keyword">const</span> <span class="type">Distance</span> <span class="operator">&amp;</span>d2) {
+        <span class="type">Distance</span> temp; <span class="comment">// Create a temporary Object to hold the result</span>
+        
+        temp.inches = inches + d2.inches;
+        <span class="keyword">if</span>(temp.inches >= <span class="number">12.0</span>) {
+            temp.inches -= <span class="number">12.0</span>;
+            temp.feet = <span class="number">1</span>;
+        } <span class="keyword">else</span> {
+            temp.feet = <span class="number">0</span>;
+        }
+        
+        temp.feet += feet + d2.feet;
+        
+        <span class="keyword">return</span> temp; <span class="comment">// Return the entire Object!</span>
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Distance</span> d1(<span class="number">5</span>, <span class="number">2.0</span>), d2(<span class="number">6</span>, <span class="number">11.0</span>), d3;
+    <span class="comment">// Usage: d1 is calling, d2 is passed, and result is saved in d3</span>
+    d3 = d1.add_dist(d2); 
+}
+                </div>
+                
+                <h3 style="margin-top: 1rem; color: var(--primary-color);">شرح الكود سطراً بسطر (Line-by-Line Analysis):</h3>
+                <ul class="line-by-line">
+                    <li><code><span class="type">Distance</span> add_dist(...)</code> : شيلنا كلمة <code>void</code> وحطينا اسم الكلاس <code>Distance</code> لأننا هنرجع Object من النوع ده.</li>
+                    <li><code><span class="type">Distance</span> temp;</code> : جوه الدالة، عملنا Object مؤقت عشان نخزن فيه نتيجة الجمع.</li>
+                    <li><code><span class="keyword">return</span> temp;</code> : في آخر الدالة، رمينا الـ Object بالكامل لبره الـ main.</li>
+                    <li><code>d3 = d1.add_dist(d2);</code> : في الـ main، الكود بقى مفهوم جداً. بنقوله اجمع <code>d1</code> مع <code>d2</code> وحط الناتج كله في <code>d3</code>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 2: References & Returns</h3>
+            
+            <div class="question" data-answer="2">
+                <p>1. Why is it a "Best Practice" to use `const ClassName &obj` when passing an object to a function just to read its values?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) It speeds up the program by forcing the Copy Constructor to run twice.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) It encrypts the object data securely.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) It avoids expensive memory copying AND protects the original object from being modified.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) It is actually worse than Pass By Value and should be avoided.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> Using `const &` gives you the performance of references with the safety of values (read-only).
+                </div>
+            </div>
+
+            <div class="question" data-answer="0">
+                <p>2. To return an Object from a method, what must be the return type of that method?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) The Class Name (e.g., Distance)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) void</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) int</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) Object</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: A.</strong> The return type must match the data type you are returning, which in this case is the name of your Class.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19 -->
+        <div class="slide-container" id="slide19">
+            <h2>Slide 19: مصفوفة الكائنات (Array of Objects)</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_19.jpg" alt="Slide 19" class="slide-image">
+            <div class="slide-explanation">
+                <p>تخيل إنك بتعمل برنامج لإدارة شؤون الطلبة وفيه 100 طالب. هل منطقي إنك تعمل 100 Object وتسميهم (s1, s2, s3... s100)؟ أكيد لأ!</p>
+                <p>هنا بنلجأ لمفهوم الـ <strong>Arrays (المصفوفات)</strong> اللي خدناه قبل كده، بس المرة دي هنعمل <span class="highlight">مصفوفة كائنات كاملة (Array of Objects)</span>.</p>
+                <p>ده معناه إن كل عنصر (Element) في الـ Array مش مجرد رقم ولا حرف، ده Object كامل ليه الداتا بتاعته ودواله (مثلاً طالب كامل برقمه واسمه ومجموعه)!</p>
+                <p>طريقة التعامل معاهم بتتم باستخدام الـ <strong>Index (المؤشر)</strong> اللي بيبدأ من 0 كالمعتاد، جوه حلقة تكرارية (For Loop).</p>
+            </div>
+        </div>
+
+        <!-- Slide 20 -->
+        <div class="slide-container" id="slide20">
+            <h2>Slide 20: كود مصفوفة الكائنات (Array of Objects Syntax)</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_20.jpg" alt="Slide 20" class="slide-image">
+            <div class="slide-explanation">
+                <p>تعالوا نشوف إزاي بنعرف الـ Array دي في الكود وإزاي بنوصل لعناصرها:</p>
+                
+                <div class="slide-code">
+<span class="type">int</span> main() {
+    <span class="comment">// 1. Declaration</span>
+    <span class="type">Student</span> std_array[<span class="number">100</span>]; <span class="comment">// array of 100 Student objects</span>
+    
+    <span class="comment">// 2. Accessing and filling data</span>
+    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) {
+        std_array[i].get_data(); <span class="comment">// Call function for each object</span>
+    }
+    
+    <span class="comment">// 3. Printing data</span>
+    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) {
+        std_array[i].display_data();
+    }
+    
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+                </div>
+                
+                <h3 style="margin-top: 1rem; color: var(--primary-color);">ملاحظات هامة:</h3>
+                <div class="code-explanation">
+                    <ul>
+                        <li>لما بتكتب <code><span class="type">Student</span> std_array[<span class="number">100</span>];</code>، الكومبايلر بيروح ينادي الـ <span class="highlight">Default Constructor</span> 100 مرة ورا بعض! عشان يكريت الـ 100 مكان.</li>
+                        <li>عشان نوصل לדالة معينة لكائن جوه الـ Array، بنكتب اسم الـ Array وجنبها رقم الـ Index بين أقواس مربعة، وبعدين الدوت <code>.</code> واسم الدالة: <code>std_array[0].display_data();</code>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 23 -->
+        <div class="slide-container" id="slide23">
+            <h2>Slide 23: الأعضاء الثابتة (Static Class Members)</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_23.jpg" alt="Slide 23" class="slide-image">
+            <div class="slide-explanation">
+                <p>بشكل طبيعي، كل <code>Object</code> بيكون عنده نسخته الخاصة جداً من المتغيرات (يعني الطالب s1 عنده id خاص بيه، وs2 عنده id مختلف تماماً، وكل واحد في وادي).</p>
+                <p>طب لو عايزين نعمل متغير <strong>مشترك</strong> بين كل الـ Objects اللي طالعة من نفس الكلاس؟ (مثلاً عداد بيعد إحنا عملنا كام طالب لحد دلوقتي؟). المتغير العادي مش هينفع لأنه بيتمسح ويتعمل من جديد لكل كائن.</p>
+                <p>الحل هو الـ <strong>Static Data Members (المتغيرات الثابتة)</strong>. بمجرد ما تحط كلمة <code>static</code> قبل المتغير، بيتخلق منه <span class="highlight">نسخة واحدة بس في الميموري (One Shared Copy)</span>، وكل الـ Objects بتشارك نفس النسخة دي، وأي كائن يعدل فيها، التعديل بيسمّع عند الباقيين كلهم!</p>
+            </div>
+        </div>
+
+        <!-- Slide 24 -->
+        <div class="slide-container" id="slide24">
+            <h2>Slide 24: كود واستخدام الـ Static Member</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_24.jpg" alt="Slide 24" class="slide-image">
+            <div class="slide-explanation">
+                <p>إزاي نكتب المتغير الـ Static ونعمله تهيئة (Initialization) بشكل صحيح؟ (سؤال امتحان مشهور جداً):</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Student</span> {
+<span class="keyword">private</span>:
+    <span class="comment">// Declaration inside the class</span>
+    <span class="keyword">static</span> <span class="type">int</span> count; 
+<span class="keyword">public</span>:
+    <span class="type">Student</span>() { count++; } <span class="comment">// Increment shared count on creation</span>
+    <span class="type">void</span> showCount() { cout &lt;&lt; <span class="string">"Total Students: "</span> &lt;&lt; count &lt;&lt; endl; }
+};
+
+<span class="comment">// CRITICAL: Definition and Initialization MUST be OUTSIDE the class!</span>
+<span class="type">int</span> Student<span class="operator">::</span>count = <span class="number">0</span>;
+
+<span class="type">int</span> main() {
+    <span class="type">Student</span> s1, s2, s3; 
+    s3.showCount(); <span class="comment">// Will print: Total Students: 3</span>
+}
+                </div>
+                
+                <h3 style="margin-top: 1rem; color: var(--primary-color);">شرح الكود سطراً بسطر (Line-by-Line Analysis):</h3>
+                <ul class="line-by-line">
+                    <li><code><span class="keyword">static</span> <span class="type">int</span> count;</code> : جوه الكلاس قلنا إن في متغير مشترك اسمه count.</li>
+                    <li><code><span class="type">Student</span>() { count++; }</code> : جوه الـ Constructor (اللي بيشتغل لما نعمل أي Object جديد)، قولناله زود العداد بـ 1.</li>
+                    <li><strong class="highlight">السطر الخطير:</strong> <code><span class="type">int</span> Student<span class="operator">::</span>count = <span class="number">0</span>;</code> لازم المتغير الـ static ياخد القيمة الابتدائية بتاعته <strong>بره الكلاس خالص</strong> (بره الأقواس)، وبنستخدم الـ Scope Resolution <code>::</code> عشان نفهم الكومبايلر إن ده تبع كلاس Student. <strong>لو نسيت السطر ده الكود هيدي Error!</strong></li>
+                    <li>عشان كده لما عملنا 3 كائنات (s1, s2, s3)، العداد زاد 3 مرات ولما طبعناه طلع 3.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 27 -->
+        <div class="slide-container" id="slide27">
+            <h2>Slide 27: الدوال الثابتة (Static Member Functions)</h2>
+            <img src="../slides/Lecture_4_-_Objects_with_Functions/slide_27.jpg" alt="Slide 27" class="slide-image">
+            <div class="slide-explanation">
+                <p>زي ما في متغيرات Static، فيه كمان دوال (Functions) Static.</p>
+                <p>الدالة הـ <strong>Static Function</strong> مميزة جداً لسببين:</p>
+                <ol>
+                    <li>عشان تنادي عليها في الـ Main، <strong>مش محتاج تعمل Object خالص!</strong> ممكن تناديها باسم الكلاس مباشرة (عن طريق <code>ClassName::functionName()</code>).</li>
+                    <li>الدالة دي <span class="highlight">ممنوع منعاً باتاً</span> إنها تتعامل مع المتغيرات العادية (Non-static data) جوه الكلاس. هي مبتشوفش ولا بتتعامل غير مع الـ Static Variables بس!</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Final Quiz: Static Members & Arrays</h3>
+            
+            <div class="question" data-answer="1">
+                <p>1. When you define an array of objects like `Student classA[50];`, which constructor is automatically called for each of the 50 elements?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) The Copy Constructor</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) The Default Constructor</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) The Parameterized Constructor</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) No constructor is called until you access the element.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> Creating an array of objects automatically invokes the default constructor for EVERY element in the array during memory allocation.
+                </div>
+            </div>
+
+            <div class="question" data-answer="3">
+                <p>2. Which of the following is a strict rule regarding `static` member functions in a class?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) They must return a static variable.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) They can only be called from inside other class functions.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) They have unrestricted access to all private non-static variables.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) They can ONLY access other static members (variables or functions) of the class.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: D.</strong> Static functions lack the "this" pointer, meaning they don't know about specific objects, so they can only touch globally shared (static) data.
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY SECTION -->
+        <div class="summary-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> الملخص الشامل لأهم التريكات (Summary & Pro Tips)</h2>
+            <ul>
+                <li><strong>Pass by Value:</strong> الدالة بتاخد نسخة (Copy) من الـ Object. الـ Copy Constructor بيشتغل أوتوماتيك. أي تعديل مبيأثرش على الأصل. بس بتستهلك ميموري.</li>
+                <li><strong>Pass by Reference (<code>&</code>):</strong> الدالة بتشتغل على الـ Object الأصلي مباشرة. مفيش نسخ ولا Copy Constructor. أسرع وأوفر في الذاكرة.</li>
+                <li><strong>الوصفة السحرية:</strong> <code>const ClassName &obj</code> ← دي أفضل طريقة في البرمجة المتقدمة. بتوفر الميموري (Reference) وبتحمي الداتا (const = Read-only).</li>
+                <li><strong>Return Object:</strong> الدالة ممكن ترجع Object كامل لو غيرنا الـ Return Type من <code>void</code> لاسم الكلاس. بنعمل Object مؤقت (<code>temp</code>) جوه الدالة ونرجعه بـ <code>return</code>.</li>
+                <li><strong>Array of Objects:</strong> <code>Student arr[100];</code> بيشغل الـ Default Constructor 100 مرة! وبنوصل لكل عنصر بالـ Index: <code>arr[i].function()</code>.</li>
+                <li><strong>Static Data Member:</strong> نسخة واحدة مشتركة بين كل الـ Objects. <span class="highlight">لازم يتعرف (Initialize) بره الكلاس!</span> <code>int ClassName::count = 0;</code></li>
+                <li><strong>Static Function:</strong> مبتحتاجش Object عشان تنادي عليها (<code>ClassName::func()</code>). ومبتشوفش غير الـ Static Variables بس.</li>
+            </ul>
+        </div>
+
+        <!-- ESSAY QUESTION SECTION -->
+        <div class="essay-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> سؤال مقالي متوقع للامتحان (Essay Question)</h2>
+            
+            <div class="essay-question">
+                <p><strong>Question:</strong> Compare between "Pass by Value" and "Pass by Reference" when passing objects to functions in C++. Discuss the role of the Copy Constructor in each case, the impact on memory, and when to use `const` with references. Also, explain how `static` data members differ from regular data members.</p>
+            </div>
+            
+            <button class="toggle-answer-btn" onclick="document.getElementById('essayAnswer4').classList.toggle('hidden')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"/></svg>
+                أظهر الإجابة النموذجية (Show Answer)
+            </button>
+            
+            <div id="essayAnswer4" class="essay-answer hidden">
+                <h4>Model Answer:</h4>
+                <p><strong>Pass by Value vs. Pass by Reference:</strong></p>
+                <ul>
+                    <li><strong>Pass by Value:</strong> When an object is passed by value, the compiler automatically invokes the <em>Copy Constructor</em> to create a local clone of the original object inside the function. Any modifications made inside the function affect only this local copy; the original object remains unchanged. However, this approach consumes extra memory and processing time, especially for large objects, because a full copy must be created and later destroyed (triggering the Destructor).</li>
+                    <li><strong>Pass by Reference:</strong> When an object is passed by reference (using <code>&</code>), no copy is made. The function operates directly on the original object using its memory address. This is faster and more memory-efficient. However, the function can modify the original object's data, which may be undesirable.</li>
+                    <li><strong>Best Practice (<code>const &</code>):</strong> To get the best of both worlds—efficiency of reference and safety of value—we use <code>const ClassName &obj</code>. The <code>const</code> keyword prevents the function from modifying the original object, making it read-only.</li>
+                </ul>
+                <p><strong>Static Data Members:</strong> A regular (non-static) data member has a separate copy for each object. A <code>static</code> data member has only ONE shared copy in memory for ALL objects of the class. It must be defined and initialized outside the class using the Scope Resolution Operator (<code>int ClassName::var = 0;</code>). Static member functions can only access static data members and do not require an object to be called.</p>
+            </div>
+        </div>
+
+        <!-- TYPE 2: What is the Output? -->
+        <div class="output-question-section">
+            <h2>🖥️ What is the output of the following code?</h2>
+            <div class="output-q">
+                <p>Q1:</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Counter</span> {
+<span class="keyword">public</span>:
+    <span class="keyword">static</span> <span class="type">int</span> count;
+    <span class="type">Counter</span>() { count++; }
+};
+<span class="type">int</span> <span class="type">Counter</span>::count = <span class="number">0</span>;
+
+<span class="type">int</span> main() {
+    <span class="type">Counter</span> a, b, c;
+    cout &lt;&lt; <span class="type">Counter</span>::count &lt;&lt; endl;
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">3<br>(Static count is shared. Each constructor increments it: 0→1→2→3)</div>
+            </div>
+            <div class="output-q">
+                <p>Q2:</p>
+                <div class="slide-code">
+<span class="type">void</span> modify(<span class="type">int</span> x) { x = x + <span class="number">10</span>; }
+
+<span class="type">int</span> main() {
+    <span class="type">int</span> val = <span class="number">5</span>;
+    modify(val);
+    cout &lt;&lt; val &lt;&lt; endl;
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">5<br>(Pass by Value: the function modifies a copy, original is unchanged)</div>
+            </div>
+        </div>
+
+        <!-- TYPE 3: Write a Line of Code -->
+        <div class="write-code-section">
+            <h2>✍️ Write a line of code for the following statements</h2>
+            <div class="write-q">
+                <p>Q1: Declare a static data member called <code>totalStudents</code> of type <code>int</code> inside a class, then initialize it to 0 outside the class.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="comment">// Inside class:</span>
+<span class="keyword">static</span> <span class="type">int</span> totalStudents;
+
+<span class="comment">// Outside class:</span>
+<span class="type">int</span> <span class="type">Student</span>::totalStudents = <span class="number">0</span>;</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q2: Write a function that takes an object of class <code>Student</code> by <strong>const reference</strong> and prints its name.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">void</span> printName(<span class="keyword">const</span> <span class="type">Student</span> &amp;s) {
+    cout &lt;&lt; s.getName() &lt;&lt; endl;
+}</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q3: Create an array of 5 <code>Student</code> objects.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">Student</span> arr[<span class="number">5</span>];</div></div>
+            </div>
+        </div>
+
+        <!-- TYPE 4: Code Analysis -->
+        <div class="code-analysis-section">
+            <h2>🔍 Based on the following code, answer all the following questions</h2>
+            <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Num</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> val;
+<span class="keyword">public</span>:
+    <span class="type">Num</span>(<span class="type">int</span> v) { val = v; }
+    <span class="type">void</span> add(<span class="type">Num</span> &amp;other) { val += other.val; }
+    <span class="type">void</span> show() { cout &lt;&lt; val &lt;&lt; endl; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Num</span> n1(<span class="number">10</span>), n2(<span class="number">20</span>);
+    n1.add(n2);
+    n1.show();
+    n2.show();
+}
+            </div>
+            <div class="analysis-q">
+                <p>a) What is the output?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><code>30</code><br><code>20</code><br>(n1.val becomes 10+20=30. n2 is passed by reference but not modified.)</div>
+            </div>
+            <div class="analysis-q">
+                <p>b) Is n2 passed by value or by reference? What's the difference?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">By <strong>reference</strong> (the <code>&amp;</code> symbol). No copy is made, so it's faster. But the function could modify n2 if it wanted to.</div>
+            </div>
+        </div>
+
+    </div>
+
+
+        <!-- Progress Tracking -->
+        <div class="completion-section" style="text-align: center; margin-top: 3rem; margin-bottom: 2rem;">
+            <button class="completion-btn" onclick="markLectureCompleted(this, 'lec4')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                لقد أتممت المحاضرة
+            </button>
+        </div>
+    <script src="../app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Particles
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 60, "density": { "enable": true, "value_area": 900 } },
+                    "color": { "value": ["#8b5cf6", "#6366f1", "#3b82f6"] },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 } },
+                    "size": { "value": 3, "random": true },
+                    "line_linked": { "enable": true, "distance": 150, "color": "#6366f1", "opacity": 0.2, "width": 1 },
+                    "move": { "enable": true, "speed": 1.2, "direction": "none", "random": true, "out_mode": "out", "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                    "modes": { "grab": { "distance": 180, "line_linked": { "opacity": 0.6 } }, "push": { "particles_nb": 3 } }
+                },
+                "retina_detect": true
+            });
+        }
+        // Glow cursor
+        var gc = document.getElementById('glowCursor');
+        if (gc) { document.addEventListener('mousemove', function(e) { gc.style.left = e.clientX + 'px'; gc.style.top = e.clientY + 'px'; }); }
+        // Scroll reveal for slides
+        var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.slide-container, .quiz-section, .summary-section, .essay-section').forEach(function(el) { obs.observe(el); });
+    });
+    </script>
+
+</body>
+</html>

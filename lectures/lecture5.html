@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة الخامسة: Dynamic Memory Allocation - موسوعة الـ OOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+
+    <style>
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; }
+        .header-nav { position: sticky; z-index: 100; }
+        .floating-shapes {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-shapes span {
+            position: absolute;
+            display: block;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 50%;
+            animation: floatUp 25s linear infinite;
+        }
+        .floating-shapes span:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .floating-shapes span:nth-child(2) { width: 20px; height: 20px; left: 20%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-shapes span:nth-child(3) { width: 60px; height: 60px; left: 35%; animation-delay: 4s; animation-duration: 22s; }
+        .floating-shapes span:nth-child(4) { width: 40px; height: 40px; left: 50%; animation-delay: 0s; animation-duration: 18s; }
+        .floating-shapes span:nth-child(5) { width: 15px; height: 15px; left: 65%; animation-delay: 3s; animation-duration: 30s; }
+        .floating-shapes span:nth-child(6) { width: 90px; height: 90px; left: 75%; animation-delay: 5s; animation-duration: 27s; }
+        .floating-shapes span:nth-child(7) { width: 50px; height: 50px; left: 85%; animation-delay: 7s; animation-duration: 15s; }
+        .floating-shapes span:nth-child(8) { width: 25px; height: 25px; left: 45%; animation-delay: 1s; animation-duration: 35s; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .glow-cursor {
+            position: fixed;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        body:hover .glow-cursor { opacity: 1; }
+        .slide-container {
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .slide-container.vis { opacity: 1; transform: translateY(0); }
+        @media (max-width: 768px) {
+            .container { padding: 1rem !important; }
+            .slide-container { padding: 1.5rem !important; }
+            .header-nav { flex-direction: column; gap: 0.5rem; padding: 0.8rem !important; }
+            .header-nav h2 { font-size: 0.9rem !important; }
+        }
+    </style>
+
+</head>
+<body>
+
+    <div id="particles-js"></div>
+    <div class="floating-shapes">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="glow-cursor" id="glowCursor"></div>
+
+<div class="progress-bar-top" id="progressBar"></div>
+
+    <header class="header-nav">
+        <a href="../index.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            الرجوع للقائمة الرئيسية (Back to Home)
+        </a>
+        <h2 style="margin:0; font-size: 1.2rem;">Lecture 5: Dynamic Memory Allocation</h2>
+    </header>
+
+    <div class="container">
+        
+        <div class="header" style="margin-top: 2rem;">
+            <h1>المحاضرة الخامسة: حجز الذاكرة الديناميكي (Dynamic Memory)</h1>
+            <p>الشرح التفصيلي لجميع شرائح المحاضرة (Slide-by-Slide) مدعوم بشرح الأكواد سطراً بسطر (Line-by-Line Code Explanation)</p>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide-container" id="slide3">
+            <h2>Slide 3: الذاكرة الثابتة مقابل الديناميكية (Static vs Dynamic Memory)</h2>
+            <img src="../slides/Lecture_5_-_Dynamic_Memory_Allocation/slide_03.jpg" alt="Slide 3" class="slide-image">
+            <div class="slide-explanation">
+                <p>في لغة الـ C++، الذاكرة (Memory) اللي البرنامج بيستخدمها بتتقسم لجزئين أساسيين:</p>
+                <ul>
+                    <li><strong class="highlight">الـ Stack (الذاكرة الثابتة/المحلية):</strong> دي الذاكرة اللي الكومبايلر بيديرها بنفسه. المتغيرات العادية (زي <code>int x</code>) بتتحط هنا. الميزة إنها سريعة جداً وبتتمسح لوحدها، بس العيب إن <span class="highlight">حجمها لازم يكون معروف وقت الـ Compile Time (قبل ما البرنامج يشتغل)</span> وصعب تغيره.</li>
+                    <li><strong class="highlight">الـ Heap (الذاكرة الديناميكية):</strong> ده بحر من الميموري الفاضية. بتستخدمه لما تكون مش عارف إنت محتاج ميموري قد إيه إلا وقت ما البرنامج يشتغل (Run-Time)، مثلاً: اليوزر هو اللي بيدخل عدد الطلبة. هنا <span class="highlight">أنت كمبرمج اللي بتدير الذاكرة دي بإيدك</span>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide-container" id="slide4">
+            <h2>Slide 4: المؤشرات (Pointers Refresher)</h2>
+            <img src="../slides/Lecture_5_-_Dynamic_Memory_Allocation/slide_04.jpg" alt="Slide 4" class="slide-image">
+            <div class="slide-explanation">
+                <p>عشان نقدر نتعامل مع الـ Heap (الذاكرة الديناميكية)، لازم نستخدم <strong>الـ Pointers (المؤشرات)</strong>.</p>
+                <p>الـ Pointer هو متغير عادي جداً، بس بدل ما يشيل رقم أو حرف، <span class="highlight">بيشيل عنوان (Memory Address)</span> لمتغير تاني.</p>
+                <div class="code-explanation">
+                    <ul>
+                        <li>علامة الـ <code>*</code> بتستخدم وإحنا بنعرف البوينتر: <code>int *ptr;</code></li>
+                        <li>علامة الـ <code>&amp;</code> بتستخدم عشان نجيب عنوان متغير عادي: <code>ptr = &amp;x;</code></li>
+                        <li>علامة الـ <code>*</code> بتستخدم تاني عشان نجيب <strong>القيمة</strong> اللي البوينتر بيشاور عليها (Dereferencing): <code>cout &lt;&lt; *ptr;</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide-container" id="slide5">
+            <h2>Slide 5: الكلمة المحجوزة new (The 'new' Operator)</h2>
+            <img src="../slides/Lecture_5_-_Dynamic_Memory_Allocation/slide_05.jpg" alt="Slide 5" class="slide-image">
+            <div class="slide-explanation">
+                <p>إزاي نحجز مكان في الـ Heap؟ بنستخدم الكلمة السحرية <code>new</code>.</p>
+                <p>كلمة <code>new</code> بتعمل حاجتين:</p>
+                <ol>
+                    <li>بتروح للـ Heap تدور على مساحة فاضية تكفي النوع اللي طلبته (مثلاً 4 بايت لو <code>int</code>).</li>
+                    <li>بترجعلك <strong>العنوان (Address)</strong> بتاع المساحة دي. عشان كده دايماً وأبداً لازم نستقبل نتيجة الـ <code>new</code> جوه <strong>Pointer</strong>.</li>
+                </ol>
+                <div class="slide-code">
+<span class="type">int</span> *ptr;          <span class="comment">// 1. Create a pointer</span>
+ptr = <span class="keyword">new</span> <span class="type">int</span>;     <span class="comment">// 2. Allocate dynamic memory and store the address in ptr</span>
+*ptr = <span class="number">55</span>;         <span class="comment">// 3. Store a value in that memory</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide-container" id="slide6">
+            <h2>Slide 6: الكلمة المحجوزة delete (The 'delete' Operator)</h2>
+            <img src="../slides/Lecture_5_-_Dynamic_Memory_Allocation/slide_06.jpg" alt="Slide 6" class="slide-image">
+            <div class="slide-explanation">
+                <p>بما إنك بقيت المدير، الكومبايلر <span class="highlight">مش هيمسح</span> الحاجة اللي إنت حجزتها بـ <code>new</code> حتى لو البرنامج خلص! لازم إنت اللي تنضف وراك.</p>
+                <p>عشان كده بنستخدم الكلمة العكسية <code>delete</code>. دي بتروح تفضي وتمسح المساحة اللي البوينتر كان بيشاور عليها وترجعها للسيستم.</p>
+                <div class="slide-code">
+<span class="keyword">delete</span> ptr; <span class="comment">// Frees the dynamically allocated memory</span>
+ptr = <span class="keyword">NULL</span>; <span class="comment">// Best Practice: Set pointer to NULL after deletion to avoid dangling pointers</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7 -->
+        <div class="slide-container" id="slide7">
+            <h2>Slide 7: المصفوفات الديناميكية (Dynamic Arrays)</h2>
+            <img src="../slides/Lecture_5_-_Dynamic_Memory_Allocation/slide_07.jpg" alt="Slide 7" class="slide-image">
+            <div class="slide-explanation">
+                <p>أكبر فايدة للـ Dynamic Memory هي إننا نعمل מصفوفة (Array) حجمها مش ثابت، حجمها بيتحدد وإحنا مشغلين البرنامج.</p>
+                <p>عشان نحجز Array ديناميكية، بنكتب الأقواس المربعة <code>[]</code> بعد النوع، وجواها المتغير اللي بيمثل الحجم.</p>
+                <div class="slide-code">
+<span class="type">int</span> size;
+cout &lt;&lt; <span class="string">"Enter number of students: "</span>;
+cin >> size;
+
+<span class="comment">// Allocation based on user input! (Impossible in Static Stack memory)</span>
+<span class="type">int</span> *arr = <span class="keyword">new</span> <span class="type">int</span>[size]; 
+
+<span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; size; i++) {
+    arr[i] = i * <span class="number">10</span>; <span class="comment">// Used just like a normal array</span>
+}
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8 -->
+        <div class="slide-container" id="slide8">
+            <h2>Slide 8: مسح المصفوفات الديناميكية (Deleting Dynamic Arrays)</h2>
+            <img src="../slides/Lecture_5_-_Dynamic_Memory_Allocation/slide_08.jpg" alt="Slide 8" class="slide-image">
+            <div class="slide-explanation">
+                <p>غلطة شائعة جداً (وبتوقع ناس كتير في الـ Memory Leaks): لما تيجي تمسح مصفوفة محجوزة بـ <code>new []</code>، <strong class="highlight">لازم</strong> تستخدم <code>delete []</code> (مع الأقواس المربعة الفاضية).</p>
+                <p>لو استخدمت <code>delete ptr;</code> العادية، الكومبايلر هيمسح أول عنصر بس في الـ Array ويسيب الباقي محجوز للأبد (Memory Leak)!</p>
+                <div class="slide-code">
+<span class="comment">// Correct way to delete a dynamic array</span>
+<span class="keyword">delete</span>[] arr; 
+arr = <span class="keyword">NULL</span>;
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 1: Pointers & New/Delete</h3>
+            
+            <div class="question" data-answer="1">
+                <p>1. Which of the following is the correct syntax to dynamically allocate a single integer and initialize it with the value 10?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) int *p = new int[10];</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) int *p = new int(10);</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) int p = new int(10);</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) int *p = malloc(10);</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> Using parentheses `()` initializes the value. Using brackets `[]` would allocate an array of 10 integers.
+                </div>
+            </div>
+
+            <div class="question" data-answer="2">
+                <p>2. What happens if you forget to use the `delete` operator on memory allocated with `new`?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) The compiler will automatically delete it when the program terminates.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) A Compilation Error will occur.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) A Memory Leak occurs, where the memory remains occupied until the OS reclaims it.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) The pointer will automatically turn into a NULL pointer.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> Failing to deallocate dynamic memory causes a Memory Leak, a critical flaw in C++ programs.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12 -->
+        <div class="slide-container" id="slide12">
+            <h2>Slide 12: حجز الكائنات ديناميكياً (Dynamic Objects)</h2>
+            <img src="../slides/Lecture_5_-_Dynamic_Memory_Allocation/slide_12.jpg" alt="Slide 12" class="slide-image">
+            <div class="slide-explanation">
+                <p>زي ما حجزنا <code>int</code>، نقدر نحجز <code>Object</code> كامل بنفس الطريقة بالظبط!</p>
+                <p>لما بنستخدم <code>new ClassName</code>، بيحصل حاجتين في نفس اللحظة:</p>
+                <ol>
+                    <li>مكان بيتحجز في الـ Heap يكفي الداتا بتاعة الـ Object ده.</li>
+                    <li>الـ <strong class="highlight">Constructor بيشتغل أوتوماتيك</strong> عشان يهيئ المكان ده! (دي ميزة عظيمة لـ new).</li>
+                </ol>
+                <div class="slide-code">
+<span class="type">Student</span> *s_ptr; 
+s_ptr = <span class="keyword">new</span> <span class="type">Student</span>; <span class="comment">// Calls Default Constructor</span>
+
+<span class="comment">// Or if you have a Parameterized Constructor:</span>
+<span class="type">Student</span> *s_ptr2 = <span class="keyword">new</span> <span class="type">Student</span>(<span class="number">101</span>, <span class="number">3.5</span>);
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16 -->
+        <div class="slide-container" id="slide16">
+            <h2>Slide 16: معامل السهم (The Arrow Operator ->)</h2>
+            <img src="../slides/Lecture_5_-_Dynamic_Memory_Allocation/slide_16.jpg" alt="Slide 16" class="slide-image">
+            <div class="slide-explanation">
+                <p>لو معاك Object عادي بتستخدم الدوت (<code>.</code>) عشان توصل لدواله (مثلاً <code>s1.display()</code>).</p>
+                <p>طيب لو معاك <span class="highlight">Pointer بيشاور على Object</span>؟ إزاي توصل للدوال؟</p>
+                <p>عندنا طريقتين:</p>
+                <ol>
+                    <li><strong>الطريقة العقيمة:</strong> تفك البوينتر الأول بالنجمة <code>*</code>، وتحطهم في أقواس، وبعدين تستخدم الدوت: <code>(*s_ptr).display();</code> (محدش بيستخدمها لأنها بتلخبط).</li>
+                    <li><strong>الطريقة البروفيشنال (Arrow Operator):</strong> بنستخدم السهم <code>-></code> (عبارة عن علامة ناقص وراها أكبر من). السهم ده بيعمل فك للبوينتر وبيوصل للدالة في خطوة واحدة!</li>
+                </ol>
+                <div class="slide-code">
+<span class="type">Student</span> *s = <span class="keyword">new</span> <span class="type">Student</span>(<span class="number">1</span>, <span class="string">"Ali"</span>);
+s<span class="operator">-></span>display(); <span class="comment">// Equivalent to (*s).display()</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19 -->
+        <div class="slide-container" id="slide19">
+            <h2>Slide 19: مصفوفة كائنات ديناميكية (Dynamic Array of Objects)</h2>
+            <img src="../slides/Lecture_5_-_Dynamic_Memory_Allocation/slide_19.jpg" alt="Slide 19" class="slide-image">
+            <div class="slide-explanation">
+                <p>تخيل عايز تعمل سيستم لجامعة، وعدد الطلبة مجهول. هتحتاج <strong>مصفوفة كائنات ديناميكية</strong>.</p>
+                <p>الـ Syntax هنا بيجمع بين اللي اتعلمناه في الـ Arrays وفي الـ Objects:</p>
+                <div class="slide-code">
+<span class="type">int</span> num_students;
+cin >> num_students;
+
+<span class="comment">// Create dynamic array of Objects (Calls Default Constructor N times)</span>
+<span class="type">Student</span> *arr = <span class="keyword">new</span> <span class="type">Student</span>[num_students]; 
+
+<span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; num_students; i++) {
+    <span class="comment">// Normal dot operator here because arr[i] IS the object itself, not a pointer</span>
+    arr[i].set_data(i, <span class="number">0.0</span>); 
+    arr[i].display();
+}
+
+<span class="comment">// Clean up! (Calls Destructor N times)</span>
+<span class="keyword">delete</span>[] arr;
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 20 -->
+        <div class="slide-container" id="slide20">
+            <h2>Slide 20: مؤشر This السحري (The 'this' Pointer)</h2>
+            <img src="../slides/Lecture_5_-_Dynamic_Memory_Allocation/slide_20.jpg" alt="Slide 20" class="slide-image">
+            <div class="slide-explanation">
+                <p>موضوع في قمة الأهمية وبيجي في الانترفيوهات: <strong>إيه هو الـ <code>this</code> pointer؟</strong></p>
+                <p>جوه أي دالة في الـ Class (ما عدا الـ Static functions)، فيه بوينتر <strong>مخفي</strong> الكومبايلر بيكريته لوحده اسمه <code>this</code>.</p>
+                <p>البوينتر ده <strong class="highlight">بيشاور على الكائن الحالي (Current Object)</strong> اللي نادى على الدالة. كأن الكائن بيبص في المراية وبيقول "أنا".</p>
+            </div>
+        </div>
+
+        <!-- Slide 21 -->
+        <div class="slide-container" id="slide21">
+            <h2>Slide 21: استخدامات مؤشر This (When to use 'this')</h2>
+            <img src="../slides/Lecture_5_-_Dynamic_Memory_Allocation/slide_21.jpg" alt="Slide 21" class="slide-image">
+            <div class="slide-explanation">
+                <p>أشهر وأهم استخدام للـ <code>this</code> هو <span class="highlight">حل تعارض الأسماء (Resolving Name Shadowing)</span>.</p>
+                <p>تخيل إنك بتعمل Parameterized Constructor، واسم المدخلات (Parameters) هو <strong>نفس اسم</strong> المتغيرات بتاعت الكلاس (Data Members). الكومبايلر هيعرف منين إنت تقصد مين؟</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Box</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> length; <span class="comment">// Class member</span>
+<span class="keyword">public</span>:
+    <span class="comment">// Parameter has the EXACT SAME NAME 'length'</span>
+    <span class="type">Box</span>(<span class="type">int</span> length) {
+        <span class="comment">// length = length; // WRONG! Compiler gets confused.</span>
+        
+        <span class="comment">// RIGHT! this->length means the class member. </span>
+        <span class="comment">// length (without this) means the parameter.</span>
+        <span class="keyword">this</span><span class="operator">-></span>length = length; 
+    }
+};
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Final Quiz: Arrow Operator & 'this' Pointer</h3>
+            
+            <div class="question" data-answer="2">
+                <p>1. If `ptr` is a pointer to an object of class `Car` which has a method `startEngine()`, which of the following is the correct and most standard way to call it?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) ptr.startEngine();</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) *ptr.startEngine();</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) ptr->startEngine();</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) ptr::startEngine();</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> The arrow operator `->` is used to access members of an object through a pointer.
+                </div>
+            </div>
+
+            <div class="question" data-answer="1">
+                <p>2. Inside a class method, what exactly does the `this` pointer represent?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) A pointer to the next object in memory.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) A pointer to the current object that invoked the method.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) A pointer to the class itself (blueprint).</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) A keyword used to return variables to the main function.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> The `this` pointer holds the memory address of the specific object that is currently executing the method.
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY SECTION -->
+        <div class="summary-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> الملخص الشامل لأهم التريكات (Summary & Pro Tips)</h2>
+            <ul>
+                <li><strong>Stack vs Heap:</strong> الـ Stack سريعة بس حجمها ثابت. الـ Heap مرنة وحجمها ديناميكي بس إنت اللي بتديرها.</li>
+                <li><strong><code>new</code> = حجز:</strong> بيحجز مساحة في الـ Heap ويرجع عنوانها في Pointer. لو كان Object بيشغل الـ Constructor أوتوماتيك.</li>
+                <li><strong><code>delete</code> = تحرير:</strong> بيمسح المساحة. <span class="highlight">لو نسيتها = Memory Leak!</span></li>
+                <li><strong>Array ديناميكية:</strong> <code>new int[size]</code> للحجز. <code>delete[] arr</code> للمسح (لازم الأقواس!).</li>
+                <li><strong>Arrow Operator (<code>-></code>):</strong> للوصول لدوال Object عن طريق Pointer: <code>ptr->display()</code>.</li>
+                <li><strong>الـ <code>this</code> Pointer:</strong> بوينتر مخفي بيشاور على الكائن الحالي. أهم استخدام: حل تعارض الأسماء.</li>
+                <li><strong>Best Practice:</strong> بعد الـ <code>delete</code>، خلي الـ Pointer = <code>NULL</code> عشان تتفادى Dangling Pointer.</li>
+            </ul>
+        </div>
+
+        <!-- ESSAY QUESTION SECTION -->
+        <div class="essay-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> سؤال مقالي متوقع للامتحان (Essay Question)</h2>
+            
+            <div class="essay-question">
+                <p><strong>Question:</strong> Explain Dynamic Memory Allocation in C++ using `new` and `delete`. Discuss Stack vs Heap, dynamic objects/arrays, the Arrow Operator, and the `this` pointer.</p>
+            </div>
+            
+            <button class="toggle-answer-btn" onclick="document.getElementById('essayAnswer5').classList.toggle('hidden')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"/></svg>
+                أظهر الإجابة النموذجية (Show Answer)
+            </button>
+            
+            <div id="essayAnswer5" class="essay-answer hidden">
+                <h4>Model Answer:</h4>
+                <p><strong>Stack vs. Heap:</strong> Stack memory is managed automatically; variables are destroyed when out of scope. Heap memory is managed manually and persists until explicitly freed.</p>
+                <p><strong><code>new</code>:</strong> Allocates heap memory. Single: <code>int *p = new int(10);</code>. Array: <code>int *arr = new int[n];</code>. For objects, it also calls the constructor.</p>
+                <p><strong><code>delete</code>:</strong> Frees heap memory. Single: <code>delete p;</code>. Array: <code>delete[] arr;</code>. Forgetting causes Memory Leak.</p>
+                <p><strong>Arrow Operator:</strong> <code>ptr->display();</code> equals <code>(*ptr).display();</code>.</p>
+                <p><strong><code>this</code> pointer:</strong> Implicit pointer in non-static methods pointing to the calling object. Resolves name conflicts: <code>this->name = name;</code>.</p>
+            </div>
+        </div>
+
+        <!-- TYPE 2: What is the Output? -->
+        <div class="output-question-section">
+            <h2>🖥️ What is the output of the following code?</h2>
+            <div class="output-q">
+                <p>Q1:</p>
+                <div class="slide-code">
+<span class="type">int</span> main() {
+    <span class="type">int</span> *p = <span class="keyword">new</span> <span class="type">int</span>(<span class="number">7</span>);
+    cout &lt;&lt; *p &lt;&lt; endl;
+    *p = <span class="number">15</span>;
+    cout &lt;&lt; *p &lt;&lt; endl;
+    <span class="keyword">delete</span> p;
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">7<br>15</div>
+            </div>
+            <div class="output-q">
+                <p>Q2:</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Box</span> {
+<span class="keyword">public</span>:
+    <span class="type">int</span> size;
+    <span class="type">Box</span>(<span class="type">int</span> s) { size = s; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Box</span> *ptr = <span class="keyword">new</span> <span class="type">Box</span>(<span class="number">25</span>);
+    cout &lt;&lt; ptr<span class="operator">-&gt;</span>size &lt;&lt; endl;
+    <span class="keyword">delete</span> ptr;
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">25<br>(Arrow operator accesses the member through a pointer)</div>
+            </div>
+        </div>
+
+        <!-- TYPE 3: Write a Line of Code -->
+        <div class="write-code-section">
+            <h2>✍️ Write a line of code for the following statements</h2>
+            <div class="write-q">
+                <p>Q1: Dynamically allocate a single integer and initialize it to 42.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">int</span> *p = <span class="keyword">new</span> <span class="type">int</span>(<span class="number">42</span>);</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q2: Dynamically allocate an array of 10 integers.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">int</span> *arr = <span class="keyword">new</span> <span class="type">int</span>[<span class="number">10</span>];</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q3: Delete the dynamic array from Q2 correctly.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="keyword">delete</span>[] arr;</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q4: Create a dynamic object of class <code>Student</code> using a parameterized constructor with id=5.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">Student</span> *ptr = <span class="keyword">new</span> <span class="type">Student</span>(<span class="number">5</span>);</div></div>
+            </div>
+        </div>
+
+        <!-- TYPE 4: Code Analysis -->
+        <div class="code-analysis-section">
+            <h2>🔍 Based on the following code, answer all the following questions</h2>
+            <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Rect</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> length;
+<span class="keyword">public</span>:
+    <span class="type">Rect</span>(<span class="type">int</span> length) { <span class="keyword">this</span><span class="operator">-&gt;</span>length = length; }
+    <span class="type">int</span> getLength() { <span class="keyword">return</span> length; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Rect</span> *r = <span class="keyword">new</span> <span class="type">Rect</span>(<span class="number">8</span>);
+    cout &lt;&lt; r<span class="operator">-&gt;</span>getLength() &lt;&lt; endl;
+    <span class="keyword">delete</span> r;
+}
+            </div>
+            <div class="analysis-q">
+                <p>a) What is the output?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><code>8</code></div>
+            </div>
+            <div class="analysis-q">
+                <p>b) Why is <code>this-&gt;length</code> used instead of just <code>length = length</code>?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">Because the parameter name <code>length</code> is the same as the data member. <code>this-&gt;length</code> refers to the member, while <code>length</code> alone refers to the parameter. Without <code>this</code>, it would assign the parameter to itself.</div>
+            </div>
+            <div class="analysis-q">
+                <p>c) What happens if we remove the line <code>delete r;</code>?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">A <strong>Memory Leak</strong> occurs. The memory allocated on the Heap by <code>new</code> is never freed and remains occupied until the program ends.</div>
+            </div>
+        </div>
+
+    </div>
+
+
+        <!-- Progress Tracking -->
+        <div class="completion-section" style="text-align: center; margin-top: 3rem; margin-bottom: 2rem;">
+            <button class="completion-btn" onclick="markLectureCompleted(this, 'lec5')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                لقد أتممت المحاضرة
+            </button>
+        </div>
+    <script src="../app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Particles
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 60, "density": { "enable": true, "value_area": 900 } },
+                    "color": { "value": ["#8b5cf6", "#6366f1", "#3b82f6"] },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 } },
+                    "size": { "value": 3, "random": true },
+                    "line_linked": { "enable": true, "distance": 150, "color": "#6366f1", "opacity": 0.2, "width": 1 },
+                    "move": { "enable": true, "speed": 1.2, "direction": "none", "random": true, "out_mode": "out", "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                    "modes": { "grab": { "distance": 180, "line_linked": { "opacity": 0.6 } }, "push": { "particles_nb": 3 } }
+                },
+                "retina_detect": true
+            });
+        }
+        // Glow cursor
+        var gc = document.getElementById('glowCursor');
+        if (gc) { document.addEventListener('mousemove', function(e) { gc.style.left = e.clientX + 'px'; gc.style.top = e.clientY + 'px'; }); }
+        // Scroll reveal for slides
+        var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.slide-container, .quiz-section, .summary-section, .essay-section').forEach(function(el) { obs.observe(el); });
+    });
+    </script>
+
+</body>
+</html>

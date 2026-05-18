@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 6 و 7: Inheritance - موسوعة الـ OOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+
+    <style>
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; }
+        .header-nav { position: sticky; z-index: 100; }
+        .floating-shapes {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-shapes span {
+            position: absolute;
+            display: block;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 50%;
+            animation: floatUp 25s linear infinite;
+        }
+        .floating-shapes span:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .floating-shapes span:nth-child(2) { width: 20px; height: 20px; left: 20%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-shapes span:nth-child(3) { width: 60px; height: 60px; left: 35%; animation-delay: 4s; animation-duration: 22s; }
+        .floating-shapes span:nth-child(4) { width: 40px; height: 40px; left: 50%; animation-delay: 0s; animation-duration: 18s; }
+        .floating-shapes span:nth-child(5) { width: 15px; height: 15px; left: 65%; animation-delay: 3s; animation-duration: 30s; }
+        .floating-shapes span:nth-child(6) { width: 90px; height: 90px; left: 75%; animation-delay: 5s; animation-duration: 27s; }
+        .floating-shapes span:nth-child(7) { width: 50px; height: 50px; left: 85%; animation-delay: 7s; animation-duration: 15s; }
+        .floating-shapes span:nth-child(8) { width: 25px; height: 25px; left: 45%; animation-delay: 1s; animation-duration: 35s; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .glow-cursor {
+            position: fixed;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        body:hover .glow-cursor { opacity: 1; }
+        .slide-container {
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .slide-container.vis { opacity: 1; transform: translateY(0); }
+        @media (max-width: 768px) {
+            .container { padding: 1rem !important; }
+            .slide-container { padding: 1.5rem !important; }
+            .header-nav { flex-direction: column; gap: 0.5rem; padding: 0.8rem !important; }
+            .header-nav h2 { font-size: 0.9rem !important; }
+        }
+    </style>
+
+</head>
+<body>
+
+    <div id="particles-js"></div>
+    <div class="floating-shapes">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="glow-cursor" id="glowCursor"></div>
+
+<div class="progress-bar-top" id="progressBar"></div>
+
+    <header class="header-nav">
+        <a href="../index.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            الرجوع للقائمة الرئيسية (Back to Home)
+        </a>
+        <h2 style="margin:0; font-size: 1.2rem;">Lecture 6 & 7: Inheritance</h2>
+    </header>
+
+    <div class="container">
+        
+        <div class="header" style="margin-top: 2rem;">
+            <h1>المحاضرتان 6 و 7: الوراثة (Inheritance)</h1>
+            <p>الشرح التفصيلي لجميع شرائح المحاضرة (Slide-by-Slide) مدعوم بشرح الأكواد سطراً بسطر (Line-by-Line Code Explanation)</p>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide-container" id="slide3">
+            <h2>Slide 3: مفهوم الوراثة (What is Inheritance?)</h2>
+            <img src="../slides/Lecture_6and7_-_Inheritance/slide_03.jpg" alt="Slide 3" class="slide-image">
+            <div class="slide-explanation">
+                <p>مبدأ الـ <strong>Inheritance (الوراثة)</strong> هو واحد من أهم عواميد الـ OOP. الفكرة ببساطة إنك بدل ما تبني كلاس جديد من الصفر، إنت بتورث كلاس تاني موجود بالفعل وتاخد كل الخصائص (Attributes) والدوال (Methods) بتاعته على الجاهز، وتزود عليهم الحاجات الجديدة بتاعتك.</p>
+                <p>عشان كده عندنا مصطلحين أساسيين:</p>
+                <ul>
+                    <li><strong class="highlight">Base Class (الكلاس الأب/الأساسي):</strong> الكلاس القديم اللي هنورث منه (زي كلاس Employee).</li>
+                    <li><strong class="highlight">Derived Class (الكلاس الابن/المشتق):</strong> الكلاس الجديد اللي بياخد خصائص الأب ويزود عليها (زي كلاس Manager).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide-container" id="slide4">
+            <h2>Slide 4: علاقة الـ Is-A (The "Is-A" Relationship)</h2>
+            <img src="../slides/Lecture_6and7_-_Inheritance/slide_04.jpg" alt="Slide 4" class="slide-image">
+            <div class="slide-explanation">
+                <p>إمتى نستخدم الوراثة؟ بنستخدمها لما تكون العلاقة بين التو كلاسس علاقة <strong>"هو عبارة عن" أو (Is-A)</strong>.</p>
+                <p>أمثلة:</p>
+                <ul>
+                    <li>السيارة (Car) <span class="highlight">Is-A</span> مركبة (Vehicle). إذن Car تورث من Vehicle.</li>
+                    <li>المدير (Manager) <span class="highlight">Is-A</span> موظف (Employee). إذن Manager يورث من Employee.</li>
+                    <li>الكلب (Dog) <span class="highlight">Is-A</span> حيوان (Animal). إذن Dog يورث من Animal.</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>💡 الفائدة الأساسية (Code Reusability):</strong> الوراثة بتوفر علينا كتابة الكود المكرر. بدل ما نكتب دالة (يمشي) لكل الحيوانات، بنكتبها مرة واحدة في الأب (Animal)، وكل الأبناء بيورثوها أوتوماتيك!
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide-container" id="slide6">
+            <h2>Slide 6: طريقة كتابة الوراثة (Inheritance Syntax)</h2>
+            <img src="../slides/Lecture_6and7_-_Inheritance/slide_06.jpg" alt="Slide 6" class="slide-image">
+            <div class="slide-explanation">
+                <p>عشان نخلي كلاس يورث من كلاس تاني في الـ C++، بنستخدم النقطتين فوق بعض <code>:</code> (Colon).</p>
+                
+                <div class="slide-code">
+<span class="comment">// 1. Base Class (Parent)</span>
+<span class="keyword">class</span> <span class="type">Shape</span> {
+<span class="keyword">public</span>:
+    <span class="type">void</span> setWidth(<span class="type">int</span> w) { width = w; }
+    <span class="type">void</span> setHeight(<span class="type">int</span> h) { height = h; }
+<span class="keyword">protected</span>:
+    <span class="type">int</span> width;
+    <span class="type">int</span> height;
+};
+
+<span class="comment">// 2. Derived Class (Child) inheriting from Shape</span>
+<span class="keyword">class</span> <span class="type">Rectangle</span> : <span class="keyword">public</span> <span class="type">Shape</span> {
+<span class="keyword">public</span>:
+    <span class="type">int</span> getArea() {
+        <span class="keyword">return</span> (width * height); <span class="comment">// It can use width & height because it inherited them!</span>
+    }
+};
+                </div>
+                <div class="code-explanation">
+                    <ul>
+                        <li>الكلاس <code>Rectangle</code> اتكتب جنبه <code>: <span class="keyword">public</span> <span class="type">Shape</span></code>. ده معناه إنه بيورث كلاس <code>Shape</code> وراثة عامة.</li>
+                        <li>الابن <code>Rectangle</code> قدر يستخدم المتغيرات <code>width</code> و <code>height</code> اللي موجودين في الأب مع إنه هو نفسه معندهوش المتغيرات دي!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10 -->
+        <div class="slide-container" id="slide10">
+            <h2>Slide 10: الكلمة السحرية (The 'protected' Access Modifier)</h2>
+            <img src="../slides/Lecture_6and7_-_Inheritance/slide_10.jpg" alt="Slide 10" class="slide-image">
+            <div class="slide-explanation">
+                <p>إحنا عارفين الـ <code>public</code> (أي حد يشوفه) والـ <code>private</code> (محدش يشوفه غير الكلاس نفسه).</p>
+                <p>الوراثة جابت معاها نوع تالت اسمه <strong class="highlight">protected (محمي)</strong>.</p>
+                <p>الـ <code>protected</code> بيشتغل إزاي؟</p>
+                <ul>
+                    <li>بالنسبة للـ <code>main()</code> والناس اللي بره: هو زيه زي الـ <code>private</code> بالظبط (ممنوع اللمس).</li>
+                    <li>بالنسبة للكلاسات <strong class="highlight">الأبناء (Derived Classes)</strong>: هو زيه زي الـ <code>public</code> يقدروا يستخدموه ويعدلوا فيه براحتهم!</li>
+                </ul>
+                <p>يعني ده مستوى حماية "عائلي"، الأب بيسمح لولاده بس يوصلوا لحاجته، لكن الغريب لأ.</p>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 1: Inheritance Basics & Protected</h3>
+            
+            <div class="question" data-answer="1">
+                <p>1. What is the primary advantage of using Inheritance in OOP?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) It makes the program run faster.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) It promotes Code Reusability and reduces redundancy.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) It hides data from hackers.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) It allows creating multiple objects without memory allocation.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> Inheritance allows derived classes to reuse the code (attributes and methods) already written in the base class.
+                </div>
+            </div>
+
+            <div class="question" data-answer="2">
+                <p>2. Which access specifier should be used in a Base class if you want the data to be hidden from the `main()` function, but fully accessible to its Derived (child) classes?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) private</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) public</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) protected</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) hidden</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> `protected` acts like private for the outside world, but acts like public for inherited children.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13 -->
+        <div class="slide-container" id="slide13">
+            <h2>Slide 13: ترتيب البناء والهدم في الوراثة (Constructors & Destructors Order)</h2>
+            <img src="../slides/Lecture_6and7_-_Inheritance/slide_13.jpg" alt="Slide 13" class="slide-image">
+            <div class="slide-explanation">
+                <p>لما تعمل Object من الكلاس الابن (Derived)، هل الابن بيتبني الأول ولا الأب؟ (سؤال امتحان مؤكد).</p>
+                <p>المنطق بيقول: <strong class="highlight">مفيش ابن بيتولد قبل أبوه!</strong></p>
+                <ul>
+                    <li><strong>أثناء الإنشاء (Constructors):</strong> الكومبايلر بيبدأ بتشغيل Constructor <strong>الكلاس الأب (Base) الأول</strong>، وبعدين يخلص وينزل يشغل Constructor <strong>الكلاس الابن (Derived)</strong>.</li>
+                    <li><strong>أثناء الهدم (Destructors):</strong> بنعكس القاعدة (LIFO)! الابن هو اللي بيموت ويتهد الأول، وبعدين الأب يتهد بعده. (الـ Derived Destructor بيشتغل قبل الـ Base Destructor).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 16 -->
+        <div class="slide-container" id="slide16">
+            <h2>Slide 16: تمرير المتغيرات لأباء (Passing Arguments to Base Constructor)</h2>
+            <img src="../slides/Lecture_6and7_-_Inheritance/slide_16.jpg" alt="Slide 16" class="slide-image">
+            <div class="slide-explanation">
+                <p>بما إن الأب بيتبني الأول، طب لو الـ Constructor بتاع الأب ده بياخد <strong>Parameters</strong> (مش Default)؟ إزاي الابن يبعتله الـ Parameters دي وهو بيتبني؟</p>
+                <p>بنستخدم طريقة اسمها <span class="highlight">Initialization List</span> (قائمة التهيئة). بنحط نقطتين <code>:</code> بعد Constructor الابن، وننادي على Constructor الأب ونديله قيمه.</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Parent</span> {
+<span class="keyword">public</span>:
+    <span class="type">Parent</span>(<span class="type">int</span> x) { cout &lt;&lt; <span class="string">"Parent built with "</span> &lt;&lt; x &lt;&lt; endl; }
+};
+
+<span class="keyword">class</span> <span class="type">Child</span> : <span class="keyword">public</span> <span class="type">Parent</span> {
+<span class="keyword">public</span>:
+    <span class="comment">// Child Constructor passing 'p' to Parent Constructor BEFORE its own body</span>
+    <span class="type">Child</span>(<span class="type">int</span> p, <span class="type">int</span> c) : <span class="type">Parent</span>(p) {
+        cout &lt;&lt; <span class="string">"Child built with "</span> &lt;&lt; c &lt;&lt; endl;
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Child</span> obj(<span class="number">10</span>, <span class="number">20</span>); <span class="comment">// 10 goes to Parent, 20 stays in Child</span>
+}
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19 -->
+        <div class="slide-container" id="slide19">
+            <h2>Slide 19: تعدي الدوال (Function Overriding)</h2>
+            <img src="../slides/Lecture_6and7_-_Inheritance/slide_19.jpg" alt="Slide 19" class="slide-image">
+            <div class="slide-explanation">
+                <p>الـ <strong>Overriding</strong> (مش الـ Overloading!) بيحصل في الوراثة بس.</p>
+                <p>يعني إيه؟ يعني الأب عنده دالة اسمها <code>print()</code> بتطبع حاجة معينة، بس الابن مش عاجبه كلام أبوه وعايز يغيره! فالابن بيعمل دالة <span class="highlight">بنفس الاسم ونفس الـ Parameters بالظبط</span> <code>print()</code> جوا الكلاس بتاعه.</p>
+                <p>لما تعمل Object من الابن وتنادي <code>print()</code>، الكومبايلر <strong>بيتجاهل دالة الأب وبيشغل دالة الابن</strong> (الابن بيطغى على الأب).</p>
+            </div>
+        </div>
+
+        <!-- Slide 20 -->
+        <div class="slide-container" id="slide20">
+            <h2>Slide 20: الوراثة المتعددة (Multiple Inheritance)</h2>
+            <img src="../slides/Lecture_6and7_-_Inheritance/slide_20.jpg" alt="Slide 20" class="slide-image">
+            <div class="slide-explanation">
+                <p>في الـ C++، الابن يقدر يورث من <strong class="highlight">أكتر من أب في نفس الوقت!</strong> (دي ميزة مش موجودة في لغات تانية زي Java).</p>
+                <p>يعني ممكن نعمل كلاس <code>SmartPhone</code> يورث من كلاس <code>Camera</code> وكلاس <code>Phone</code> في نفس الوقت!</p>
+                
+                <div class="slide-code">
+<span class="comment">// Base 1</span>
+<span class="keyword">class</span> <span class="type">Camera</span> { ... };
+
+<span class="comment">// Base 2</span>
+<span class="keyword">class</span> <span class="type">Phone</span> { ... };
+
+<span class="comment">// Derived Class inheriting from BOTH!</span>
+<span class="keyword">class</span> <span class="type">SmartPhone</span> : <span class="keyword">public</span> <span class="type">Camera</span>, <span class="keyword">public</span> <span class="type">Phone</span> {
+    <span class="comment">// Has features of both a camera and a phone</span>
+};
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 25 -->
+        <div class="slide-container" id="slide25">
+            <h2>Slide 25: مشكلة الغموض (Ambiguity in Multiple Inheritance)</h2>
+            <img src="../slides/Lecture_6and7_-_Inheritance/slide_25.jpg" alt="Slide 25" class="slide-image">
+            <div class="slide-explanation">
+                <p>الوراثة المتعددة بتعمل مشكلة خطيرة اسمها <strong>Ambiguity (الغموض)</strong>.</p>
+                <p>تخيل كلاس الابن (SmartPhone) وارث من (Camera) ومن (Phone)، والاتنين الأبهات عندهم دالة بنفس الاسم اسمها <code>turnOn()</code>! لما الابن يقول <code>s.turnOn()</code>، الكومبايلر هيتلخبط ومش هيبقى عارف يشغل الدالة بتاعة الكاميرا ولا بتاعة التليفون!</p>
+                <p><strong>الحل (Resolution):</strong> إننا نحدد اسم الكلاس الأب اللي نقصده باستخدام معامل الـ Scope Resolution <code>::</code>.</p>
+                <div class="slide-code">
+<span class="type">SmartPhone</span> s;
+<span class="comment">// s.turnOn(); // ❌ ERROR: Ambiguous!</span>
+
+s.<span class="type">Camera</span><span class="operator">::</span>turnOn(); <span class="comment">// ✅ CORRECT: Turn on the camera</span>
+s.<span class="type">Phone</span><span class="operator">::</span>turnOn();  <span class="comment">// ✅ CORRECT: Turn on the phone</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Final Quiz: Inheritance Mechanics</h3>
+            
+            <div class="question" data-answer="0">
+                <p>1. When creating an object of a Derived class, what is the exact order of execution for Constructors and Destructors?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) Const: Base then Derived. Dest: Derived then Base.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) Const: Derived then Base. Dest: Base then Derived.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) Both execute Base first, then Derived.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) It happens randomly depending on the compiler.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: A.</strong> Base must be constructed first to support the Derived. Destruction happens in reverse order (LIFO).
+                </div>
+            </div>
+
+            <div class="question" data-answer="3">
+                <p>2. In Multiple Inheritance, if two base classes have a function with the exact same name, and the derived class calls it, an 'Ambiguity Error' occurs. How do you resolve this in C++?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) You must delete one of the functions.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) The compiler automatically picks the function from the first inherited class.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) You rename the function in the derived class.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) By using the Scope Resolution Operator (BaseClassName::functionName).</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: D.</strong> You must explicitly tell the compiler which parent's function you intend to call using `::`.
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY SECTION -->
+        <div class="summary-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> الملخص الشامل لأهم التريكات (Summary & Pro Tips)</h2>
+            <ul>
+                <li><strong>Inheritance = وراثة:</strong> كلاس ابن (Derived) بياخد كل خصائص ودوال كلاس أب (Base) ويزود عليها. بنستخدمها لما العلاقة تكون <strong>"Is-A"</strong>.</li>
+                <li><strong>Syntax:</strong> <code>class Child : public Parent { };</code> ← النقطتين (<code>:</code>) هي اللي بتعمل الوراثة.</li>
+                <li><strong>protected:</strong> مستوى حماية "عائلي" ← مخفي عن الـ main (زي private) بس متاح للأبناء (زي public). ده الأنسب لمتغيرات الأب اللي عايز الابن يوصلها.</li>
+                <li><strong>ترتيب البناء:</strong> Constructor الأب بيشتغل الأول، وبعدين الابن. الهدم بالعكس (Derived Destructor أولاً ثم Base).</li>
+                <li><strong>Initialization List:</strong> لو الأب عنده Parameterized Constructor، الابن بيبعتله القيم بـ <code>Child(int p, int c) : Parent(p) { }</code>.</li>
+                <li><strong>Overriding:</strong> الابن يعمل دالة بنفس اسم ونفس Parameters بتاعة الأب ← دالة الابن بتطغى على دالة الأب.</li>
+                <li><strong>Multiple Inheritance:</strong> الابن يورث من أكتر من أب: <code>class C : public A, public B { };</code>. لو في دالة بنفس الاسم في الأبهات بيحصل <span class="highlight">Ambiguity</span> والحل بالـ Scope Resolution <code>obj.A::func();</code>.</li>
+            </ul>
+        </div>
+
+        <!-- ESSAY QUESTION SECTION -->
+        <div class="essay-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> سؤال مقالي متوقع للامتحان (Essay Question)</h2>
+            
+            <div class="essay-question">
+                <p><strong>Question:</strong> Explain the concept of Inheritance in C++. Discuss the `protected` access modifier, the order of Constructor/Destructor calls, how to pass arguments to a Base class constructor, and the Ambiguity problem in Multiple Inheritance with its solution.</p>
+            </div>
+            
+            <button class="toggle-answer-btn" onclick="document.getElementById('essayAnswer6').classList.toggle('hidden')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"/></svg>
+                أظهر الإجابة النموذجية (Show Answer)
+            </button>
+            
+            <div id="essayAnswer6" class="essay-answer hidden">
+                <h4>Model Answer:</h4>
+                <p><strong>Inheritance</strong> allows a Derived class to reuse code from a Base class using the "Is-A" relationship. Syntax: <code>class Derived : public Base { };</code>.</p>
+                <p><strong>Protected:</strong> Acts like <code>private</code> for external code but like <code>public</code> for derived classes, providing family-level access control.</p>
+                <p><strong>Constructor/Destructor Order:</strong> When creating a Derived object, the Base constructor runs first, then the Derived constructor. Destruction is reversed (LIFO): Derived destructor first, then Base destructor.</p>
+                <p><strong>Passing Arguments:</strong> Use an Initialization List: <code>Child(int p, int c) : Parent(p) { }</code> to forward arguments to the Base constructor before the Derived body executes.</p>
+                <p><strong>Multiple Inheritance Ambiguity:</strong> When a class inherits from two bases that share a function name, calling it causes an ambiguity error. Resolution: use the Scope Resolution Operator: <code>obj.BaseA::func();</code>.</p>
+            </div>
+        </div>
+
+        <!-- TYPE 2: What is the Output? -->
+        <div class="output-question-section">
+            <h2>🖥️ What is the output of the following code?</h2>
+            <div class="output-q">
+                <p>Q1:</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Base</span> {
+<span class="keyword">public</span>:
+    <span class="type">Base</span>() { cout &lt;&lt; <span class="string">"B "</span>; }
+    ~<span class="type">Base</span>() { cout &lt;&lt; <span class="string">"~B "</span>; }
+};
+<span class="keyword">class</span> <span class="type">Derived</span> : <span class="keyword">public</span> <span class="type">Base</span> {
+<span class="keyword">public</span>:
+    <span class="type">Derived</span>() { cout &lt;&lt; <span class="string">"D "</span>; }
+    ~<span class="type">Derived</span>() { cout &lt;&lt; <span class="string">"~D "</span>; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Derived</span> obj;
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">B D ~D ~B<br>(Base constructor first → Derived constructor. Destructors in reverse.)</div>
+            </div>
+            <div class="output-q">
+                <p>Q2:</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Parent</span> {
+<span class="keyword">public</span>:
+    <span class="type">void</span> show() { cout &lt;&lt; <span class="string">"Parent"</span> &lt;&lt; endl; }
+};
+<span class="keyword">class</span> <span class="type">Child</span> : <span class="keyword">public</span> <span class="type">Parent</span> {
+<span class="keyword">public</span>:
+    <span class="type">void</span> show() { cout &lt;&lt; <span class="string">"Child"</span> &lt;&lt; endl; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Child</span> c;
+    c.show();
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">Child<br>(Function Overriding: the Child's version takes priority)</div>
+            </div>
+        </div>
+
+        <!-- TYPE 3: Write a Line of Code -->
+        <div class="write-code-section">
+            <h2>✍️ Write a line of code for the following statements</h2>
+            <div class="write-q">
+                <p>Q1: Declare a class <code>Dog</code> that inherits publicly from a class <code>Animal</code>.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="keyword">class</span> <span class="type">Dog</span> : <span class="keyword">public</span> <span class="type">Animal</span> { };</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q2: Write a Derived constructor that passes value <code>x</code> to the Base constructor using an initialization list.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">Derived</span>(<span class="type">int</span> x, <span class="type">int</span> y) : <span class="type">Base</span>(x) { val = y; }</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q3: Declare a class <code>C</code> that inherits from both <code>A</code> and <code>B</code> (Multiple Inheritance).</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="keyword">class</span> <span class="type">C</span> : <span class="keyword">public</span> <span class="type">A</span>, <span class="keyword">public</span> <span class="type">B</span> { };</div></div>
+            </div>
+        </div>
+
+        <!-- TYPE 4: Code Analysis -->
+        <div class="code-analysis-section">
+            <h2>🔍 Based on the following code, answer all the following questions</h2>
+            <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Shape</span> {
+<span class="keyword">protected</span>:
+    <span class="type">int</span> width;
+<span class="keyword">public</span>:
+    <span class="type">Shape</span>(<span class="type">int</span> w) { width = w; }
+};
+
+<span class="keyword">class</span> <span class="type">Square</span> : <span class="keyword">public</span> <span class="type">Shape</span> {
+<span class="keyword">public</span>:
+    <span class="type">Square</span>(<span class="type">int</span> w) : <span class="type">Shape</span>(w) {}
+    <span class="type">int</span> area() { <span class="keyword">return</span> width * width; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Square</span> s(<span class="number">4</span>);
+    cout &lt;&lt; s.area() &lt;&lt; endl;
+}
+            </div>
+            <div class="analysis-q">
+                <p>a) What is the output?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><code>16</code> (4 × 4 = 16)</div>
+            </div>
+            <div class="analysis-q">
+                <p>b) Why is <code>width</code> declared as <code>protected</code> instead of <code>private</code>?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">So that the derived class <code>Square</code> can access it directly. If it were <code>private</code>, <code>Square</code> would get a compilation error when trying to use <code>width</code>.</div>
+            </div>
+            <div class="analysis-q">
+                <p>c) Can we write <code>cout &lt;&lt; s.width;</code> in <code>main()</code>?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><strong>No.</strong> <code>protected</code> members are accessible in derived classes but NOT from external code like <code>main()</code>.</div>
+            </div>
+        </div>
+
+    </div>
+
+
+        <!-- Progress Tracking -->
+        <div class="completion-section" style="text-align: center; margin-top: 3rem; margin-bottom: 2rem;">
+            <button class="completion-btn" onclick="markLectureCompleted(this, 'lec6')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                لقد أتممت المحاضرة
+            </button>
+        </div>
+    <script src="../app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Particles
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 60, "density": { "enable": true, "value_area": 900 } },
+                    "color": { "value": ["#8b5cf6", "#6366f1", "#3b82f6"] },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 } },
+                    "size": { "value": 3, "random": true },
+                    "line_linked": { "enable": true, "distance": 150, "color": "#6366f1", "opacity": 0.2, "width": 1 },
+                    "move": { "enable": true, "speed": 1.2, "direction": "none", "random": true, "out_mode": "out", "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                    "modes": { "grab": { "distance": 180, "line_linked": { "opacity": 0.6 } }, "push": { "particles_nb": 3 } }
+                },
+                "retina_detect": true
+            });
+        }
+        // Glow cursor
+        var gc = document.getElementById('glowCursor');
+        if (gc) { document.addEventListener('mousemove', function(e) { gc.style.left = e.clientX + 'px'; gc.style.top = e.clientY + 'px'; }); }
+        // Scroll reveal for slides
+        var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.slide-container, .quiz-section, .summary-section, .essay-section').forEach(function(el) { obs.observe(el); });
+    });
+    </script>
+
+</body>
+</html>

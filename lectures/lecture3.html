@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة الثالثة: Constructors & Destructors - موسوعة الـ OOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+
+    <style>
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; }
+        .header-nav { position: sticky; z-index: 100; }
+        .floating-shapes {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-shapes span {
+            position: absolute;
+            display: block;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 50%;
+            animation: floatUp 25s linear infinite;
+        }
+        .floating-shapes span:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .floating-shapes span:nth-child(2) { width: 20px; height: 20px; left: 20%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-shapes span:nth-child(3) { width: 60px; height: 60px; left: 35%; animation-delay: 4s; animation-duration: 22s; }
+        .floating-shapes span:nth-child(4) { width: 40px; height: 40px; left: 50%; animation-delay: 0s; animation-duration: 18s; }
+        .floating-shapes span:nth-child(5) { width: 15px; height: 15px; left: 65%; animation-delay: 3s; animation-duration: 30s; }
+        .floating-shapes span:nth-child(6) { width: 90px; height: 90px; left: 75%; animation-delay: 5s; animation-duration: 27s; }
+        .floating-shapes span:nth-child(7) { width: 50px; height: 50px; left: 85%; animation-delay: 7s; animation-duration: 15s; }
+        .floating-shapes span:nth-child(8) { width: 25px; height: 25px; left: 45%; animation-delay: 1s; animation-duration: 35s; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .glow-cursor {
+            position: fixed;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        body:hover .glow-cursor { opacity: 1; }
+        .slide-container {
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .slide-container.vis { opacity: 1; transform: translateY(0); }
+        @media (max-width: 768px) {
+            .container { padding: 1rem !important; }
+            .slide-container { padding: 1.5rem !important; }
+            .header-nav { flex-direction: column; gap: 0.5rem; padding: 0.8rem !important; }
+            .header-nav h2 { font-size: 0.9rem !important; }
+        }
+    </style>
+
+</head>
+<body>
+
+    <div id="particles-js"></div>
+    <div class="floating-shapes">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="glow-cursor" id="glowCursor"></div>
+
+<div class="progress-bar-top" id="progressBar"></div>
+
+    <header class="header-nav">
+        <a href="../index.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            الرجوع للقائمة الرئيسية (Back to Home)
+        </a>
+        <h2 style="margin:0; font-size: 1.2rem;">Lecture 3: Constructors & Destructors</h2>
+    </header>
+
+    <div class="container">
+        
+        <div class="header" style="margin-top: 2rem;">
+            <h1>المحاضرة الثالثة: البناء والهدم (Constructors & Destructors)</h1>
+            <p>الشرح التفصيلي لجميع شرائح المحاضرة (Slide-by-Slide) مدعوم بشرح الأكواد سطراً بسطر (Line-by-Line Code Explanation)</p>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide-container" id="slide4">
+            <h2>Slide 4: مقدمة عن المُنشئ (Introduction to Constructors)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_04.jpg" alt="Slide 4" class="slide-image">
+            <div class="slide-explanation">
+                <p>في المحاضرات اللي فاتت، عرفنا إن الـ <code>Class</code> هو مجرد قالب (Blueprint)، وإن الـ <code>Object</code> هو النسخة الحقيقية اللي بتاخد مساحة في الـ Memory.</p>
+                <p>السؤال هنا: <strong class="highlight">إمتى وإزاي الـ Object ده بيتولد أو بيتخلق في الـ Memory؟ وإزاي بياخد قيم ابتدائية (Initial Values) لأول مرة؟</strong></p>
+                <p>الإجابة هي الـ <strong>Constructor (المُنشئ أو الدالة البانية)</strong>. الـ Constructor عبارة عن <span class="highlight">Special Member Function</span> (دالة خاصة جداً) بيتم استدعاؤها (Called) بشكل <strong>تلقائي (Automatically)</strong> بمجرد ما حضرتك تكتب كود إنشاء الـ Object.</p>
+                <p>وظيفة الـ Constructor الأساسية هي <strong>تهيئة (Initialization)</strong> المتغيرات أو الداتا بتاعة الـ Object الجديد وإعطاؤه حياة فعلية في الذاكرة.</p>
+            </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide-container" id="slide5">
+            <h2>Slide 5: خصائص وقواعد الـ Constructor (Rules of Constructors)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_05.jpg" alt="Slide 5" class="slide-image">
+            <div class="slide-explanation">
+                <p>الـ Constructor مش دالة عادية، ليه 3 قواعد أو شروط صارمة لازم تحفظهم زي اسمك (بييجوا دايماً في الـ MCQs):</p>
+                <ul>
+                    <li><strong class="highlight">1. Same Name:</strong> اسم الـ Constructor لازم يكون <strong>نفس اسم الـ Class بالظبط</strong> (بنفس الحروف الـ Capital والـ Small).</li>
+                    <li><strong class="highlight">2. No Return Type:</strong> الـ Constructor ملوش أي نوع إرجاع، حتى ولا كلمة <code>void</code>. مبنكتبش قبله أي حاجة.</li>
+                    <li><strong class="highlight">3. Automatic Call:</strong> إنت كمبرمج مش بتنادي عليه بشكل صريح (You don't call it explicitly)، هو بيشتغل لوحده أوتوماتيك أول ما تعمل <code>Object</code> جديد.</li>
+                    <li><strong class="highlight">4. Access Modifier:</strong> دايماً وأبداً لازم يكون محطوط في الـ <code>public</code> section، لأن الـ Main function هي اللي بتستخدمه عشان تبني الـ Object.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide-container" id="slide6">
+            <h2>Slide 6: النوع الأول - المُنشئ الافتراضي (Default Constructor)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_06.jpg" alt="Slide 6" class="slide-image">
+            <div class="slide-explanation">
+                <p>أول وأبسط نوع هو الـ <strong>Default Constructor</strong>. ده الـ Constructor الغلبان اللي مبياخدش أي Parameters (أقواسه فاضية).</p>
+                <p>وظيفته إنه بيدي قيم افتراضية (Default values) ثابتة لكل الـ Objects اللي بتتعمل منه (مثلاً يخلي أي Employee جديد يبدأ بمرتب 0 واسم فاضي).</p>
+                <div class="highlight-box">
+                    <strong>⚠️ ملاحظة هامة جداً (Compiler Default):</strong> لو إنت نسيت أو متعمدتش تكتب أي Constructor في الكلاس بتاعك، الكومبايلر (Compiler) مش هيسكت، وهيكريتلك هو <strong>Hidden Default Constructor</strong> من وراك (فاضي مبيعملش حاجة) عشان بس يقدر يخلق الـ Objects. بس لو إنت كتبت أي Constructor بأيدك (حتى لو بياخد parameters)، الكومبايلر هيرفع إيده ومش هيعملك الـ Default.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7 -->
+        <div class="slide-container" id="slide7">
+            <h2>Slide 7: كود المُنشئ الافتراضي (Default Constructor Example)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_07.jpg" alt="Slide 7" class="slide-image">
+            <div class="slide-explanation">
+                <p>تعالوا نشوف إزاي بنكتب الـ Default Constructor في كود الـ C++ الفعلي:</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Student</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> id;
+    <span class="type">float</span> gpa;
+<span class="keyword">public</span>:
+    <span class="comment">// Default Constructor</span>
+    <span class="type">Student</span>() {
+        id = <span class="number">0</span>;
+        gpa = <span class="number">0.0</span>;
+        cout &lt;&lt; <span class="string">"Default Constructor Called!"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="comment">// Object Creation -> Automatically calls Student()</span>
+    <span class="type">Student</span> s1; 
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+                </div>
+                
+                <h3 style="margin-top: 1rem; color: var(--primary-color);">شرح الكود سطراً بسطر (Line-by-Line Analysis):</h3>
+                <ul class="line-by-line">
+                    <li><code><span class="highlight">Student</span>() {</code> : ده الـ Constructor. لاحظ إن اسمه <code>Student</code> (نفس اسم الكلاس بالظبط)، ومفيش قبله <code>void</code> ولا <code>int</code>، وأقواسه <code>()</code> فاضية مفيهاش Variables.</li>
+                    <li><code>id = <span class="number">0</span>;</code> و <code>gpa = <span class="number">0.0</span>;</code> : هنا بنعمل Initialization (تهيئة). يعني أي طالب جديد يتكريت هيكون رقم جلوسه صفر ودرجاته صفر بشكل مبدئي لحد ما نغيرهم.</li>
+                    <li><code><span class="type">Student</span> s1;</code> : في الـ main، أول ما السطر ده يتنفذ، الكمبيوتر هيطبع كلمة "Default Constructor Called!" أوتوماتيك من غير ما إحنا نكتب <code>s1.Student()</code>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 1: Constructors Basics</h3>
+            
+            <div class="question" data-answer="2">
+                <p>1. Which of the following statements about C++ Constructors is FALSE?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) A constructor has the exact same name as its class.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) A constructor is invoked automatically when an object is created.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) A constructor must return a 'void' type.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) A constructor is typically placed in the public section of the class.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> A constructor must NOT have any return type whatsoever, not even 'void'.
+                </div>
+            </div>
+
+            <div class="question" data-answer="0">
+                <p>2. What happens if a programmer does not define any constructor in their C++ class?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) The C++ compiler implicitly generates an empty default constructor.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) The code will fail to compile and throw a Syntax Error.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) The program will crash at runtime (Runtime Error).</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) Objects can be created but they will not consume any memory.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: A.</strong> If you don't write one, the compiler implicitly provides a hidden, empty Default Constructor for you.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8 -->
+        <div class="slide-container" id="slide8">
+            <h2>Slide 8: النوع الثاني - المُنشئ بالمعاملات (Parameterized Constructor)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_08.jpg" alt="Slide 8" class="slide-image">
+            <div class="slide-explanation">
+                <p>المشكلة في الـ Default Constructor إنه بيخلي كل الـ Objects تطلع شبه بعضها بالظبط بنفس القيم الأولية (الكل يبدأ بـ id = 0). لكن في الحقيقة، أنا عايز لما أجيب موظف جديد أقوله "خد إنت اسمك أحمد ومرتبك كذا" وأنا بكريته على طول.</p>
+                <p>هنا بنستخدم النوع التاني وهو الـ <strong>Parameterized Constructor</strong>. ده مُنشئ بياخد مدخلات (Parameters/Arguments) وإحنا بنعمل الـ Object.</p>
+                <p>الطريقة دي بتوفر علينا سطور كود كتير وبنعمل إنشاء (Creation) وتهيئة (Initialization) في سطر واحد بس (One-Step process).</p>
+            </div>
+        </div>
+
+        <!-- Slide 9 -->
+        <div class="slide-container" id="slide9">
+            <h2>Slide 9: كود المُنشئ بالمعاملات (Parameterized Constructor Example)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_09.jpg" alt="Slide 9" class="slide-image">
+            <div class="slide-explanation">
+                <p>إزاي نكتب الـ Parameterized Constructor ونستخدمه؟</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Student</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> id;
+    <span class="type">float</span> gpa;
+<span class="keyword">public</span>:
+    <span class="comment">// Parameterized Constructor</span>
+    <span class="type">Student</span>(<span class="type">int</span> i, <span class="type">float</span> g) {
+        id = i;
+        gpa = g;
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="comment">// Explicit call to Parameterized Constructor</span>
+    <span class="type">Student</span> s1(<span class="number">101</span>, <span class="number">3.5</span>); 
+    <span class="type">Student</span> s2(<span class="number">102</span>, <span class="number">3.9</span>);
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+                </div>
+                
+                <h3 style="margin-top: 1rem; color: var(--primary-color);">شرح الكود سطراً بسطر (Line-by-Line Analysis):</h3>
+                <ul class="line-by-line">
+                    <li><code><span class="highlight">Student</span>(<span class="type">int</span> i, <span class="type">float</span> g) {</code> : ده الـ Constructor بس المرة دي بين الأقواس بيستقبل قيمتين، قيمة <code>i</code> من نوع <code>int</code>، وقيمة <code>g</code> من نوع <code>float</code>.</li>
+                    <li><code>id = i;</code> : بناخد القيمة اللي جاية من بره (i) ونحطها جوه المتغير الداخلي المحمي (id).</li>
+                    <li><code><span class="type">Student</span> s1(<span class="number">101</span>, <span class="number">3.5</span>);</code> : في سطر واحد بس! خلقنا Object جديد اسمه <code>s1</code> وبعتناله (101 و 3.5). كده الطالب اتولد ومعاه داتا بتاعته جاهزة.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 10 -->
+        <div class="slide-container" id="slide10">
+            <h2>Slide 10: تعدد المُنشئات (Constructor Overloading)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_10.jpg" alt="Slide 10" class="slide-image">
+            <div class="slide-explanation">
+                <p>مبدأ الـ <strong>Polymorphism</strong> اللي درسناه المحاضرة اللي فاتت بيظهر هنا بقوة في حاجة اسمها <strong>Constructor Overloading</strong>.</p>
+                <p>يعني إيه Overloading؟ يعني أقدر أعمل جوه نفس الـ Class <strong>أكتر من Constructor واحد!</strong></p>
+                <p>إزاي الكومبايلر مش هيتلخبط وهم كلهم ليهم نفس الاسم (اسم الكلاس)؟ الكومبايلر ذكي وبيفرق بينهم عن طريق حاجة اسمها الـ <span class="highlight">Signature (التوقيع)</span>، وهو <strong>عدد ونوع الـ Parameters</strong> اللي كل Constructor بياخدها.</p>
+                <p>فلو إنت بعت باراميترز وإنت بتعمل الـ Object هينادي الـ Parameterized، ولو مبعتتش حاجة خالص هينادي الـ Default.</p>
+            </div>
+        </div>
+
+        <!-- Slide 11 -->
+        <div class="slide-container" id="slide11">
+            <h2>Slide 11: كود الـ Overloading (Constructor Overloading Example)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_11.jpg" alt="Slide 11" class="slide-image">
+            <div class="slide-explanation">
+                <p>التطبيق العملي إننا نجمع الـ Default والـ Parameterized في كلاس واحد:</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Rectangle</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> length, width;
+<span class="keyword">public</span>:
+    <span class="comment">// Constructor 1: Default</span>
+    <span class="type">Rectangle</span>() {
+        length = <span class="number">1</span>; width = <span class="number">1</span>;
+    }
+    <span class="comment">// Constructor 2: Parameterized (1 Argument)</span>
+    <span class="type">Rectangle</span>(<span class="type">int</span> x) {
+        length = x; width = x; <span class="comment">// Makes a square</span>
+    }
+    <span class="comment">// Constructor 3: Parameterized (2 Arguments)</span>
+    <span class="type">Rectangle</span>(<span class="type">int</span> l, <span class="type">int</span> w) {
+        length = l; width = w;
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Rectangle</span> r1;         <span class="comment">// Calls Constructor 1 (1x1)</span>
+    <span class="type">Rectangle</span> r2(<span class="number">5</span>);      <span class="comment">// Calls Constructor 2 (5x5)</span>
+    <span class="type">Rectangle</span> r3(<span class="number">4</span>, <span class="number">6</span>);   <span class="comment">// Calls Constructor 3 (4x6)</span>
+}
+                </div>
+                <div class="highlight-box">
+                    <strong>💡 نصيحة للمحترفين (Best Practice):</strong> دايماً عود نفسك أول ما تكتب كلاس وتكتب فيه Constructor بياخد Parameters (النوع التاني)، إنك <strong>لازم</strong> تكتب الـ Default Constructor الفاضي بإيدك (النوع الأول). ليه؟ لأننا قلنا إن الكومبايلر أول ما يلاقيك كتبت Constructor بيلغي الـ Default المجاني بتاعه. فلو حبيت بعدين تعمل Object فاضي (زي r1) البرنامج هيديك Error لأن الـ Default مبقاش موجود!
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12 -->
+        <div class="slide-container" id="slide12">
+            <h2>Slide 12: النوع الثالث - مُنشئ النسخ (Copy Constructor)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_12.jpg" alt="Slide 12" class="slide-image">
+            <div class="slide-explanation">
+                <p>النوع التالت والأخير والمهم جداً هو الـ <strong>Copy Constructor</strong> (مُنشئ النسخ).</p>
+                <p>من اسمه، هو Constructor وظيفته إنه يعمل Object <strong>جديد</strong> بناءً على Object <strong>قديم</strong> موجود بالفعل. يعني كأنه بيعمل ماكينة تصوير (Photocopy) للـ Object الأولاني وياخد كل بياناته يحطها في الـ Object الجديد.</p>
+                <p>الـ Syntax بتاعه بيكون مميز، لأنه بياخد <span class="highlight">Reference (&)</span> من Object تاني من نفس الكلاس كـ Parameter.</p>
+            </div>
+        </div>
+
+        <!-- Slide 13 -->
+        <div class="slide-container" id="slide13">
+            <h2>Slide 13: كود مُنشئ النسخ (Copy Constructor Example)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_13.jpg" alt="Slide 13" class="slide-image">
+            <div class="slide-explanation">
+                <p>إزاي نبرمج مُنشئ النسخ خطوة بخطوة:</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Box</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> size;
+<span class="keyword">public</span>:
+    <span class="comment">// 1. Parameterized Constructor</span>
+    <span class="type">Box</span>(<span class="type">int</span> s) {
+        size = s;
+    }
+    <span class="comment">// 2. Copy Constructor</span>
+    <span class="type">Box</span>(<span class="keyword">const</span> <span class="type">Box</span> &amp;old_box) {
+        size = old_box.size;
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Box</span> b1(<span class="number">10</span>);       <span class="comment">// Calls Parameterized Constructor</span>
+    <span class="type">Box</span> b2(b1);       <span class="comment">// Calls Copy Constructor! b2 is now a clone of b1</span>
+    <span class="type">Box</span> b3 = b1;      <span class="comment">// This ALSO calls the Copy Constructor!</span>
+}
+                </div>
+                
+                <h3 style="margin-top: 1rem; color: var(--primary-color);">شرح الكود سطراً بسطر (Line-by-Line Analysis):</h3>
+                <ul class="line-by-line">
+                    <li><code><span class="type">Box</span>(<span class="keyword">const</span> <span class="type">Box</span> &amp;old_box) {</code> : ده الـ Copy Constructor! بياخد parameter من نوع <code>Box</code> نفسه، ولازم نبعته بالـ Reference <code>&</code> (عشان منعملش Infinite Loop من النسخ). وبنحط <code>const</code> عشان نضمن إننا منعدلش في الصندوق القديم واحنا بننسخ منه.</li>
+                    <li><code>size = old_box.size;</code> : بننقل الـ size بتاع الصندوق القديم للصندوق الجديد اللي بيتبني.</li>
+                    <li><code><span class="type">Box</span> b2(b1);</code> : في الـ main، إحنا بنعمل صندوق جديد <code>b2</code> وبعتناله الصندوق <code>b1</code> وهو بيتعمل. ده هيشغل الـ Copy Constructor.</li>
+                    <li><code><span class="type">Box</span> b3 = b1;</code> : دي طريقة تانية لكتابة الـ Copy Constructor. علامة الـ <code>=</code> هنا <strong>أثناء الإنشاء</strong> بتعتبر Copy Constructor مش مجرد (Assignment).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 2: Parameterized & Copy Constructors</h3>
+            
+            <div class="question" data-answer="2">
+                <p>1. In C++, Constructor Overloading means having multiple constructors in the same class. How does the compiler distinguish between them?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) By looking at their return types.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) By adding a number after their name (e.g., Student1, Student2).</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) By checking the number and data types of their parameters (Signature).</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) It randomly selects one at runtime.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> The compiler uses the Parameter Signature (count and types of arguments) to resolve overloaded functions/constructors.
+                </div>
+            </div>
+
+            <div class="question" data-answer="1">
+                <p>2. What is the standard parameter type for a Copy Constructor in a class named `Test`?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) Test(Test t)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) Test(const Test &t)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) Test(int &t)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) Copy(Test t)</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> A copy constructor must take a reference to an object of the same class, typically marked as `const`.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14 -->
+        <div class="slide-container" id="slide14">
+            <h2>Slide 14: الهدم والإنهاء (Destructors)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_14.jpg" alt="Slide 14" class="slide-image">
+            <div class="slide-explanation">
+                <p>زي ما كل بداية ليها نهاية، وكل Object بيتولد بالـ Constructor، لازم الـ Object ده يموت ويتمسح من الميموري (Memory) عشان نوفر مساحة.</p>
+                <p>العملية دي بيقوم بيها الـ <strong>Destructor (الهدّام أو المُدمر)</strong>.</p>
+                <p>الـ Destructor هو Special Member Function برضه، بيشتغل أوتوماتيك بس مش في بداية حياة الـ Object، لأ! ده بيشتغل <strong>في نهاية حياة الـ Object (End of Lifetime)</strong> أو لما البرنامج يخلص (Goes out of scope).</p>
+            </div>
+        </div>
+
+        <!-- Slide 15 -->
+        <div class="slide-container" id="slide15">
+            <h2>Slide 15: خصائص الـ Destructor (Rules of Destructors)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_15.jpg" alt="Slide 15" class="slide-image">
+            <div class="slide-explanation">
+                <p>قواعد الـ Destructor شبه قواعد الـ Constructor بس مع اختلافات جوهرية عشان هو بيمسح مش بيبني:</p>
+                <ul>
+                    <li><strong class="highlight">1. Name with Tilde:</strong> اسمه بيكون نفس اسم الـ Class بالظبط، بس <strong>لازم يسبقه علامة الـ Tilde <code>~</code></strong> (زي كده: <code>~Student()</code>). دي اللي بتعرف الكومبايلر إنه Destructor.</li>
+                    <li><strong class="highlight">2. No Return Type:</strong> برضه ملوش أي نوع إرجاع (No return type).</li>
+                    <li><strong class="highlight">3. No Parameters (NO OVERLOADING!):</strong> الـ Destructor <span class="highlight">مستحيل ياخد Parameters</span> أقواسه دايماً فاضية. وبما إنه مبياخدش Parameters، إذن <strong>مستحيل نعمل منه Overloading!</strong> الكلاس الواحد ملوش غير Destructor واحد فقططط.</li>
+                    <li><strong class="highlight">4. Automatic Call:</strong> بيشتغل لوحده لما المتغير (Object) ينتهي عمره الافتراضي (مثلاً الدالة اللي هو اتعمل جواها تخلص وقوسها <code>}</code> يتقفل).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 16 -->
+        <div class="slide-container" id="slide16">
+            <h2>Slide 16: كود الـ Destructor و دورة الحياة (Lifetime Example)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_16.jpg" alt="Slide 16" class="slide-image">
+            <div class="slide-explanation">
+                <p>تعالوا نشوف كود بيجمع البناء والهدم مع بعض عشان نفهم الـ Flow بتاع البرنامج ماشي إزاي:</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Test</span> {
+<span class="keyword">public</span>:
+    <span class="comment">// Constructor</span>
+    <span class="type">Test</span>() {
+        cout &lt;&lt; <span class="string">"Constructor Called!"</span> &lt;&lt; endl;
+    }
+    
+    <span class="comment">// Destructor (Notice the Tilde ~)</span>
+    ~<span class="type">Test</span>() {
+        cout &lt;&lt; <span class="string">"Destructor Called!"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="type">int</span> main() {
+    cout &lt;&lt; <span class="string">"Main starts..."</span> &lt;&lt; endl;
+    { <span class="comment">// Start of an artificial Scope block</span>
+        <span class="type">Test</span> t1; <span class="comment">// Object created -> Constructor called</span>
+        cout &lt;&lt; <span class="string">"Inside scope block"</span> &lt;&lt; endl;
+    } <span class="comment">// End of scope -> Object t1 dies -> Destructor called AUTOMATICALLY</span>
+    
+    cout &lt;&lt; <span class="string">"Main ends."</span> &lt;&lt; endl;
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+                </div>
+                
+                <h3 style="margin-top: 1rem; color: var(--primary-color);">تحليل المخرجات (Output Analysis):</h3>
+                <div class="code-explanation">
+                    <ul>
+                        <li>الطباعة هتكون بالترتيب ده:</li>
+                        <li><code>Main starts...</code> (لأن البرنامج بيبدأ من فوق).</li>
+                        <li><code>Constructor Called!</code> (لأننا كريتنا <code>t1</code> جوه القوس).</li>
+                        <li><code>Inside scope block</code> (سطر طباعة عادي).</li>
+                        <li><code>Destructor Called!</code> (أول ما القوس الداخلي <code>}</code> اتقفل، الـ Object <code>t1</code> مبقاش ليه لازمة وهيموت، فالـ Destructor بيشتغل ينضف مكانه).</li>
+                        <li><code>Main ends.</code> (البرنامج بيكمل عادي).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17 -->
+        <div class="slide-container" id="slide17">
+            <h2>Slide 17: ترتيب استدعاء الـ Constructors و الـ Destructors</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_17.jpg" alt="Slide 17" class="slide-image">
+            <div class="slide-explanation">
+                <p>سؤال امتحانات 100%: <strong>لو عملت أكتر من Object ورا بعض، مين هيتهد الأول؟</strong></p>
+                <p>قاعدة ذهبية: <strong class="highlight">الـ Destructors بتشتغل بعكس ترتيب الـ Constructors</strong>.</p>
+                <p>المبدأ ده اسمه <strong>LIFO (Last In, First Out)</strong> اللي دخل الآخر، هو اللي هيخرج (يتهد) الأول. بالظبط زي لما ترص كتب فوق بعضها (ده الـ Constructor)، ولما تيجي تشيلهم عشان تنضف الترابيزة، هتشيل الكتاب اللي فوق خالص الأول (الـ Destructor).</p>
+            </div>
+        </div>
+
+        <!-- Slide 18 -->
+        <div class="slide-container" id="slide18">
+            <h2>Slide 18: مثال على الترتيب العكسي (LIFO Order Example)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_18.jpg" alt="Slide 18" class="slide-image">
+            <div class="slide-explanation">
+                <p>تعالوا نأكد على القاعدة دي بالكود:</p>
+                
+                <div class="slide-code">
+<span class="type">int</span> main() {
+    <span class="type">Test</span> obj1;   <span class="comment">// 1st created</span>
+    <span class="type">Test</span> obj2;   <span class="comment">// 2nd created</span>
+    <span class="type">Test</span> obj3;   <span class="comment">// 3rd created</span>
+    
+    <span class="keyword">return</span> <span class="number">0</span>;
+} <span class="comment">// End of main() -> All objects go out of scope here</span>
+                </div>
+                
+                <h3 style="margin-top: 1rem; color: var(--primary-color);">شرح الكود سطراً بسطر (Line-by-Line Analysis):</h3>
+                <ul class="line-by-line">
+                    <li>وهما بيتولدوا، الترتيب منطقي (من فوق لتحت): <code>obj1</code> ثم <code>obj2</code> ثم <code>obj3</code>.</li>
+                    <li>لما الـ main تقفل <code>}</code> وكلهم يموتوا في نفس اللحظة، مين اللي هيتهد الأول؟</li>
+                    <li>آخر واحد اتعمل هو أول واحد هيتمسح: <strong><code>obj3</code> هيتهد الأول، بعدين <code>obj2</code>، وفي الآخر خالص <code>obj1</code>.</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 19 -->
+        <div class="slide-container" id="slide19">
+            <h2>Slide 19: الكائنات العامة والمحلية (Global vs Local Objects)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_19.jpg" alt="Slide 19" class="slide-image">
+            <div class="slide-explanation">
+                <p>هنا بنزود مستوى التعقيد في الترتيب (Level Up). عندنا كذا نوع من الـ Objects على حسب مكان تعريفها:</p>
+                <ul>
+                    <li><strong class="highlight">Global Objects:</strong> الكائنات العامة اللي بتتعرف بره الـ <code>main()</code> خالص. دي أول حاجة بتتولد في البرنامج (قبل الـ main ما تبدأ أساساً!)، وهي <strong>آخر حاجة بتتهد في البرنامج</strong> لأنها عايشة طول فترة الـ Run.</li>
+                    <li><strong class="highlight">Local Objects:</strong> الكائنات المحلية اللي جوه دوال زي <code>main()</code>، دي بتتولد لما الكود يوصلها، وتموت لما الدالة بتاعتها تقفل.</li>
+                    <li><strong class="highlight">Static Local Objects:</strong> الكائنات اللي بنكتب قبلها كلمة <code>static</code>. دي بتتولد مرة واحدة بس (مش كل شوية)، ومش بتتهد لما الدالة تقفل! بتفضل عايشة وتتهد في نهاية البرنامج خالص مع الـ Global.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 20 -->
+        <div class="slide-container" id="slide20">
+            <h2>Slide 20: مثال شامل على الترتيب (Comprehensive Order Example)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_20.jpg" alt="Slide 20" class="slide-image">
+            <div class="slide-explanation">
+                <p>دي مسألة امتحان نموذجية جداً بتدمج الـ Global والـ Local مع بعض:</p>
+                
+                <div class="slide-code">
+<span class="type">Test</span> globalObj; <span class="comment">// Global Object</span>
+
+<span class="type">void</span> myFunc() {
+    <span class="type">Test</span> localObj2; <span class="comment">// Local to myFunc</span>
+}
+
+<span class="type">int</span> main() {
+    <span class="type">Test</span> localObj1; <span class="comment">// Local to main</span>
+    myFunc();
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+                </div>
+                
+                <div class="code-explanation">
+                    <ul>
+                        <li><strong>الترتيب الصحيح للبناء (Constructors):</strong>
+                            <ol>
+                                <li><code>globalObj</code> (لأنها Global، بتتنفذ قبل الـ main).</li>
+                                <li><code>localObj1</code> (أول سطر في الـ main).</li>
+                                <li><code>localObj2</code> (لما الـ main ندهت على <code>myFunc()</code>).</li>
+                            </ol>
+                        </li>
+                        <li><strong>الترتيب الصحيح للهدم (Destructors):</strong>
+                            <ol>
+                                <li><code>localObj2</code> (أول ما <code>myFunc()</code> قفلت السكوب بتاعها، مات فوراً).</li>
+                                <li><code>localObj1</code> (لما الـ <code>main()</code> قفلت).</li>
+                                <li><code>globalObj</code> (بعد ما البرنامج كله خلص).</li>
+                            </ol>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 21 -->
+        <div class="slide-container" id="slide21">
+            <h2>Slide 21: الـ Destructors والميموري الديناميكية (Destructors and Dynamic Memory)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_21.jpg" alt="Slide 21" class="slide-image">
+            <div class="slide-explanation">
+                <p>ممكن تسأل نفسك: <strong class="highlight">ليه إحنا محتاجين الـ Destructor أصلاً؟ ما الكومبايلر بيمسح المتغيرات العادية لوحده في الآخر!</strong></p>
+                <p>كلامك صح في المتغيرات العادية (زي <code>int x</code>). لكن الفايدة <strong>الوحيدة الحقيقية والأقوى</strong> للـ Destructor بتظهر لما تكون بتستخدم حاجة اسمها <strong>Dynamic Memory Allocation (حجز الذاكرة الديناميكي باستخدام Pointers و كلمة <code>new</code>)</strong>.</p>
+                <p>في الـ Dynamic Memory، الكومبايلر <strong>مش بيمسح</strong> الميموري اللي إنت حجزتها بإيدك بكلمة <code>new</code> لما الـ Object يموت. الميموري بتفضل محجوزة على الفاضي وبتعمل كارثة اسمها <span class="highlight">Memory Leak (تسريب الذاكرة)</span> واللي ممكن يعلق الجهاز كله!</p>
+                <p>الحل الوحيد هو إنك تيجي جوه الـ <code>~Destructor()</code> وتكتب كلمة <code>delete ptr;</code> عشان تضمن إن أول ما الـ Object ينتهي، الميموري الديناميكية بتاعته تتنضف وتتحرر للسيستم تاني (Free Memory).</p>
+            </div>
+        </div>
+
+        <!-- Slide 22 -->
+        <div class="slide-container" id="slide22">
+            <h2>Slide 22: الخلاصة (Summary & Best Practices)</h2>
+            <img src="../slides/Lecture_3_-_Constructors_and_Destructor/slide_22.jpg" alt="Slide 22" class="slide-image">
+            <div class="slide-explanation">
+                <p>ملخص سريع (Quick Recap) لأهم النقاط في المحاضرة دي:</p>
+                <ul>
+                    <li>الـ <strong>Constructor</strong> بيبني ويهيء (Initialize)، اسمه نفس اسم الكلاس، ملوش Return، بيشتغل لوحده.</li>
+                    <li>أنواع الـ Constructor: (Default فاضي)، (Parameterized بياخد مدخلات)، (Copy بينسخ Object كامل).</li>
+                    <li>الـ <strong>Destructor</strong> بيهد وينضف الميموري (مهم جداً مع الـ Pointers)، اسمه قبله <code>~</code>، ومفيش منه غير واحد بس لأنه مبيقبلش مدخلات.</li>
+                    <li>ترتيب الهدم دايماً <strong>LIFO (Last In First Out)</strong> عكس ترتيب البناء.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Final Quiz: Destructors & Order</h3>
+            
+            <div class="question" data-answer="1">
+                <p>1. Which of the following is true about Destructors in C++?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) A class can have multiple destructors if they have different parameters.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) A destructor is preceded by a tilde (~) and cannot take any parameters.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) The programmer must manually call the destructor using obj.~ClassName().</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) Destructors must return an integer value (0 for success).</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> Destructors use the `~` symbol, take NO arguments, cannot be overloaded, and are called automatically.
+                </div>
+            </div>
+
+            <div class="question" data-answer="2">
+                <p>2. If three local objects obj1, obj2, and obj3 are created in that specific order inside a block. What will be the order of their destruction when the block ends?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) obj1, obj2, obj3 (FIFO)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) They are destroyed randomly based on memory availability.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) obj3, obj2, obj1 (LIFO)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) They are not destroyed until the computer shuts down.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> Destructors are called in the exact reverse order of Constructors (LIFO - Last In First Out).
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY SECTION -->
+        <div class="summary-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> الملخص الشامل لأهم التريكات (Summary & Pro Tips)</h2>
+            <ul>
+                <li><strong>Constructor = بنّاء:</strong> اسمه نفس اسم الكلاس بالظبط، ملوش Return Type (حتى ولا void)، وبيشتغل أوتوماتيك أول ما تعمل Object. ولازم يكون <code>public</code>.</li>
+                <li><strong>3 أنواع Constructors:</strong> الـ <code>Default</code> (أقواسه فاضية ← قيم ثابتة)، الـ <code>Parameterized</code> (بياخد مدخلات ← قيم مخصصة)، والـ <code>Copy</code> (بياخد Reference لـ Object من نفس النوع ← ينسخه).</li>
+                <li><strong>تريك الكومبايلر:</strong> لو مكتبتش أي Constructor، الكومبايلر بيعملك Default مجاني. <span class="highlight">بس لو كتبت أي Constructor بإيدك، المجاني بيختفي!</span> عشان كده دايماً اكتب Default بإيدك.</li>
+                <li><strong>Copy Constructor Syntax:</strong> دايماً بياخد <code>const ClassName &obj</code> (بالـ Reference وبالـ const). لو بعت بالـ Value هيعمل Infinite Loop!</li>
+                <li><strong>Destructor = هدّام:</strong> اسمه نفس اسم الكلاس بس قبله <code>~</code> (Tilde). ملوش Parameters (إذن ملوش Overloading). الكلاس الواحد ملوش غير Destructor واحد بس. أهميته الحقيقية مع <code>delete</code> والـ Dynamic Memory.</li>
+                <li><strong>قاعدة LIFO الذهبية:</strong> الـ Destructors بتشتغل بعكس ترتيب الـ Constructors. آخر Object اتعمل هو أول واحد هيتهد (Last In, First Out).</li>
+                <li><strong>Global vs Local:</strong> الـ Global Objects بتتولد قبل الـ main وتموت بعد ما البرنامج كله يخلص. الـ Local بتموت أول ما السكوب بتاعها يقفل.</li>
+            </ul>
+        </div>
+
+        <!-- ESSAY QUESTION SECTION -->
+        <div class="essay-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> سؤال مقالي متوقع للامتحان (Essay Question)</h2>
+            
+            <div class="essay-question">
+                <p><strong>Question:</strong> Compare and contrast the three types of Constructors in C++ (Default, Parameterized, Copy). For each type, explain its purpose, syntax, and when the compiler automatically invokes it. Also, explain the role of the Destructor and the LIFO rule for destruction order.</p>
+            </div>
+            
+            <button class="toggle-answer-btn" onclick="document.getElementById('essayAnswer3').classList.toggle('hidden')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"/></svg>
+                أظهر الإجابة النموذجية (Show Answer)
+            </button>
+            
+            <div id="essayAnswer3" class="essay-answer hidden">
+                <h4>Model Answer:</h4>
+                <p>C++ provides three types of constructors, each serving a distinct purpose:</p>
+                <ul>
+                    <li><strong>1. Default Constructor:</strong> Takes no parameters. Its purpose is to initialize all data members to default/fixed values (e.g., 0 or empty string). Syntax: <code>ClassName() { ... }</code>. It is invoked when an object is declared without arguments (e.g., <code>Student s;</code>) or when creating an array of objects. If no constructor is explicitly defined, the compiler provides a hidden empty default constructor.</li>
+                    <li><strong>2. Parameterized Constructor:</strong> Takes one or more parameters to initialize data members with specific values provided at creation time. Syntax: <code>ClassName(int x, float y) { ... }</code>. It is invoked when arguments are passed during object creation (e.g., <code>Student s(101, 3.5);</code>).</li>
+                    <li><strong>3. Copy Constructor:</strong> Takes a const reference to an object of the same class and creates a new object as an exact copy. Syntax: <code>ClassName(const ClassName &obj) { ... }</code>. It is invoked when: (a) an object is initialized from another object, (b) an object is passed by value to a function, or (c) an object is returned by value from a function.</li>
+                </ul>
+                <p><strong>Destructor:</strong> A special function prefixed with <code>~</code> (e.g., <code>~ClassName()</code>) that is automatically called when an object goes out of scope. It cannot take parameters (so no overloading is possible). Its primary purpose is to release dynamically allocated memory using <code>delete</code> to prevent Memory Leaks.</p>
+                <p><strong>LIFO Rule:</strong> When multiple objects are created, their destructors are called in the exact reverse order of their constructors (Last In, First Out), similar to a stack of books.</p>
+            </div>
+        </div>
+
+        <!-- TYPE 2: What is the Output? -->
+        <div class="output-question-section">
+            <h2>🖥️ What is the output of the following code?</h2>
+            <div class="output-q">
+                <p>Q1:</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Demo</span> {
+<span class="keyword">public</span>:
+    <span class="type">Demo</span>() { cout &lt;&lt; <span class="string">"Constructor "</span>; }
+    ~<span class="type">Demo</span>() { cout &lt;&lt; <span class="string">"Destructor "</span>; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Demo</span> d1, d2;
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">Constructor Constructor Destructor Destructor<br>(Constructors in order, Destructors in reverse LIFO order)</div>
+            </div>
+            <div class="output-q">
+                <p>Q2:</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Point</span> {
+<span class="keyword">public</span>:
+    <span class="type">int</span> x, y;
+    <span class="type">Point</span>(<span class="type">int</span> a, <span class="type">int</span> b) { x = a; y = b; }
+    <span class="type">Point</span>(<span class="keyword">const</span> <span class="type">Point</span> &amp;p) { x = p.x + <span class="number">1</span>; y = p.y + <span class="number">1</span>; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Point</span> p1(<span class="number">3</span>, <span class="number">5</span>);
+    <span class="type">Point</span> p2 = p1;
+    cout &lt;&lt; p2.x &lt;&lt; <span class="string">" "</span> &lt;&lt; p2.y &lt;&lt; endl;
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">4 6<br>(Copy Constructor adds 1 to each: 3+1=4, 5+1=6)</div>
+            </div>
+        </div>
+
+        <!-- TYPE 3: Write a Line of Code -->
+        <div class="write-code-section">
+            <h2>✍️ Write a line of code for the following statements</h2>
+            <div class="write-q">
+                <p>Q1: Write a Default Constructor for a class called <code>Student</code> that initializes <code>id</code> to 0 and <code>name</code> to "Unknown".</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">Student</span>() { id = <span class="number">0</span>; name = <span class="string">"Unknown"</span>; }</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q2: Write a Parameterized Constructor for <code>Student</code> that takes <code>int i</code> and <code>string n</code>.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">Student</span>(<span class="type">int</span> i, <span class="type">string</span> n) { id = i; name = n; }</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q3: Write a Copy Constructor for class <code>Student</code>.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">Student</span>(<span class="keyword">const</span> <span class="type">Student</span> &amp;obj) { id = obj.id; name = obj.name; }</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q4: Write a Destructor for class <code>Student</code>.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code">~<span class="type">Student</span>() { cout &lt;&lt; <span class="string">"Object destroyed"</span> &lt;&lt; endl; }</div></div>
+            </div>
+        </div>
+
+        <!-- TYPE 4: Code Analysis -->
+        <div class="code-analysis-section">
+            <h2>🔍 Based on the following code, answer all the following questions</h2>
+            <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Item</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> id;
+    <span class="type">float</span> price;
+<span class="keyword">public</span>:
+    <span class="type">Item</span>() { id = <span class="number">0</span>; price = <span class="number">0.0</span>; cout &lt;&lt; <span class="string">"D "</span>; }
+    <span class="type">Item</span>(<span class="type">int</span> i, <span class="type">float</span> p) { id = i; price = p; cout &lt;&lt; <span class="string">"P "</span>; }
+    <span class="type">Item</span>(<span class="keyword">const</span> <span class="type">Item</span> &amp;obj) { id = obj.id; price = obj.price; cout &lt;&lt; <span class="string">"C "</span>; }
+    ~<span class="type">Item</span>() { cout &lt;&lt; <span class="string">"X "</span>; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Item</span> a;
+    <span class="type">Item</span> b(<span class="number">1</span>, <span class="number">9.99</span>);
+    <span class="type">Item</span> c = b;
+}
+            </div>
+            <div class="analysis-q">
+                <p>a) What is the full output of this program?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><code>D P C X X X</code><br>D=Default(a), P=Parameterized(b), C=Copy(c). Destructors fire in reverse: c→b→a.</div>
+            </div>
+            <div class="analysis-q">
+                <p>b) Which constructor is called for object <code>c</code>? Why?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">The <strong>Copy Constructor</strong> is called because <code>Item c = b;</code> initializes a new object from an existing one.</div>
+            </div>
+            <div class="analysis-q">
+                <p>c) What happens if we remove the Default Constructor and keep only the Parameterized one?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><strong>Compilation Error</strong> on line <code>Item a;</code> because the compiler won't auto-generate a Default Constructor when any user-defined constructor exists.</div>
+            </div>
+        </div>
+
+    </div>
+
+
+        <!-- Progress Tracking -->
+        <div class="completion-section" style="text-align: center; margin-top: 3rem; margin-bottom: 2rem;">
+            <button class="completion-btn" onclick="markLectureCompleted(this, 'lec3')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                لقد أتممت المحاضرة
+            </button>
+        </div>
+    <script src="../app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Particles
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 60, "density": { "enable": true, "value_area": 900 } },
+                    "color": { "value": ["#8b5cf6", "#6366f1", "#3b82f6"] },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 } },
+                    "size": { "value": 3, "random": true },
+                    "line_linked": { "enable": true, "distance": 150, "color": "#6366f1", "opacity": 0.2, "width": 1 },
+                    "move": { "enable": true, "speed": 1.2, "direction": "none", "random": true, "out_mode": "out", "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                    "modes": { "grab": { "distance": 180, "line_linked": { "opacity": 0.6 } }, "push": { "particles_nb": 3 } }
+                },
+                "retina_detect": true
+            });
+        }
+        // Glow cursor
+        var gc = document.getElementById('glowCursor');
+        if (gc) { document.addEventListener('mousemove', function(e) { gc.style.left = e.clientX + 'px'; gc.style.top = e.clientY + 'px'; }); }
+        // Scroll reveal for slides
+        var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.slide-container, .quiz-section, .summary-section, .essay-section').forEach(function(el) { obs.observe(el); });
+    });
+    </script>
+
+</body>
+</html>

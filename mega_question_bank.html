@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بنك الأسئلة الشامل - Mega Bank - موسوعة الـ OOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .exam-header {
+            text-align: center;
+            padding: 3.5rem 1rem;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(14, 165, 233, 0.1));
+            border-bottom: 2px solid rgba(56, 189, 248, 0.3);
+            margin-bottom: 2.5rem;
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .exam-header h1 {
+            color: #38bdf8;
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(56,189,248,0.4);
+        }
+        .exam-header p {
+            color: #cbd5e1;
+            font-size: 1.3rem;
+        }
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; max-width: 1100px; margin: auto; padding: 0 20px; }
+        .header-nav { position: sticky; z-index: 100; top: 0; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;}
+        
+        .topic-title {
+            color: #fcd34d;
+            border-bottom: 3px solid #f59e0b;
+            padding-bottom: 15px;
+            margin-top: 5rem;
+            font-size: 2.2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .subtopic-title {
+            color: #c084fc;
+            margin-top: 2.5rem;
+            font-size: 1.6rem;
+            background: rgba(192, 132, 252, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-right: 4px solid #c084fc;
+        }
+        
+        .code-analysis-section {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .code-analysis-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+        
+        .question-text {
+            color: #f8fafc;
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .options-list li {
+            background: rgba(255,255,255,0.03);
+            margin-bottom: 8px;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 3px solid #475569;
+        }
+        
+        .essay-answer { margin-top: 1.5rem; }
+        .reveal-answer {
+            background: #0ea5e9;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+        .reveal-answer:hover { background: #0284c7; }
+        
+        .answer-content {
+            background: #0f172a;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .uml-box {
+            background: #f8fafc;
+            color: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            width: 100%;
+            overflow-x: auto;
+            margin: 15px auto;
+            border: 2px solid #334155;
+            text-align: left;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .code-box {
+            background: #020617; /* Even darker for true editor feel */
+            color: #a7f3d0;
+            padding: 20px;
+            border-left: 5px solid #10b981;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            font-size: 1.15rem;
+            line-height: 1.6;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        /* Syntax Highlighting for Comments */
+        .comment { color: #94a3b8; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <header class="header-nav">
+        <a href="index.html" class="back-btn" style="color: #38bdf8; text-decoration: none; font-weight: bold;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            الرجوع للقائمة الرئيسية (Back to Home)
+        </a>
+        <h2 style="margin:0; font-size: 1.2rem; color: #cbd5e1;">Mega Question Bank</h2>
+    </header>
+
+    <div class="container">
+        <div class="exam-header">
+            <h1>🚀 البنك الشامل - جميع أقسام الـ OOP 🚀</h1>
+            <p>مقسّم حرفياً زي المنهج: شامل الـ MCQs، الأكواد، الـ Tracing، ومسائل הـ UML بالأكشن في الـ main متوثقة بالشرح العربي</p>
+        </div>
+        
+        <h2 class="topic-title">1. Introduction to OOP</h2>
+<h3 class="subtopic-title">📌 Why OOP, Principles, and Basic UML</h3>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q1. What is the main limitation of Procedural Programming that OOP aims to solve?</h4>
+            
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) Slower execution time</li>
+                <li>B) Lack of code organization leading to Spaghetti Code</li>
+                <li>C) Inability to write mathematical formulas</li>
+                <li>D) Poor integration with hardware</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">B) Lack of code organization leading to Spaghetti Code</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Procedural programming focuses on functions rather than data, making large codebases hard to maintain.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>البرمجة الإجرائية بتركز على الدوال، ولما البرنامج بيكبر الكود بيدخل في بعضه ويبقى Spaghetti code، عشان كدا الـ OOP ظهرت لتنظيم الكود وربط البيانات بالدوال.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q2. Which of the following describes the 'Bottom-Up' approach of OOP?</h4>
+            
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) Writing the main function first</li>
+                <li>B) Starting by designing classes and objects, then combining them to build the main program</li>
+                <li>C) Writing functions from the bottom of the file</li>
+                <li>D) Ignoring data and focusing on algorithms</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">B) Starting by designing classes and objects, then combining them to build the main program</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">OOP uses a bottom-up approach: you build the basic entities (classes) first, then use them to construct complex systems.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>الـ OOP بتبدأ من تحت لفوق (Bottom-Up). يعني بنصمم الكلاسات والأوبجيكت الأول، وبعدين نجمعهم في الـ main عشان نبني البرنامج الكبير.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q3. Which of the following is considered a primary BENEFIT of Object-Oriented Programming?</h4>
+            
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) Slower execution speed</li>
+                <li>B) Code Reusability and Modularity</li>
+                <li>C) Requires less memory by default</li>
+                <li>D) Eliminates the need for compilers</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">B) Code Reusability and Modularity</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Through features like inheritance and classes, OOP promotes modular design and code reusability, saving time and reducing bugs.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>أكبر فايدة للـ OOP إنها بتخلينا نعيد استخدام الكود (عن طريق الوراثة مثلاً) وإننا نقسم البرنامج لموديولات (كلاسات) منفصلة يسهل صيانتها (Modularity & Reusability).</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 dir="ltr" style="color: #38bdf8; margin-bottom: 10px; font-size:1.3rem;">Q4. True or False?</h4>
+            <p dir="ltr" style="text-align: left; color: #f8fafc; font-size: 1.15rem; background: rgba(56, 189, 248, 0.1); padding: 15px; border-left: 4px solid #38bdf8; border-radius: 6px;">Data Hiding (Encapsulation) makes it impossible for the user of the class to accidentally corrupt the internal state of the object.</p>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #f59e0b; font-weight: bold; font-size:1.1rem;">True</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">By making variables private and only exposing controlled setters/getters, the internal state cannot be modified directly.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #f59e0b; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>صح جداً. الكبسلة (Encapsulation) بتخفي البيانات (private) عشان تمنع أي حد يعدل فيها بطريقة غلط من الـ main، ولازم يستخدم دوال محددة زي الـ Setters.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr" style="color: #c084fc;">Q5. Design a UML class named 'Rectangle'. It has private width and height. Implement setters, getters, and an area method. Write the UML, then code it with a main() that uses these methods.</h4>
+            <pre class="uml-box" dir="ltr"><code>Rectangle
+-------------------
+- width: float
+- height: float
+-------------------
++ setWidth(w: float): void
++ setHeight(h: float): void
++ getArea(): float</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer" style="background:#a855f7;">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong>
+                    <pre class="code-box" dir="ltr"><code>#include <iostream> <span class="comment">// استدعاء مكتبة الإدخال والإخراج</span>
+using namespace std; <span class="comment">// استخدام الفضاء المعياري</span>
+
+class Rectangle { <span class="comment">// تعريف الكلاس</span>
+private: <span class="comment">// البيانات الخاصة (مقفول عليها)</span>
+    float width; <span class="comment">// الطول</span>
+    float height; <span class="comment">// العرض</span>
+public: <span class="comment">// الدوال العامة اللي هنستخدمها من بره</span>
+    void setWidth(float w) { width = w; } <span class="comment">// دالة لإدخال الطول</span>
+    void setHeight(float h) { height = h; } <span class="comment">// دالة لإدخال العرض</span>
+    
+    float getArea() { <span class="comment">// دالة لحساب المساحة</span>
+        return width * height; <span class="comment">// ضرب الطول في العرض</span>
+    }
+};
+
+int main() { <span class="comment">// الدالة الرئيسية</span>
+    <span class="comment">// Action in main!</span>
+    Rectangle rect; <span class="comment">// إنشاء أوبجيكت من نوع Rectangle</span>
+    rect.setWidth(5.5); <span class="comment">// تحديد الطول</span>
+    rect.setHeight(10.0); <span class="comment">// تحديد العرض</span>
+    cout << "Area of rectangle is: " << rect.getArea() << endl; <span class="comment">// طباعة المساحة</span>
+    return 0; <span class="comment">// إنهاء البرنامج</span>
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Basic encapsulation: data is private, accessed only via public setter/getter methods.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #a855f7; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>تطبيق أساسي على الـ Encapsulation (الكبسلة). خلينا الطول والعرض private ومحدش يقدر يوصلهم في الـ main غير من خلال الدوال الـ public زي الـ set.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr" style="color: #c084fc;">Q6. Design a UML for a 'Bank' system. It has a balance. Implement a constructor and a withdraw method that checks if balance is sufficient. Test this logic in main().</h4>
+            <pre class="uml-box" dir="ltr"><code>Bank
+-------------------
+- balance: double
+-------------------
++ Bank(initial: double)
++ withdraw(amount: double): bool</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer" style="background:#a855f7;">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong>
+                    <pre class="code-box" dir="ltr"><code>#include <iostream> <span class="comment">// مكتبة الطباعة</span>
+using namespace std;
+
+class Bank { <span class="comment">// تعريف كلاس البنك</span>
+private: 
+    double balance; <span class="comment">// الرصيد (مخفي)</span>
+public:
+    Bank(double initial) { <span class="comment">// Constructor بيستقبل الرصيد الافتتاحي</span>
+        balance = initial; <span class="comment">// تعيين الرصيد</span>
+    }
+    bool withdraw(double amount) { <span class="comment">// دالة السحب</span>
+        if (amount <= balance) { <span class="comment">// لو المبلغ المطلوب أقل من أو يساوي الرصيد</span>
+            balance -= amount; <span class="comment">// اخصم المبلغ</span>
+            cout << "Withdrawal successful. New balance: " << balance << endl; <span class="comment">// طباعة نجاح</span>
+            return true; <span class="comment">// السحب تم</span>
+        } else { <span class="comment">// لو الرصيد مش مكفي</span>
+            cout << "Insufficient funds!" << endl; <span class="comment">// طباعة رسالة فشل</span>
+            return false; <span class="comment">// السحب اترفض</span>
+        }
+    }
+};
+
+int main() {
+    Bank myBank(1000.0); <span class="comment">// فتح حساب بـ 1000</span>
+    myBank.withdraw(400.0); <span class="comment">// سحب 400 (هينجح)</span>
+    myBank.withdraw(800.0); <span class="comment">// سحب 800 (هيفشل لأن الباقي 600)</span>
+    return 0; <span class="comment">// إنهاء</span>
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">The logic checks if the requested amount is available before deduction, demonstrating how classes protect their state.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #a855f7; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>هنا الكلاس بيحمي البيانات بتاعته، مفيش سحب بيتم إلا لو فيه رصيد كافي. جربناها في الـ main مرة سحبنا مبلغ متاح ومرة سحبنا مبلغ أكبر عشان نتأكد إن اللوجيك شغال ومفيش رصيد بالسالب.</p>
+                </div>
+            </details>
+        </div>
+<h2 class="topic-title">2. Objects & Classes</h2>
+<h3 class="subtopic-title">📌 Access Modifiers, Constructors, Destructors, Setters & Getters</h3>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q7. What is the primary difference in default Access Modifiers between a `struct` and a `class` in C++?</h4>
+            
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) A struct cannot have functions, a class can</li>
+                <li>B) Default access in struct is private, in class it is public</li>
+                <li>C) Default access in struct is public, in class it is private</li>
+                <li>D) There is no difference</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">C) Default access in struct is public, in class it is private</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">If you don't write `public:` or `private:`, a struct assumes everything is public, while a class assumes everything is private.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>في الـ struct لو مكتبتش حاجة كل حاجة بتبقى مكشوفة (public). لكن الكلاس مصمم عشان يخفي البيانات فبيعتبر أي حاجة مش مكتوب قبلها modifier إنها (private).</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 dir="ltr" style="color: #38bdf8; margin-bottom: 10px; font-size:1.3rem;">Q8. True or False?</h4>
+            <p dir="ltr" style="text-align: left; color: #f8fafc; font-size: 1.15rem; background: rgba(56, 189, 248, 0.1); padding: 15px; border-left: 4px solid #38bdf8; border-radius: 6px;">The main reason to use Setters (Mutators) instead of making variables public is to validate data before changing it.</p>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #f59e0b; font-weight: bold; font-size:1.1rem;">True</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Setters allow us to add 'if' statements to prevent bad data (like negative age or invalid passwords) from entering the object.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #f59e0b; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>صح جداً. الـ Setter مش مجرد دالة بتاخد قيمة تحطها في متغير وخلاص، فايدتها الأساسية إنك تقدر تحط شروط (if) جواها وتمنع المستخدم إنه يدخل داتا غلط (زي عمر بالسالب مثلاً).</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 dir="ltr" style="color: #38bdf8; margin-bottom: 10px; font-size:1.3rem;">Q9. True or False?</h4>
+            <p dir="ltr" style="text-align: left; color: #f8fafc; font-size: 1.15rem; background: rgba(56, 189, 248, 0.1); padding: 15px; border-left: 4px solid #38bdf8; border-radius: 6px;">If you define a parameterized constructor, the compiler still generates a default constructor for you automatically.</p>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #f59e0b; font-weight: bold; font-size:1.1rem;">False</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Once you define ANY constructor, the compiler stops generating the default one.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #f59e0b; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>غلط. بمجرد ما بتعمل Constructor بتاعك (حتى لو بـ parameters)، الكومبايلر بيبطل يساعدك ولازم تكتب الـ Default بنفسك لو عاوزه.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q10. When is the Copy Constructor invoked?</h4>
+            
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) When returning an object by value</li>
+                <li>B) When passing an object by value as an argument</li>
+                <li>C) When explicitly initializing one object with another of the same type</li>
+                <li>D) All of the above</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">D) All of the above</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">A copy constructor is triggered whenever a completely new object is created from an existing object.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>الـ Copy Constructor بيشتغل في كل الحالات دي: لو رجعت أوبجيكت By Value من دالة، أو بعته لدالة By Value، أو لو ساويت أوبجيكت جديد بواحد قديم وقت تعريفه (زي Student s2 = s1).</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q11. What will be printed to the screen?</h4>
+            <pre class="code-box" dir="ltr"><code>class Test {
+public:
+    Test() { cout << "D "; }
+    Test(int x) { cout << "P "; }
+};
+int main() {
+    Test t1;
+    Test t2(5);
+    Test t3(); 
+    return 0;
+}</code></pre>
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) D P D</li>
+                <li>B) D P</li>
+                <li>C) P D</li>
+                <li>D) Compiler Error</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">B) D P</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Test t3() is a function declaration (returning a Test object), NOT an object instantiation! It is known as the Most Vexing Parse in C++.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>خبيثة جداً جداً! السطر الأول بيطبع D، التاني بيطبع P. السطر التالت `Test t3()` ده مش بيعمل أوبجيكت! الكومبايلر بيفتكره دالة عادية اسمها t3 بترجع أوبجيكت من نوع Test، فمش بيستدعي الـ Constructor خالص.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr" style="color: #c084fc;">Q12. Implement all 3 constructors (Default, Parameterized, Copy) and a Destructor for a 'Student' class with an ID and Name. Create objects using all 3 in main().</h4>
+            <pre class="uml-box" dir="ltr"><code>Student
+-------------------
+- id: int
+- name: string
+-------------------
++ Student()
++ Student(i: int, n: string)
++ Student(const s: Student&)
++ ~Student()
++ print(): void</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer" style="background:#a855f7;">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong>
+                    <pre class="code-box" dir="ltr"><code>#include <iostream>
+#include <string> <span class="comment">// مكتبة النصوص</span>
+using namespace std;
+
+class Student { <span class="comment">// كلاس الطالب</span>
+private:
+    int id; <span class="comment">// رقم الطالب</span>
+    string name; <span class="comment">// اسم الطالب</span>
+public:
+    <span class="comment">// 1. Default Constructor</span>
+    Student() { <span class="comment">// الـ Constructor الافتراضي (فاضي)</span>
+        id = 0; name = "Unknown"; <span class="comment">// قيم ابتدائية</span>
+        cout << "Default Constructor Called\n"; <span class="comment">// للتأكيد</span>
+    }
+    
+    <span class="comment">// 2. Parameterized Constructor</span>
+    Student(int i, string n) { <span class="comment">// بياخد بارامترز</span>
+        id = i; name = n; <span class="comment">// تعيين القيم</span>
+        cout << "Parameterized Constructor Called\n";
+    }
+    
+    <span class="comment">// 3. Copy Constructor</span>
+    Student(const Student& s) { <span class="comment">// بياخد Reference من أوبجيكت تاني</span>
+        id = s.id; <span class="comment">// نسخ الـ ID</span>
+        name = s.name; <span class="comment">// نسخ الاسم</span>
+        cout << "Copy Constructor Called\n";
+    }
+    
+    <span class="comment">// Destructor</span>
+    ~Student() { <span class="comment">// الهدّام (بيشتغل لما الأوبجيكت يموت)</span>
+        cout << "Destructor Called for " << name << "\n";
+    }
+    
+    void print() { cout << "ID: " << id << " Name: " << name << endl; } <span class="comment">// دالة الطباعة</span>
+};
+
+int main() {
+    Student s1;                  <span class="comment">// أوبجيكت فاضي (ينادي Default)</span>
+    Student s2(101, "Ahmed");    <span class="comment">// أوبجيكت ببيانات (ينادي Parameterized)</span>
+    Student s3 = s2;             <span class="comment">// أوبجيكت جديد بينسخ من s2 (ينادي Copy)</span>
+    
+    s3.print(); <span class="comment">// طباعة بيانات s3</span>
+    return 0; <span class="comment">// البرنامج بيقفل والهدام بيشتغل بالعكس (s3 ثم s2 ثم s1)</span>
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Demonstrates the complete lifecycle of objects. Notice the Copy constructor must take a reference.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #a855f7; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>المسألة دي بتلم كل أنواع الـ Constructors. في الـ main جربنا نعمل أوبجيكت فاضي (Default)، وأوبجيكت ببيانات (Parameterized)، وأوبجيكت بينسخ من واحد تاني (Copy). وفي النهاية הـ Destructor هيمسحهم بالعكس.</p>
+                </div>
+            </details>
+        </div>
+<h3 class="subtopic-title">📌 Objects as Arguments, Memory & Const/Static Members</h3>
+
+        <div class="code-analysis-section">
+            <h4 dir="ltr" style="color: #38bdf8; margin-bottom: 10px; font-size:1.3rem;">Q13. True or False?</h4>
+            <p dir="ltr" style="text-align: left; color: #f8fafc; font-size: 1.15rem; background: rgba(56, 189, 248, 0.1); padding: 15px; border-left: 4px solid #38bdf8; border-radius: 6px;">Memory is allocated for a Class when it is defined in the code.</p>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #f59e0b; font-weight: bold; font-size:1.1rem;">False</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">A class is just a blueprint. NO memory is allocated until an object of that class is created.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #f59e0b; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>غلط! الكلاس مجرد تصميم على ورق (Blueprint) مابياخدش أي ميموري خالص. الميموري بتتحجز أول ما تصنع منه أوبجيكت (Object Creation) في الـ main.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q14. Why is it highly recommended to pass objects to functions 'By Reference' (e.g., `void func(const Object& obj)`) rather than 'By Value'?</h4>
+            
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) It prevents the use of public methods</li>
+                <li>B) It avoids the overhead of invoking the copy constructor and copying all data</li>
+                <li>C) It deletes the object automatically</li>
+                <li>D) It turns the object into a static variable</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">B) It avoids the overhead of invoking the copy constructor and copying all data</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Passing by value makes a full copy of the object which is slow and consumes memory. Passing by reference just passes the memory address.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>تمرير الـ Object للدوال (By Value) بيخلي الكومبايلر يشغل הـ Copy Constructor ويعمل نسخة كاملة من الأوبجيكت بكل اللي فيه وده بيبطئ البرنامج. عشان كده دايماً بنبعته (By Reference &) عشان نبعت مساره بس، وبنحط const لو مش عايزين الدالة تغير فيه.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 dir="ltr" style="color: #38bdf8; margin-bottom: 10px; font-size:1.3rem;">Q15. True or False?</h4>
+            <p dir="ltr" style="text-align: left; color: #f8fafc; font-size: 1.15rem; background: rgba(56, 189, 248, 0.1); padding: 15px; border-left: 4px solid #38bdf8; border-radius: 6px;">An inline function guarantees that the compiler will expand it at the call site.</p>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #f59e0b; font-weight: bold; font-size:1.1rem;">False</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Inline is only a REQUEST to the compiler. If the function is too complex, contains loops, or is recursive, the compiler ignores the inline request.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #f59e0b; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>غلط. كلمة Inline دي (طلب) بنطلبه من الكومبايلر، بس لو الدالة كانت معقدة أوي أو فيها Loops الكومبايلر هيرفض الطلب ويعتبرها دالة عادية جداً.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q16. What happens when this code is compiled?</h4>
+            <pre class="code-box" dir="ltr"><code>class Number {
+    int val;
+public:
+    Number(int v) { val = v; }
+    int getVal() { return val; } <span class="comment">// NOT const</span>
+};
+int main() {
+    const Number n(10);
+    cout << n.getVal();
+    return 0;
+}</code></pre>
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) Prints 10</li>
+                <li>B) Compilation Error</li>
+                <li>C) Runtime Error</li>
+                <li>D) Prints garbage value</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">B) Compilation Error</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">A constant object (`const Number n`) CANNOT call non-const methods. Since `getVal` is not marked as const, the compiler blocks it to protect the object.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>عشان الأوبجيكت `n` متعرف إنه ثابت (const)، الكومبايلر بيمنعه إنه يستدعي أي دالة مش متأمنة بكلمة const، عشان خايف إنها تغير قيمته. فلازم نكتب `int getVal() const` عشان يشتغل.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q17. Which of the following is TRUE about Static Member Functions?</h4>
+            
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) They can access non-static member variables</li>
+                <li>B) They have a 'this' pointer</li>
+                <li>C) They can only access static member variables and static functions</li>
+                <li>D) They must be called using an object</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">C) They can only access static member variables and static functions</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Static methods belong to the class level. They do not know about specific objects, so they have no 'this' pointer and can only interact with static variables.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>الدوال הـ Static دي بتاعة الكلاس ككل مش بتاعة أوبجيكت معين. فمتقدرش توصل لمتغيرات عادية (لأن مفيش this pointer يعرّفها الأوبجيكت فين)، وتتعامل بس مع الحاجات הـ static زيها.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr" style="color: #c084fc;">Q18. Create a 'Point' class with X and Y. Make an inline function to print it. Create a function 'addPoints' that takes two objects and RETURNS a new Point object. Test in main().</h4>
+            <pre class="uml-box" dir="ltr"><code>Point
+-------------------
+- x: int
+- y: int
+-------------------
++ Point(x: int, y: int)
++ inline print() const: void
++ addPoints(p1: Point, p2: Point): Point</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer" style="background:#a855f7;">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong>
+                    <pre class="code-box" dir="ltr"><code>#include <iostream>
+using namespace std;
+
+class Point { <span class="comment">// كلاس النقطة</span>
+private:
+    int x, y; <span class="comment">// الإحداثيات</span>
+public:
+    Point(int xVal, int yVal) { <span class="comment">// Constructor</span>
+        x = xVal; y = yVal;
+    }
+    
+    <span class="comment">// Inline & Const function</span>
+    inline void print() const { <span class="comment">// دالة Inline وسريعة وكمان Const</span>
+        cout << "(" << x << ", " << y << ")\n"; <span class="comment">// طباعة النقطة</span>
+    }
+    
+    <span class="comment">// Function taking objects and returning an object</span>
+    Point addPoints(Point p1, Point p2) { <span class="comment">// دالة بتاخد 2 أوبجيكتس</span>
+        Point temp(p1.x + p2.x, p1.y + p2.y); <span class="comment">// بنجمعهم ونحطهم في أوبجيكت جديد</span>
+        return temp; <span class="comment">// بنرجع الأوبجيكت الجديد</span>
+    }
+};
+
+int main() {
+    Point p1(3, 4); <span class="comment">// النقطة الأولى</span>
+    Point p2(1, 2); <span class="comment">// النقطة التانية</span>
+    
+    <span class="comment">// Note: Calling via object since it's a member function</span>
+    Point p3 = p1.addPoints(p1, p2); <span class="comment">// بننادي الدالة عشان تجمعهم</span>
+    
+    cout << "Result: ";
+    p3.print(); <span class="comment">// بنطبع النتيجة</span>
+    
+    return 0; <span class="comment">// إنهاء</span>
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Objects can be passed exactly like normal variables, and returned identically. Const methods guarantee the object's data won't change.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #a855f7; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>في الـ main بعتنا اتنين أوبجيكتس للدالة `addPoints`، الدالة جمعت الـ X والـ Y وعملت أوبجيكت جديد (temp) ورجعته، واستقبلناه في `p3`. واستخدمنا `inline` عشان نسرع أداء الطباعة.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr" style="color: #c084fc;">Q19. Design a 'Car' class. It has a static variable 'totalCars' to track how many cars are created. In main(), create an array of 3 Cars and print the static variable using a static method.</h4>
+            <pre class="uml-box" dir="ltr"><code>Car
+-------------------
+- model: string
+- static totalCars: int
+-------------------
++ Car()
++ Car(m: string)
++ static getTotalCars(): int
++ ~Car()</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer" style="background:#a855f7;">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong>
+                    <pre class="code-box" dir="ltr"><code>#include <iostream>
+#include <string>
+using namespace std;
+
+class Car { <span class="comment">// كلاس العربية</span>
+private:
+    string model; <span class="comment">// موديل العربية</span>
+    static int totalCars; <span class="comment">// متغير Static (مُشترك بين كل العربيات)</span>
+public:
+    Car() { <span class="comment">// Default Constructor</span>
+        model = "Default";
+        totalCars++; <span class="comment">// بنزود عدد العربيات</span>
+    }
+    Car(string m) { <span class="comment">// Parameterized Constructor</span>
+        model = m;
+        totalCars++; <span class="comment">// بنزود عدد العربيات</span>
+    }
+    
+    static int getTotalCars() { <span class="comment">// دالة Static عشان ترجع العدد</span>
+        return totalCars; <span class="comment">// هترجع المتغير الـ static</span>
+    }
+    
+    ~Car() { <span class="comment">// Destructor</span>
+        totalCars--; <span class="comment">// لما عربية تتمسح، ننقص العدد</span>
+    }
+};
+
+<span class="comment">// Static Initialization MUST be outside the class!</span>
+int Car::totalCars = 0; <span class="comment">// تعريف المتغير הـ Static بره الكلاس ونديله صفر</span>
+
+int main() {
+    cout << "Initial Cars: " << Car::getTotalCars() << endl; <span class="comment">// بنشوف العدد قبل أي حاجة</span>
+    
+    <span class="comment">// Array of Objects calls Default Constructor 3 times</span>
+    Car showroom[3]; <span class="comment">// حجزنا مصفوفة فيها 3 عربيات</span>
+    
+    cout << "Cars after array creation: " << Car::getTotalCars() << endl; <span class="comment">// العدد بقى 3</span>
+    
+    {
+        Car temp("BMW"); <span class="comment">// عملنا عربية جديدة جوه قوسين Scope</span>
+        cout << "Cars inside block: " << Car::getTotalCars() << endl; <span class="comment">// العدد بقى 4</span>
+    } <span class="comment">// الـ Scope خلص، عربية BMW اتمسحت، الهدام نقص العدد</span>
+    
+    cout << "Cars after block: " << Car::getTotalCars() << endl; <span class="comment">// العدد رجع 3 تاني</span>
+    
+    return 0; <span class="comment">// إنهاء</span>
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Static variables are shared among all instances. They must be initialized globally outside the class.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #a855f7; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>المتغير الـ static مشترك بين كل العربيات. أول ما عملنا Array فيها 3 عربيات، الـ Constructor اشتغل 3 مرات وزود العدد. ولما الأوبجيكت اللي جوه القوسين مات، الـ Destructor اشتغل ونقص العدد. وطبعنا العدد بدون ما نحتاج أوبجيكت عن طريق `Car::getTotalCars()`.</p>
+                </div>
+            </details>
+        </div>
+<h2 class="topic-title">3. Memory Management</h2>
+<h3 class="subtopic-title">📌 Stack vs Heap & Memory Problems</h3>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q20. What is the difference between `new` in C++ and `malloc()` in C?</h4>
+            
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) They are exactly the same</li>
+                <li>B) `malloc` calls constructors, `new` does not</li>
+                <li>C) `new` allocates memory AND calls the constructor, `malloc` only allocates raw memory</li>
+                <li>D) `new` is used for the stack, `malloc` for the heap</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">C) `new` allocates memory AND calls the constructor, `malloc` only allocates raw memory</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">In OOP, objects must be initialized. `new` ensures the constructor is called automatically after memory is allocated.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>دي حتة مهمة جداً! `new` في الـ C++ مش بس بتحجز مكان في الـ Heap، دي كمان بتشغل الـ Constructor عشان تبني الأوبجيكت صح. لكن `malloc` بتاعة الـ C كانت بتحجز ميموري فاضية (زبالة) ومش بتشغل حاجة.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q21. Which of the following scenarios is the most common cause of a 'Stack Overflow' error?</h4>
+            
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) Forgetting to write 'delete' after 'new'</li>
+                <li>B) Infinite or excessively deep recursion without a base case</li>
+                <li>C) Reassigning a pointer to a new location</li>
+                <li>D) Accessing private variables from main</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">B) Infinite or excessively deep recursion without a base case</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">The stack has limited size. If a function calls itself infinitely, it fills up the stack memory until it overflows.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>الـ Stack مساحته صغيرة نسبياً. لو عملت دالة بتنادي نفسها إلى ما لا نهاية (Recursion بدون شرط توقف) أو عملت مصفوفة حجمها ضخم جداً جوه دالة عادية، الـ Stack بيتملي ويضرب ويديك Error.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 dir="ltr" style="color: #38bdf8; margin-bottom: 10px; font-size:1.3rem;">Q22. True or False?</h4>
+            <p dir="ltr" style="text-align: left; color: #f8fafc; font-size: 1.15rem; background: rgba(56, 189, 248, 0.1); padding: 15px; border-left: 4px solid #38bdf8; border-radius: 6px;">A Memory Leak happens when a pointer pointing to dynamically allocated memory goes out of scope without calling `delete`.</p>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #f59e0b; font-weight: bold; font-size:1.1rem;">True</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">If the pointer disappears, the memory it was pointing to is orphaned and can never be freed.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #f59e0b; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>صح تماماً. لو البوينتر اتمسح من الـ Stack لأنه خلص الـ Scope، الميموري اللي حجزها في הـ Heap هتفضل محجوزة على الفاضي ومفيش أي طريقة نوصلها بيها. وده هو الـ Memory Leak.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q23. What critical memory error occurs in this code?</h4>
+            <pre class="code-box" dir="ltr"><code>void process() {
+    int* data = new int[500];
+    <span class="comment">// processing ...</span>
+    data = new int[1000];
+    delete[] data;
+}</code></pre>
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) Dangling Pointer</li>
+                <li>B) Memory Leak of 500 integers</li>
+                <li>C) Stack Overflow</li>
+                <li>D) Double Free Error</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">B) Memory Leak of 500 integers</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">The pointer `data` originally pointed to 500 ints. By reassigning it without `delete[]` first, those 500 ints are lost in the Heap forever.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>حجزنا 500 مكان، وبعدين البوينتر سابهم ومسك في 1000 مكان تانيين! طب الـ 500 الأوليين دول هيمسحهم إزاي ومفيش بوينتر بيشاور عليهم؟ ضاعوا في الميموري (Memory Leak).</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr" style="color: #c084fc;">Q24. Create a 'DynamicArray' class that allocates a dynamic int array in its constructor and deletes it in its destructor. Test in main() by dynamically allocating the class object itself.</h4>
+            <pre class="uml-box" dir="ltr"><code>DynamicArray
+-------------------
+- size: int
+- arr: int*
+-------------------
++ DynamicArray(s: int)
++ fillData(): void
++ ~DynamicArray()</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer" style="background:#a855f7;">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong>
+                    <pre class="code-box" dir="ltr"><code>#include <iostream>
+using namespace std;
+
+class DynamicArray { <span class="comment">// الكلاس</span>
+private:
+    int size; <span class="comment">// حجم المصفوفة</span>
+    int* arr; <span class="comment">// بوينتر هيشاور على المصفوفة في الـ Heap</span>
+public:
+    DynamicArray(int s) { <span class="comment">// Constructor</span>
+        size = s; <span class="comment">// نسجل الحجم</span>
+        arr = new int[size]; <span class="comment">// بنحجز الميموري في הـ Heap</span>
+        cout << "Array of size " << size << " created in Heap.\n";
+    }
+    
+    void fillData() { <span class="comment">// دالة تعبئة البيانات</span>
+        for(int i=0; i<size; i++) { <span class="comment">// Loop لملء الأرقام</span>
+            arr[i] = i * 10; <span class="comment">// بنملا المصفوفة</span>
+        }
+        cout << "First element: " << arr[0] << ", Last: " << arr[size-1] << endl;
+    }
+    
+    ~DynamicArray() { <span class="comment">// Destructor الأهم</span>
+        delete[] arr; <span class="comment">// لازم نمسح المصفوفة عشان نمنع الـ Memory Leak!</span>
+        cout << "Array memory freed.\n";
+    }
+};
+
+int main() {
+    <span class="comment">// Dynamically allocating the OBJECT itself in the Heap!</span>
+    DynamicArray* myArr = new DynamicArray(50); <span class="comment">// بنحجز الأوبجيكت نفسه في الـ Heap بـ new</span>
+    
+    myArr->fillData(); <span class="comment">// بننادي دالة التعبئة</span>
+    
+    <span class="comment">// If we don't call delete, the destructor is NEVER called!</span>
+    delete myArr; <span class="comment">// خطوة قاتلة: لازم نعمل delete عشان הـ Destructor يشتغل والمصفوفة تتمسح</span>
+    
+    return 0; <span class="comment">// إنهاء</span>
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">A dynamic object must be explicitly deleted. When `delete myArr` is called, the object's destructor runs, which in turn deletes the inner dynamic array.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #a855f7; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>هنا إحنا حجزنا (أوبجيكت) كامل في الـ Heap باستخدام new. الأوبجيكت ده جواه Constructor بيحجز (مصفوفة) في الـ Heap بردو! لو معملناش `delete myArr` في الـ main، الهدّام مش هيشتغل والمصفوفة مش هتتمسح والدنيا هتبوظ.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr" style="color: #c084fc;">Q25. Implement Deep Copy vs Shallow Copy. Create a 'StringBox' class holding a dynamic char pointer. Implement a Custom Copy Constructor to avoid dangling pointers. Test it in main().</h4>
+            <pre class="uml-box" dir="ltr"><code>StringBox
+-------------------
+- text: char*
+-------------------
++ StringBox(t: const char*)
++ StringBox(const other: StringBox&)  << Deep Copy
++ ~StringBox()
++ print(): void</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer" style="background:#a855f7;">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong>
+                    <pre class="code-box" dir="ltr"><code>#include <iostream>
+#include <cstring> <span class="comment">// مكتبة التعامل مع الحروف</span>
+using namespace std;
+
+class StringBox { <span class="comment">// كلاس الصندوق</span>
+private:
+    char* text; <span class="comment">// بوينتر لكلمة</span>
+public:
+    <span class="comment">// Regular Constructor</span>
+    StringBox(const char* t) {
+        text = new char[strlen(t) + 1]; <span class="comment">// بنحجز مكان على قد الكلمة بالضبط في הـ Heap</span>
+        strcpy(text, t); <span class="comment">// بننسخ الكلمة في الميموري</span>
+    }
+    
+    <span class="comment">// Deep Copy Constructor!</span>
+    StringBox(const StringBox& other) { <span class="comment">// الـ Copy Constructor الحقيقي عشان يحل مشكلة الـ Shallow</span>
+        text = new char[strlen(other.text) + 1]; <span class="comment">// بنحجز مكان جديد خالص (NEW memory)</span>
+        strcpy(text, other.text); <span class="comment">// بننسخ الداتا نفسها مش مجرد الـ Address</span>
+        cout << "Deep copy performed.\n";
+    }
+    
+    ~StringBox() { <span class="comment">// الهدام</span>
+        delete[] text; <span class="comment">// بيمسح الميموري بتاعته بس (بدون تدخل في الميموري بتاعة الأوبجيكتس التانية)</span>
+    }
+    
+    void print() { cout << "Text: " << text << endl; } <span class="comment">// الطباعة</span>
+};
+
+int main() {
+    StringBox box1("Hello OOP"); <span class="comment">// الأوبجيكت الأول</span>
+    <span class="comment">// This calls the copy constructor. If it was shallow, both would point to same memory!</span>
+    StringBox box2 = box1; <span class="comment">// الأوبجيكت التاني بيعمل Deep Copy من الأول</span>
+    
+    box1.print();
+    box2.print();
+    <span class="comment">// لما الـ main يخلص، الاتنين Destructors هيشتغلوا ويمسحوا أماكن منفصلة بسلام.</span>
+    return 0;
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Without a deep copy constructor, both objects' pointers would hold the same memory address. Deleting one would make the other a dangling pointer, crashing the program when it's deleted twice.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #a855f7; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>لو معملناش Copy Constructor بـ Deep Copy، الكومبايلر هينسخ عنوان البوينتر بس! ولما البرنامج يخلص، الاتنين Destructors هيحاولوا يمسحوا نفس العنوان من الـ Heap والبرنامج هيضرب (Double Free). هنا إحنا حجزنا مكان جديد خالص للنسخة ونقلنا فيه الداتا.</p>
+                </div>
+            </details>
+        </div>
+<h2 class="topic-title">4. Inheritance</h2>
+<h3 class="subtopic-title">📌 Types, Access Specifiers & Order</h3>
+
+        <div class="code-analysis-section">
+            <h4 dir="ltr" style="color: #38bdf8; margin-bottom: 10px; font-size:1.3rem;">Q26. True or False?</h4>
+            <p dir="ltr" style="text-align: left; color: #f8fafc; font-size: 1.15rem; background: rgba(56, 189, 248, 0.1); padding: 15px; border-left: 4px solid #38bdf8; border-radius: 6px;">Hybrid Inheritance is a combination of more than one type of inheritance (e.g., combining Multilevel and Multiple inheritance).</p>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #f59e0b; font-weight: bold; font-size:1.1rem;">True</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Yes, whenever a class structure mixes different inheritance models (like a diamond shape), it is termed hybrid inheritance.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #f59e0b; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>صح. الوراثة الهجينة (Hybrid) هي لما البرنامج بتاعنا يبقى فيه خلطة من الوراثة، يعني مثلاً فيه جزء Multi-level شغال وجزء Multiple، فبنسميها مهجنة.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q27. What happens in 'private inheritance'?</h4>
+            
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) Public and protected members of Base become private in Derived</li>
+                <li>B) Public members of Base remain public</li>
+                <li>C) Base class cannot be inherited</li>
+                <li>D) Everything in Base becomes protected</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">A) Public and protected members of Base become private in Derived</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">In private inheritance, the derived class can use the base methods internally, but they are completely hidden from the outside world (the main).</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>لما الكلاس الابن يورث بشكل `private`، بياخد كل حاجة `public` و `protected` من الأب يحبسها جواه ويخليها `private` عنده هو، وبالتالي محدش في הـ main بيقدر يشوفها.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 dir="ltr" style="color: #38bdf8; margin-bottom: 10px; font-size:1.3rem;">Q28. True or False?</h4>
+            <p dir="ltr" style="text-align: left; color: #f8fafc; font-size: 1.15rem; background: rgba(56, 189, 248, 0.1); padding: 15px; border-left: 4px solid #38bdf8; border-radius: 6px;">In inheritance, the derived class constructor runs BEFORE the base class constructor.</p>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #f59e0b; font-weight: bold; font-size:1.1rem;">False</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">The Base class (the foundation) is always constructed BEFORE the Derived class.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #f59e0b; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>غلط تماماً. البناء بيبدأ من الأب (الأساس) وبعدين الابن بيكمل عليه. الهدد بس هو اللي بيبدأ بالابن الأول.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q29. Trace the exact output sequence:</h4>
+            <pre class="code-box" dir="ltr"><code>class A {
+public: A() { cout << "1"; } ~A() { cout << "2"; }
+};
+class B : public A {
+public: B() { cout << "3"; } ~B() { cout << "4"; }
+};
+int main() { B obj; }</code></pre>
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) 1 3 4 2</li>
+                <li>B) 3 1 2 4</li>
+                <li>C) 1 2 3 4</li>
+                <li>D) 3 4 1 2</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">A) 1 3 4 2</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Constructors: Base(1) -> Derived(3). Destructors: Derived(4) -> Base(2).</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>الأساس بيتبني الأول (A هيطبع 1)، بعدين الابن (B هيطبع 3). الهدد بيبقى العكس، نهدم الدور الأخير (B هيطبع 4)، وبعدين الأساس (A هيطبع 2). يبقى الناتج 1 3 4 2.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr" style="color: #c084fc;">Q30. Implement Multiple Inheritance. Class 'Engine' and Class 'Wheels' are base classes. Class 'Car' inherits BOTH. Show how to initialize them in Car's constructor. Test in main().</h4>
+            <pre class="uml-box" dir="ltr"><code>Engine                 Wheels
+-------                -------
+- hp: int              - size: int
+-------                -------
++ Engine(h: int)       + Wheels(s: int)
++ showHp()             + showSize()
+
+          \           /
+           \         /
+            \       /
+               Car (public Engine, public Wheels)
+-------------------
+- brand: string
+-------------------
++ Car(h: int, s: int, b: string)
++ displayInfo(): void</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer" style="background:#a855f7;">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong>
+                    <pre class="code-box" dir="ltr"><code>#include <iostream>
+#include <string>
+using namespace std;
+
+class Engine { <span class="comment">// الأب الأول (المحرك)</span>
+protected:
+    int hp; <span class="comment">// قوة الحصان</span>
+public:
+    Engine(int h) { hp = h; } <span class="comment">// Constructor بتاع المحرك</span>
+    void showHp() { cout << "Engine HP: " << hp << endl; } <span class="comment">// طباعة القوة</span>
+};
+
+class Wheels { <span class="comment">// الأب التاني (العجلات)</span>
+protected:
+    int size; <span class="comment">// مقاس العجلة</span>
+public:
+    Wheels(int s) { size = s; } <span class="comment">// Constructor بتاع العجل</span>
+    void showSize() { cout << "Wheel Size: " << size << " inches" << endl; } <span class="comment">// طباعة المقاس</span>
+};
+
+<span class="comment">// Multiple Inheritance! Car inherits from BOTH Engine and Wheels</span>
+class Car : public Engine, public Wheels { <span class="comment">// وراثة متعددة، العربية بتورثهم الاتنين</span>
+private:
+    string brand; <span class="comment">// ماركة العربية</span>
+public:
+    <span class="comment">// MUST call both base constructors in the initialization list!</span>
+    Car(int h, int s, string b) : Engine(h), Wheels(s) { <span class="comment">// بندي الآباء القيم بتاعتهم هنا قبل أي حاجة</span>
+        brand = b; <span class="comment">// بنخزن המاركة</span>
+    }
+    
+    void displayInfo() { <span class="comment">// دالة بنجمع فيها الداتا</span>
+        cout << "Brand: " << brand << endl; <span class="comment">// بنطبع الماركة</span>
+        showHp();   <span class="comment">// الدالة دي جيالنا من الأب الأول (المحرك)</span>
+        showSize(); <span class="comment">// الدالة دي جيالنا من الأب التاني (العجل)</span>
+    }
+};
+
+int main() {
+    Car myCar(500, 19, "Ferrari"); <span class="comment">// بنعمل عربية فيراري بقوة 500 وعجل 19</span>
+    myCar.displayInfo(); <span class="comment">// بنعرض كل الداتا اللي اتجمعت من الوراثة</span>
+    return 0; <span class="comment">// إنهاء</span>
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">In Multiple Inheritance, the child has multiple parents. It must initialize all of them in its constructor's initializer list.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #a855f7; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>ده تطبيق على الوراثة المتعددة (Multiple Inheritance). العربية بتورث من محرك ومن عجلات. ففي Constructor بتاع العربية، لازم ننادي على Constructor الأب الأول والأب التاني في הـ Initialization List عشان يتملوا بيانات.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr" style="color: #c084fc;">Q31. Implement Multi-level Inheritance. Base class 'Person', child 'Employee', grandchild 'Manager'. Chain the constructors correctly and test in main().</h4>
+            <pre class="uml-box" dir="ltr"><code>Person
+-------------------
+# name: string
+-------------------
++ Person(n: string)
+        ^
+        |
+    Employee
+-------------------
+# id: int
+-------------------
++ Employee(n: string, i: int)
+        ^
+        |
+    Manager
+-------------------
+- bonus: double
+-------------------
++ Manager(n: string, i: int, b: double)
++ display(): void</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer" style="background:#a855f7;">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong>
+                    <pre class="code-box" dir="ltr"><code>#include <iostream>
+#include <string>
+using namespace std;
+
+class Person { <span class="comment">// الجد</span>
+protected:
+    string name; <span class="comment">// اسم الشخص</span>
+public:
+    Person(string n) { name = n; } <span class="comment">// الجد بياخد الاسم</span>
+};
+
+class Employee : public Person { <span class="comment">// الأب بيورث الجد</span>
+protected:
+    int id; <span class="comment">// رقم الموظف</span>
+public:
+    <span class="comment">// Pass 'n' up to Person</span>
+    Employee(string n, int i) : Person(n) { <span class="comment">// بنسلم הـ name للجد في الأقواس بتاعت الـ Initialization</span>
+        id = i; <span class="comment">// بنسجل הـ id</span>
+    }
+};
+
+class Manager : public Employee { <span class="comment">// الابن بيورث الأب (كده بقى عندنا 3 مستويات)</span>
+private:
+    double bonus; <span class="comment">// البونص</span>
+public:
+    <span class="comment">// Pass 'n' and 'i' up to Employee</span>
+    Manager(string n, int i, double b) : Employee(n, i) { <span class="comment">// بنسلم الداتا للأب</span>
+        bonus = b; <span class="comment">// بنسجل الـ bonus</span>
+    }
+    
+    void display() {
+        <span class="comment">// Can access protected members from grandparents directly!</span>
+        cout << "Manager: " << name << ", ID: " << id << ", Bonus: $" << bonus << endl; <span class="comment">// الـ name ده جاي من الجد مباشرة!</span>
+    }
+};
+
+int main() {
+    Manager boss("Ahmed", 101, 5000.0); <span class="comment">// عملنا المدير وبعتناله بيانات الـ 3 مستويات</span>
+    boss.display(); <span class="comment">// طبعنا البيانات الموروثة</span>
+    return 0; <span class="comment">// إنهاء</span>
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Constructor chaining is required in multi-level inheritance to pass arguments up the hierarchy.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #a855f7; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>الوراثة المتعددة المستويات (جد -> أب -> ابن). كل كلاس لازم يسلم المتغيرات للي فوقه في الـ Initialization List. ولأن المتغيرات `protected`، الحفيد قدر يستخدم `name` بتاع الجد مباشرة من غير Getter.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr" style="color: #c084fc;">Q32. Design Hierarchical Inheritance. 'Vehicle' is base. 'Car' and 'Truck' both inherit from Vehicle. Demonstrate this structure in main() creating objects for both.</h4>
+            <pre class="uml-box" dir="ltr"><code>        Vehicle
+       # speed: int
+       + Vehicle(s)
+          /    \
+         /      \
+     Car        Truck
+- doors: int   - loadCapacity: int
++ Car(s, d)    + Truck(s, l)
++ show()       + show()</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer" style="background:#a855f7;">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong>
+                    <pre class="code-box" dir="ltr"><code>#include <iostream>
+using namespace std;
+
+class Vehicle { <span class="comment">// الأب</span>
+protected:
+    int speed; <span class="comment">// السرعة (موروثة للأبناء)</span>
+public:
+    Vehicle(int s) { speed = s; } <span class="comment">// Constructor الأب</span>
+};
+
+class Car : public Vehicle { <span class="comment">// الابن الأول (عربية)</span>
+private:
+    int doors; <span class="comment">// الأبواب</span>
+public:
+    Car(int s, int d) : Vehicle(s) { doors = d; } <span class="comment">// بياخد السرعة يديها للأب</span>
+    void show() { cout << "Car Speed: " << speed << ", Doors: " << doors << endl; } <span class="comment">// طباعة الداتا</span>
+};
+
+class Truck : public Vehicle { <span class="comment">// الابن التاني (شاحنة)</span>
+private:
+    int loadCapacity; <span class="comment">// الحمولة</span>
+public:
+    Truck(int s, int l) : Vehicle(s) { loadCapacity = l; } <span class="comment">// بياخد السرعة يديها للأب</span>
+    void show() { cout << "Truck Speed: " << speed << ", Load: " << loadCapacity << " Tons" << endl; } <span class="comment">// طباعة الداتا</span>
+};
+
+int main() {
+    Car c(120, 4); <span class="comment">// عملنا عربية</span>
+    Truck t(80, 10); <span class="comment">// عملنا شاحنة</span>
+    
+    c.show(); <span class="comment">// طبعنا العربية اللي ورثت الـ speed من الأب</span>
+    t.show(); <span class="comment">// طبعنا الشاحنة اللي كمان ورثت الـ speed من الأب</span>
+    
+    return 0; <span class="comment">// إنهاء</span>
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">In hierarchical inheritance, multiple distinct child classes inherit from one single parent class.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #a855f7; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>الوراثة الهرمية، أب واحد (Vehicle) طالع منه كذا ابن (Car و Truck). كل ابن بيبعت الـ speed للأب عشان يتسجل عنده ويكمل بناء نفسه ببياناته الخاصة.</p>
+                </div>
+            </details>
+        </div>
+<h2 class="topic-title">5. Polymorphism</h2>
+<h3 class="subtopic-title">📌 Virtual Functions, Early/Late Binding & Abstract Classes</h3>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q33. What makes a class an 'Abstract Class' in C++?</h4>
+            
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) The class has no member variables</li>
+                <li>B) The class contains at least one pure virtual function (e.g. = 0)</li>
+                <li>C) The class inherits from multiple parents</li>
+                <li>D) The class has a private constructor</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">B) The class contains at least one pure virtual function (e.g. = 0)</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">A pure virtual function explicitly marks the class as a base-only concept, preventing instantiation.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>عشان الكلاس يبقى Abstract ومحدش يقدر يعمل منه Object خالص، لازم يكون جواه دالة `virtual` ومكتوب جنبها `= 0` (Pure Virtual).</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 dir="ltr" style="color: #38bdf8; margin-bottom: 10px; font-size:1.3rem;">Q34. True or False?</h4>
+            <p dir="ltr" style="text-align: left; color: #f8fafc; font-size: 1.15rem; background: rgba(56, 189, 248, 0.1); padding: 15px; border-left: 4px solid #38bdf8; border-radius: 6px;">A virtual destructor is important when you delete a derived object through a base class pointer.</p>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #f59e0b; font-weight: bold; font-size:1.1rem;">True</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">If the base destructor is not virtual, deleting via a base pointer will only call the base destructor, leaking derived class memory.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #f59e0b; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>صح جداً ومهمة جداً. لو البوينتر نوعه (أب) وبيشاور على (ابن)، ولما تيجي تمسحه بـ delete لو الهدّام مش virtual، الكومبايلر هيمسح الأب بس ويسيب الابن يعمل Memory Leak!</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr">Q35. What happens here and why?</h4>
+            <pre class="code-box" dir="ltr"><code>class Base {
+public: virtual void print() { cout << "Base"; }
+};
+class Derived : public Base {
+public: void print() { cout << "Derived"; }
+};
+int main() {
+    Base* ptr = new Derived();
+    ptr->print();
+}</code></pre>
+            <ul class="options-list" dir="ltr" style="text-align: left; margin-left: 10px; color: #cbd5e1; list-style-type: none; padding-left: 0;">
+                <li>A) Prints 'Base' because of Early Binding</li>
+                <li>B) Prints 'Derived' because of Late Binding</li>
+                <li>C) Syntax Error</li>
+                <li>D) Prints both</li>
+            </ul>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong> <span style="color: #34d399; font-weight: bold; font-size:1.1rem;">B) Prints 'Derived' because of Late Binding</span>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">The `virtual` keyword tells the compiler to check the actual object type at run-time (Late Binding), resolving to Derived.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #38bdf8; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>بسبب كلمة `virtual` اللي في دالة الأب، الكومبايلر بيعمل Late Binding وبيستنى وقت التشغيل يشوف البوينتر بيشاور على أوبجيكت إيه بالظبط (بيشاور على Derived)، فبيطبع Derived.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr" style="color: #c084fc;">Q36. Implement an Abstract Class 'Animal' with a pure virtual method 'sound()'. Create 'Dog' and 'Cat' derived classes. In main(), create an array of Animal pointers and loop through them to trigger Polymorphism.</h4>
+            <pre class="uml-box" dir="ltr"><code>Animal (Abstract)
+-------------------
+-------------------
++ virtual sound() = 0: void
+
+        ^
+   _____|_____
+   |         |
+  Dog       Cat
+-------   -------
+-------   -------
++ sound() + sound()</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer" style="background:#a855f7;">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong>
+                    <pre class="code-box" dir="ltr"><code>#include <iostream>
+using namespace std;
+
+<span class="comment">// Abstract Class (عشان فيه Pure Virtual)</span>
+class Animal {
+public:
+    virtual void sound() = 0; <span class="comment">// Pure Virtual Function (مفيش جسم للدالة)</span>
+    virtual ~Animal() {} <span class="comment">// Virtual Destructor (أساسي عشان الـ Memory)</span>
+};
+
+class Dog : public Animal { <span class="comment">// الكلب بيورث من الحيوان</span>
+public:
+    void sound() override { cout << "Dog says: Woof!\n"; } <span class="comment">// لازم يطبق الدالة بتاعة الصوت</span>
+};
+
+class Cat : public Animal { <span class="comment">// القطة بتورث من الحيوان</span>
+public:
+    void sound() override { cout << "Cat says: Meow!\n"; } <span class="comment">// لازم تطبق الدالة بردو</span>
+};
+
+int main() {
+    <span class="comment">// Array of Base Class Pointers (Polymorphism Magic!)</span>
+    Animal* zoo[2]; <span class="comment">// مصفوفة بوينترات من نوع الأب</span>
+    zoo[0] = new Dog(); <span class="comment">// الأول بيشاور على كلب</span>
+    zoo[1] = new Cat(); <span class="comment">// التاني بيشاور على قطة</span>
+    
+    cout << "--- Zoo Sounds ---\n";
+    for(int i = 0; i < 2; i++) { <span class="comment">// Loop للتشغيل</span>
+        <span class="comment">// Late Binding happens here based on the actual object!</span>
+        zoo[i]->sound(); <span class="comment">// الكومبايلر بيستنى وقت التشغيل وينادي الصوت الصح حسب الأوبجيكت الحقيقي!</span>
+    }
+    
+    <span class="comment">// Cleanup</span>
+    for(int i = 0; i < 2; i++) { <span class="comment">// بنلف عليهم نمسحهم</span>
+        delete zoo[i]; <span class="comment">// بنمسحهم عشان الـ Memory Leak، وهنا الـ Virtual Destructor هيشتغل</span>
+    }
+    
+    return 0; <span class="comment">// إنهاء</span>
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">An array of base pointers iterating over derived objects is the classic, most powerful use-case of Polymorphism.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #a855f7; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>ده أعظم مثال يوضح الـ Polymorphism (تعدد الأوجه). عملنا مصفوفة بوينترات من نوع الأب Animal، وحطينا جواها كلب وقطة. ولما عملنا Loop نادينا دالة `sound()` واحدة بس، بس كل حيوان طلع الصوت بتاعه حسب نوعه الحقيقي (Late Binding).</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h4 class="question-text" dir="ltr" style="color: #c084fc;">Q37. Implement Function Overloading vs Overriding. Create a class MathBase with a virtual method 'compute(int)' and overloaded method 'compute(double)'. Inherit MathDerived and override 'compute(int)'. Test in main().</h4>
+            <pre class="uml-box" dir="ltr"><code>MathBase
+-------------------
+-------------------
++ virtual compute(x: int): void
++ compute(x: double): void
+
+        ^
+        |
+   MathDerived
+-------------------
+-------------------
++ compute(x: int) override: void</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer" style="background:#a855f7;">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong style="color:#e2e8f0;">Answer:</strong>
+                    <pre class="code-box" dir="ltr"><code>#include <iostream>
+using namespace std;
+
+class MathBase { <span class="comment">// الأب</span>
+public:
+    <span class="comment">// Virtual function ready for Overriding</span>
+    virtual void compute(int x) { <span class="comment">// دالة بتاخد رقم صحيح</span>
+        cout << "Base compute(int): " << x * 2 << endl;
+    }
+    
+    <span class="comment">// Overloaded function (same name, different parameter)</span>
+    void compute(double x) { <span class="comment">// نفس الاسم بس بتاخد كسر (ده اسمه Overloading جوه الكلاس)</span>
+        cout << "Base compute(double): " << x * 3.14 << endl;
+    }
+};
+
+class MathDerived : public MathBase { <span class="comment">// الابن</span>
+public:
+    <span class="comment">// Overriding the exact same signature</span>
+    void compute(int x) override { <span class="comment">// كتبنا نفس الدالة بالظبط تاني عشان نعدلها (ده الـ Overriding مع الوراثة)</span>
+        cout << "Derived compute(int) overridden!: " << x * x << endl;
+    }
+    
+    <span class="comment">// Note: C++ hides overloaded base functions if a derived class overrides one of them</span>
+    <span class="comment">// To unhide them, we use: using MathBase::compute;</span>
+    using MathBase::compute; <span class="comment">// حيلة مهمة جداً عشان الدالة التانية بتاعة الكسر متستخباش</span>
+};
+
+int main() {
+    MathDerived obj; <span class="comment">// عملنا الأوبجيكت من نوع الابن</span>
+    
+    <span class="comment">// Calls overridden Derived method</span>
+    obj.compute(5); <span class="comment">// بينادي الدالة اللي تعدلت</span>
+    
+    <span class="comment">// Calls overloaded Base method (only works because of 'using' keyword)</span>
+    obj.compute(5.5); <span class="comment">// بينادي دالة الكسر اللي جايالنا من الأب</span>
+    
+    <span class="comment">// Polymorphism test</span>
+    MathBase* ptr = &obj; <span class="comment">// بوينتر من نوع الأب بيشاور عالابن</span>
+    ptr->compute(10); <span class="comment">// Late binding -> calls Derived (بينادي الابن عشان virtual)</span>
+    
+    return 0; <span class="comment">// إنهاء</span>
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;">
+                    <strong style="color:#e2e8f0;">Explanation:</strong>
+                    <p dir="ltr" style="color: #94a3b8; margin-bottom: 10px; margin-top: 5px;">Demonstrates the subtle difference: Overloading is within the same scope with different parameters. Overriding is across inheritance scopes with the EXACT same parameters.</p>
+                    <p dir="rtl" style="text-align: right; color: #f8fafc; font-size: 1.05rem; border-right: 3px solid #a855f7; padding-right: 15px; margin-top: 15px; line-height: 1.8;"><strong>بالعامية: </strong>هنا بنشرح الفرق بين الـ Overloading (نفس الاسم بس بياخد داتا مختلفة جوه نفس الكلاس) والـ Overriding (الابن بيورث دالة من الأب وبيكتبها تاني بنفس كل حاجة عشان يعدلها). وفي הـ main جربنا الاتنين وجربنا הـ Polymorphism.</p>
+                </div>
+            </details>
+        </div>
+
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS('particles-js', {
+              "particles": {
+                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#38bdf8" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.3 },
+                "size": { "value": 3 },
+                "line_linked": { "enable": true, "distance": 150, "color": "#38bdf8", "opacity": 0.2, "width": 1 },
+                "move": { "enable": true, "speed": 1.5 }
+              }
+            });
+        });
+    </script>
+</body>
+</html>

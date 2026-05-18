@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة الثامنة: Polymorphism & Virtual Functions - موسوعة الـ OOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+
+    <style>
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; }
+        .header-nav { position: sticky; z-index: 100; }
+        .floating-shapes {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-shapes span {
+            position: absolute;
+            display: block;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 50%;
+            animation: floatUp 25s linear infinite;
+        }
+        .floating-shapes span:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .floating-shapes span:nth-child(2) { width: 20px; height: 20px; left: 20%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-shapes span:nth-child(3) { width: 60px; height: 60px; left: 35%; animation-delay: 4s; animation-duration: 22s; }
+        .floating-shapes span:nth-child(4) { width: 40px; height: 40px; left: 50%; animation-delay: 0s; animation-duration: 18s; }
+        .floating-shapes span:nth-child(5) { width: 15px; height: 15px; left: 65%; animation-delay: 3s; animation-duration: 30s; }
+        .floating-shapes span:nth-child(6) { width: 90px; height: 90px; left: 75%; animation-delay: 5s; animation-duration: 27s; }
+        .floating-shapes span:nth-child(7) { width: 50px; height: 50px; left: 85%; animation-delay: 7s; animation-duration: 15s; }
+        .floating-shapes span:nth-child(8) { width: 25px; height: 25px; left: 45%; animation-delay: 1s; animation-duration: 35s; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .glow-cursor {
+            position: fixed;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        body:hover .glow-cursor { opacity: 1; }
+        .slide-container {
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .slide-container.vis { opacity: 1; transform: translateY(0); }
+        @media (max-width: 768px) {
+            .container { padding: 1rem !important; }
+            .slide-container { padding: 1.5rem !important; }
+            .header-nav { flex-direction: column; gap: 0.5rem; padding: 0.8rem !important; }
+            .header-nav h2 { font-size: 0.9rem !important; }
+        }
+    </style>
+
+</head>
+<body>
+
+    <div id="particles-js"></div>
+    <div class="floating-shapes">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="glow-cursor" id="glowCursor"></div>
+
+<div class="progress-bar-top" id="progressBar"></div>
+
+    <header class="header-nav">
+        <a href="../index.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            الرجوع للقائمة الرئيسية (Back to Home)
+        </a>
+        <h2 style="margin:0; font-size: 1.2rem;">Lecture 8: Run-time Polymorphism</h2>
+    </header>
+
+    <div class="container">
+        
+        <div class="header" style="margin-top: 2rem;">
+            <h1>المحاضرة الثامنة: تعدد الأشكال والدوال الافتراضية (Polymorphism & Virtual Functions)</h1>
+            <p>الشرح التفصيلي لجميع شرائح المحاضرة (Slide-by-Slide) مدعوم بشرح الأكواد سطراً بسطر (Line-by-Line Code Explanation)</p>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide-container" id="slide3">
+            <h2>Slide 3: تذكير بمفهوم الـ Polymorphism (تعدد الأشكال)</h2>
+            <img src="../slides/Lecture_8-_Run-time_Polymoriphsm__Virtual_function__Pure_virtual_function_and_Abstract_class/slide_03.jpg" alt="Slide 3" class="slide-image">
+            <div class="slide-explanation">
+                <p>كلمة <strong>Polymorphism</strong> معناها "القدرة على اتخاذ أشكال متعددة". في البرمجة، معناها إن نفس الدالة (نفس الاسم) ممكن تشتغل بطرق مختلفة تماماً حسب الـ Object اللي بيناديها.</p>
+                <p>تعدد الأشكال بينقسم لنوعين رئيسيين:</p>
+                <ul>
+                    <li><strong class="highlight">Compile-Time Polymorphism (المبكر/الثابت):</strong> وده بيحصل وقت الترجمة. زي الـ (Function Overloading) والـ (Operator Overloading).</li>
+                    <li><strong class="highlight">Run-Time Polymorphism (المتأخر/الديناميكي):</strong> وده موضوع محاضرتنا النهاردة! بيحصل وقت تشغيل البرنامج، وبيعتمد على الوراثة (Inheritance) والبوينترز (Pointers) والدوال الافتراضية (Virtual Functions).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide-container" id="slide5">
+            <h2>Slide 5: مؤشر الأب لكائن الابن (Base Pointer to Derived Object)</h2>
+            <img src="../slides/Lecture_8-_Run-time_Polymoriphsm__Virtual_function__Pure_virtual_function_and_Abstract_class/slide_05.jpg" alt="Slide 5" class="slide-image">
+            <div class="slide-explanation">
+                <p>عشان نفهم الـ Run-Time Polymorphism، لازم نفهم قاعدة ذهبية وغريبة شوية في الـ C++:</p>
+                <p><strong class="highlight">القاعدة:</strong> ينفع جداً تعمل Pointer من نوع الكلاس الأب (Base)، وتخليه يشاور على Object من نوع الكلاس الابن (Derived)!</p>
+                <p><strong>ليه؟</strong> لأننا قلنا قبل كده إن الابن <code>Is-A</code> الأب (السيارة هي مركبة). فمنطقي إن بوينتر المركبة يقدر يشاور على سيارة.</p>
+                <div class="slide-code">
+<span class="type">Animal</span> *ptr;       <span class="comment">// Pointer of Base class</span>
+<span class="type">Dog</span> d;              <span class="comment">// Object of Derived class</span>
+ptr = <span class="operator">&amp;</span>d;           <span class="comment">// VALID! Base pointer holding Derived address</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide-container" id="slide6">
+            <h2>Slide 6: مشكلة الربط المبكر (The Problem: Early Binding)</h2>
+            <img src="../slides/Lecture_8-_Run-time_Polymoriphsm__Virtual_function__Pure_virtual_function_and_Abstract_class/slide_06.jpg" alt="Slide 6" class="slide-image">
+            <div class="slide-explanation">
+                <p>طيب إيه المشكلة في إن بوينتر الأب يشاور على الابن؟ المشكلة بتظهر لما الاتنين (الأب والابن) يكون عندهم دالة بنفس الاسم (Overriding)، مثلاً دالة <code>speak()</code>.</p>
+                <p>لما تيجي تقول للبوينتر <code>ptr->speak()</code>، الكومبايلر بيتصرف بغباء شوية:</p>
+                <p>الكومبايلر بيبص على <span class="highlight">نوع البوينتر</span> (اللي هو Animal) ومش بيبص على <span class="highlight">محتوى البوينتر الحقيقي</span> (اللي هو Dog). فبيروح ينفذ دالة الأب!</p>
+                <p>المشكلة دي اسمها <strong>Early Binding (الربط المبكر)</strong> أو <strong>Static Binding</strong>، لأن الكومبايلر بيربط الدالة بناءً على نوع المتغير وقت الترجمة (Compile time).</p>
+            </div>
+        </div>
+
+        <!-- Slide 9 -->
+        <div class="slide-container" id="slide9">
+            <h2>Slide 9: الحل السحري - الدوال الافتراضية (Virtual Functions)</h2>
+            <img src="../slides/Lecture_8-_Run-time_Polymoriphsm__Virtual_function__Pure_virtual_function_and_Abstract_class/slide_09.jpg" alt="Slide 9" class="slide-image">
+            <div class="slide-explanation">
+                <p>عشان نكبر الكومبايلر إنه يبص على <strong class="highlight">الكائن الحقيقي</strong> اللي البوينتر بيشاور عليه وقت التشغيل (عشان ينفذ دالة Dog مش Animal)، بنستخدم الكلمة السحرية <code>virtual</code>.</p>
+                <p>مجرد ما نكتب كلمة <code>virtual</code> قبل اسم الدالة في الكلاس <span class="highlight">الأب</span>، الكومبايلر بيفهم إنه لازم يأجل قراره لحد وقت التشغيل (Run-time). ده اللي بنسميه <strong>Late Binding</strong> أو <strong>Dynamic Binding</strong>.</p>
+            </div>
+        </div>
+
+        <!-- Slide 11 -->
+        <div class="slide-container" id="slide11">
+            <h2>Slide 11: كود الدوال الافتراضية (Virtual Function Syntax)</h2>
+            <img src="../slides/Lecture_8-_Run-time_Polymoriphsm__Virtual_function__Pure_virtual_function_and_Abstract_class/slide_11.jpg" alt="Slide 11" class="slide-image">
+            <div class="slide-explanation">
+                <p>تعالوا نشوف إزاي كلمة واحدة بتغير مسار البرنامج بالكامل:</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Base</span> {
+<span class="keyword">public</span>:
+    <span class="comment">// Adding 'virtual' tells compiler to use Late Binding</span>
+    <span class="keyword">virtual</span> <span class="type">void</span> show() {
+        cout &lt;&lt; <span class="string">"Show from Base"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="keyword">class</span> <span class="type">Derived</span> : <span class="keyword">public</span> <span class="type">Base</span> {
+<span class="keyword">public</span>:
+    <span class="comment">// Overridden function</span>
+    <span class="type">void</span> show() {
+        cout &lt;&lt; <span class="string">"Show from Derived"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Base</span> *ptr;       <span class="comment">// Base pointer</span>
+    <span class="type">Derived</span> obj;     <span class="comment">// Derived object</span>
+    
+    ptr = <span class="operator">&amp;</span>obj;      <span class="comment">// Pointing to derived</span>
+    ptr<span class="operator">-></span>show();     <span class="comment">// Without virtual -> prints "Base" (Early Binding)</span>
+                     <span class="comment">// WITH virtual -> prints "Derived" (Late Binding / True Polymorphism)</span>
+}
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 1: Virtual Functions & Binding</h3>
+            
+            <div class="question" data-answer="2">
+                <p>1. If a base class pointer points to a derived class object, and calls a NON-virtual overridden function, whose function is actually executed?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) The Derived class function.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) Both functions are executed in sequence.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) The Base class function.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) The program crashes.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> Because of Early Binding, the compiler looks ONLY at the pointer's data type (which is Base), ignoring the actual object it points to.
+                </div>
+            </div>
+
+            <div class="question" data-answer="1">
+                <p>2. What is another term for Run-time Polymorphism achieved through virtual functions?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) Static Binding</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) Late Binding (Dynamic Binding)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) Operator Overloading</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) Encapsulation</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> Late Binding means the decision of which function to execute is delayed until the program is actually running (run-time).
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16 -->
+        <div class="slide-container" id="slide16">
+            <h2>Slide 16: الدوال الافتراضية البحتة (Pure Virtual Functions)</h2>
+            <img src="../slides/Lecture_8-_Run-time_Polymoriphsm__Virtual_function__Pure_virtual_function_and_Abstract_class/slide_16.jpg" alt="Slide 16" class="slide-image">
+            <div class="slide-explanation">
+                <p>أحياناً الكلاس الأب بيكون مجرد فكرة عامة، ومينفعش نكتب جواه implementation للدالة أصلاً. (مثلاً: كلاس Shape وفيه دالة <code>draw()</code>. هترسم إيه وإنت لسه متعرفش هو مربع ولا دايرة؟)</p>
+                <p>هنا بنستخدم <strong>Pure Virtual Function (دالة افتراضية بحتة / نقية)</strong>. دي دالة إحنا بنجبر الكومبايلر إنه ميكونش ليها أي جسم (No Body) في الكلاس الأب.</p>
+                <div class="slide-code">
+<span class="comment">// Syntax of Pure Virtual Function (Notice the '= 0')</span>
+<span class="keyword">virtual</span> <span class="type">void</span> draw() = <span class="number">0</span>;
+                </div>
+                <p>علامة <code>= 0</code> مش معناها إن قيمتها صفر، دي مجرد علامة (Syntax) بتفهم الكومبايلر إن "الدالة دي فاضية، والأبناء هم اللي <strong>لازم وحتماً</strong> يكتبوا الكود بتاعها".</p>
+            </div>
+        </div>
+
+        <!-- Slide 18 -->
+        <div class="slide-container" id="slide18">
+            <h2>Slide 18: الكلاس المجرد (Abstract Classes)</h2>
+            <img src="../slides/Lecture_8-_Run-time_Polymoriphsm__Virtual_function__Pure_virtual_function_and_Abstract_class/slide_18.jpg" alt="Slide 18" class="slide-image">
+            <div class="slide-explanation">
+                <p>أي كلاس يحتوي على <strong class="highlight">دالة واحدة على الأقل</strong> من نوع Pure Virtual Function بيتحول أوتوماتيك لشيء اسمه <strong>Abstract Class (كلاس مجرد)</strong>.</p>
+                <p>خصائص الكلاس المجرد (أسئلة امتحانات):</p>
+                <ol>
+                    <li><strong class="highlight">ممنوع الاستنساخ:</strong> مستحيل (Error) إنك تكريت Object مباشر من الـ Abstract Class (مينفعش تقول <code>Shape s;</code>). لأنه كلاس غير مكتمل وفيه دوال فاضية!</li>
+                    <li><strong class="highlight">الإجبار للأبناء:</strong> أي كلاس يورث من الـ Abstract Class لازم (Must) يعمل Overriding لكل الـ Pure Virtual Functions ويكتب الكود بتاعها، وإلا الابن نفسه هيتحول لـ Abstract Class هو كمان!</li>
+                    <li><strong class="highlight">مسموح بالبوينترز:</strong> بالرغم إنك متقدرش تعمل Object، إنت <span class="highlight">تقدر جداً تعمل Pointer</span> من الـ Abstract Class عشان يشاور على الأبناء (وده أساس تعدد الأشكال!).</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 20 -->
+        <div class="slide-container" id="slide20">
+            <h2>Slide 20: كود الكلاس المجرد (Abstract Class Example)</h2>
+            <img src="../slides/Lecture_8-_Run-time_Polymoriphsm__Virtual_function__Pure_virtual_function_and_Abstract_class/slide_20.jpg" alt="Slide 20" class="slide-image">
+            <div class="slide-explanation">
+                <p>تطبيق عملي على الكلاس المجرد والدوال البحتة:</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Shape</span> { <span class="comment">// This is an Abstract Class</span>
+<span class="keyword">public</span>:
+    <span class="comment">// Pure Virtual Function</span>
+    <span class="keyword">virtual</span> <span class="type">void</span> draw() = <span class="number">0</span>; 
+};
+
+<span class="keyword">class</span> <span class="type">Circle</span> : <span class="keyword">public</span> <span class="type">Shape</span> {
+<span class="keyword">public</span>:
+    <span class="comment">// Must implement draw()</span>
+    <span class="type">void</span> draw() {
+        cout &lt;&lt; <span class="string">"Drawing a Circle"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="keyword">class</span> <span class="type">Rectangle</span> : <span class="keyword">public</span> <span class="type">Shape</span> {
+<span class="keyword">public</span>:
+    <span class="type">void</span> draw() {
+        cout &lt;&lt; <span class="string">"Drawing a Rectangle"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="comment">// Shape s; // ❌ ERROR: Cannot instantiate Abstract Class</span>
+    
+    <span class="type">Shape</span> *arr[<span class="number">2</span>]; <span class="comment">// ✅ VALID: Array of Base Pointers</span>
+    arr[<span class="number">0</span>] = <span class="keyword">new</span> <span class="type">Circle</span>();
+    arr[<span class="number">1</span>] = <span class="keyword">new</span> <span class="type">Rectangle</span>();
+    
+    <span class="comment">// Magic of Polymorphism: same function call does different things!</span>
+    arr[<span class="number">0</span>]<span class="operator">-></span>draw(); <span class="comment">// Prints: Drawing a Circle</span>
+    arr[<span class="number">1</span>]<span class="operator">-></span>draw(); <span class="comment">// Prints: Drawing a Rectangle</span>
+}
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Final Quiz: Abstract Classes</h3>
+            
+            <div class="question" data-answer="1">
+                <p>1. Which of the following defines an Abstract Class in C++?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) A class that has no constructors.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) A class that contains at least one pure virtual function.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) A class with only private members.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) A class that inherits from multiple parents.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> The presence of at least one pure virtual function (e.g., `virtual void fun() = 0;`) turns a class into an Abstract Class.
+                </div>
+            </div>
+
+            <div class="question" data-answer="2">
+                <p>2. What happens if a Derived class inherits from an Abstract Base class but fails to implement (override) one of the pure virtual functions?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) The compiler generates a default implementation automatically.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) The program compiles but crashes at runtime.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) The Derived class also becomes an Abstract Class, and you cannot create objects from it.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) It is totally fine and nothing special happens.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> If you don't override ALL pure virtual functions, the derived class remains incomplete and thus remains Abstract itself.
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY SECTION -->
+        <div class="summary-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> الملخص الشامل لأهم التريكات (Summary & Pro Tips)</h2>
+            <ul>
+                <li><strong>Compile-Time vs Run-Time Polymorphism:</strong> الأول بيتحدد وقت الترجمة (Overloading). التاني بيتحدد وقت التشغيل (Virtual Functions + Pointers).</li>
+                <li><strong>Base Pointer → Derived Object:</strong> ينفع بوينتر الأب يشاور على كائن الابن (لأن الابن Is-A الأب). بس من غير virtual بينفذ دالة الأب (Early Binding).</li>
+                <li><strong>كلمة <code>virtual</code>:</strong> بنحطها في الأب قبل الدالة. بتخلي الكومبايلر يبص على الكائن الحقيقي مش نوع البوينتر ← <span class="highlight">Late Binding = True Polymorphism!</span></li>
+                <li><strong>Pure Virtual Function:</strong> <code>virtual void func() = 0;</code> ← دالة فاضية الأب مبيكتبلهاش كود، وبيسيب الأبناء يكتبوها.</li>
+                <li><strong>Abstract Class:</strong> أي كلاس فيه ولو Pure Virtual واحدة. <span class="highlight">ممنوع تعمل منه Object!</span> بس ينفع تعمل منه Pointer.</li>
+                <li><strong>لو الابن منفذش كل الـ Pure Virtuals:</strong> الابن نفسه هيبقى Abstract ومتقدرش تعمل منه Objects.</li>
+            </ul>
+        </div>
+
+        <!-- ESSAY QUESTION SECTION -->
+        <div class="essay-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> سؤال مقالي متوقع للامتحان (Essay Question)</h2>
+            
+            <div class="essay-question">
+                <p><strong>Question:</strong> Differentiate between Early Binding and Late Binding in C++. Explain the role of the `virtual` keyword, Pure Virtual Functions, and Abstract Classes. Provide a code example showing polymorphic behavior.</p>
+            </div>
+            
+            <button class="toggle-answer-btn" onclick="document.getElementById('essayAnswer8').classList.toggle('hidden')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"/></svg>
+                أظهر الإجابة النموذجية (Show Answer)
+            </button>
+            
+            <div id="essayAnswer8" class="essay-answer hidden">
+                <h4>Model Answer:</h4>
+                <p><strong>Early Binding (Static):</strong> The compiler decides which function to call at compile time based on the pointer/reference type. Without <code>virtual</code>, a Base pointer always calls the Base version of the function.</p>
+                <p><strong>Late Binding (Dynamic):</strong> With the <code>virtual</code> keyword, the compiler defers the decision to run-time. It checks the actual object the pointer refers to, and calls the correct overridden function. This is true Run-Time Polymorphism.</p>
+                <p><strong>Pure Virtual Function:</strong> Declared as <code>virtual void func() = 0;</code>. Has no implementation in the base class. Forces all derived classes to provide their own implementation.</p>
+                <p><strong>Abstract Class:</strong> Any class with at least one pure virtual function. Cannot be instantiated directly (no objects), but can be used as a pointer type to achieve polymorphism. If a derived class fails to override all pure virtual functions, it also becomes abstract.</p>
+            </div>
+        </div>
+
+        <!-- TYPE 2: What is the Output? -->
+        <div class="output-question-section">
+            <h2>🖥️ What is the output of the following code?</h2>
+            <div class="output-q">
+                <p>Q1:</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Base</span> {
+<span class="keyword">public</span>:
+    <span class="keyword">virtual</span> <span class="type">void</span> show() { cout &lt;&lt; <span class="string">"Base "</span>; }
+};
+<span class="keyword">class</span> <span class="type">Derived</span> : <span class="keyword">public</span> <span class="type">Base</span> {
+<span class="keyword">public</span>:
+    <span class="type">void</span> show() { cout &lt;&lt; <span class="string">"Derived "</span>; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Base</span> *ptr = <span class="keyword">new</span> <span class="type">Derived</span>();
+    ptr<span class="operator">-&gt;</span>show();
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">Derived<br>(Because of <code>virtual</code> in Base, late binding occurs and the actual object's function is called)</div>
+            </div>
+            <div class="output-q">
+                <p>Q2:</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Animal</span> {
+<span class="keyword">public</span>:
+    <span class="type">void</span> sound() { cout &lt;&lt; <span class="string">"Animal "</span>; }
+};
+<span class="keyword">class</span> <span class="type">Cat</span> : <span class="keyword">public</span> <span class="type">Animal</span> {
+<span class="keyword">public</span>:
+    <span class="type">void</span> sound() { cout &lt;&lt; <span class="string">"Meow "</span>; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Animal</span> *ptr = <span class="keyword">new</span> <span class="type">Cat</span>();
+    ptr<span class="operator">-&gt;</span>sound();
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">Animal<br>(Early binding! No <code>virtual</code> keyword in Base, so the compiler calls the pointer's type function)</div>
+            </div>
+        </div>
+
+        <!-- TYPE 3: Write a Line of Code -->
+        <div class="write-code-section">
+            <h2>✍️ Write a line of code for the following statements</h2>
+            <div class="write-q">
+                <p>Q1: Declare a Pure Virtual Function called <code>calculateArea</code> that returns a <code>float</code> in a class <code>Shape</code>.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="keyword">virtual</span> <span class="type">float</span> calculateArea() = <span class="number">0</span>;</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q2: Create an array of 3 pointers to the base class <code>Shape</code>.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">Shape</span> *arr[<span class="number">3</span>];</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q3: Given <code>Shape *arr[3]</code> and derived classes <code>Circle</code> and <code>Square</code>, assign a new Circle object to the first element and a Square object to the second element.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code">arr[<span class="number">0</span>] = <span class="keyword">new</span> <span class="type">Circle</span>();
+arr[<span class="number">1</span>] = <span class="keyword">new</span> <span class="type">Square</span>();</div></div>
+            </div>
+        </div>
+
+        <!-- TYPE 4: Code Analysis -->
+        <div class="code-analysis-section">
+            <h2>🔍 Based on the following code, answer all the following questions</h2>
+            <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Vehicle</span> {
+<span class="keyword">public</span>:
+    <span class="keyword">virtual</span> <span class="type">void</span> move() = <span class="number">0</span>;
+};
+
+<span class="keyword">class</span> <span class="type">Car</span> : <span class="keyword">public</span> <span class="type">Vehicle</span> {
+<span class="keyword">public</span>:
+    <span class="type">void</span> move() { cout &lt;&lt; <span class="string">"Driving on road"</span> &lt;&lt; endl; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Vehicle</span> v;
+    <span class="type">Vehicle</span> *ptr = <span class="keyword">new</span> <span class="type">Car</span>();
+    ptr<span class="operator">-&gt;</span>move();
+}
+            </div>
+            <div class="analysis-q">
+                <p>a) What is the error in this code?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><strong>Compilation Error</strong> at <code>Vehicle v;</code>. Vehicle is an <strong>Abstract Class</strong> because it contains a pure virtual function (<code>move() = 0</code>), so we cannot instantiate objects from it.</div>
+            </div>
+            <div class="analysis-q">
+                <p>b) If we remove the error line, what is the output?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><code>Driving on road</code></div>
+            </div>
+            <div class="analysis-q">
+                <p>c) What is the benefit of having <code>Vehicle *ptr</code> point to <code>new Car()</code>?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">This is the essence of <strong>Polymorphism</strong>. A single Base pointer can manage multiple Derived objects (Car, Boat, Plane) uniformly, calling the appropriate overridden method at runtime without needing to know the exact object type in advance.</div>
+            </div>
+        </div>
+
+    </div>
+
+
+        <!-- Progress Tracking -->
+        <div class="completion-section" style="text-align: center; margin-top: 3rem; margin-bottom: 2rem;">
+            <button class="completion-btn" onclick="markLectureCompleted(this, 'lec8')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                لقد أتممت المحاضرة
+            </button>
+        </div>
+    <script src="../app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Particles
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 60, "density": { "enable": true, "value_area": 900 } },
+                    "color": { "value": ["#8b5cf6", "#6366f1", "#3b82f6"] },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 } },
+                    "size": { "value": 3, "random": true },
+                    "line_linked": { "enable": true, "distance": 150, "color": "#6366f1", "opacity": 0.2, "width": 1 },
+                    "move": { "enable": true, "speed": 1.2, "direction": "none", "random": true, "out_mode": "out", "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                    "modes": { "grab": { "distance": 180, "line_linked": { "opacity": 0.6 } }, "push": { "particles_nb": 3 } }
+                },
+                "retina_detect": true
+            });
+        }
+        // Glow cursor
+        var gc = document.getElementById('glowCursor');
+        if (gc) { document.addEventListener('mousemove', function(e) { gc.style.left = e.clientX + 'px'; gc.style.top = e.clientY + 'px'; }); }
+        // Scroll reveal for slides
+        var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.slide-container, .quiz-section, .summary-section, .essay-section').forEach(function(el) { obs.observe(el); });
+    });
+    </script>
+
+</body>
+</html>

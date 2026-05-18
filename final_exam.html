@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بنك أسئلة الفاينال الشامل - موسوعة الـ OOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .exam-header {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
+            border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+        .exam-header h1 {
+            color: #fbbf24;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .exam-header p {
+            color: #d1d5db;
+            font-size: 1.2rem;
+        }
+    </style>
+
+    <style>
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; }
+        .header-nav { position: sticky; z-index: 100; }
+        .floating-shapes {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-shapes span {
+            position: absolute;
+            display: block;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 50%;
+            animation: floatUp 25s linear infinite;
+        }
+        .floating-shapes span:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .floating-shapes span:nth-child(2) { width: 20px; height: 20px; left: 20%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-shapes span:nth-child(3) { width: 60px; height: 60px; left: 35%; animation-delay: 4s; animation-duration: 22s; }
+        .floating-shapes span:nth-child(4) { width: 40px; height: 40px; left: 50%; animation-delay: 0s; animation-duration: 18s; }
+        .floating-shapes span:nth-child(5) { width: 15px; height: 15px; left: 65%; animation-delay: 3s; animation-duration: 30s; }
+        .floating-shapes span:nth-child(6) { width: 90px; height: 90px; left: 75%; animation-delay: 5s; animation-duration: 27s; }
+        .floating-shapes span:nth-child(7) { width: 50px; height: 50px; left: 85%; animation-delay: 7s; animation-duration: 15s; }
+        .floating-shapes span:nth-child(8) { width: 25px; height: 25px; left: 45%; animation-delay: 1s; animation-duration: 35s; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .glow-cursor {
+            position: fixed;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        body:hover .glow-cursor { opacity: 1; }
+        .slide-container {
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .slide-container.vis { opacity: 1; transform: translateY(0); }
+        @media (max-width: 768px) {
+            .container { padding: 1rem !important; }
+            .slide-container { padding: 1.5rem !important; }
+            .header-nav { flex-direction: column; gap: 0.5rem; padding: 0.8rem !important; }
+            .header-nav h2 { font-size: 0.9rem !important; }
+        }
+    </style>
+
+</head>
+<body>
+
+    <div id="particles-js"></div>
+    <div class="floating-shapes">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="glow-cursor" id="glowCursor"></div>
+
+<div class="progress-bar-top" id="progressBar"></div>
+
+    <header class="header-nav">
+        <a href="index.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            الرجوع للقائمة الرئيسية (Back to Home)
+        </a>
+        <h2 style="margin:0; font-size: 1.2rem;">Comprehensive Final Exam</h2>
+    </header>
+
+    <div class="container">
+        
+        <div class="exam-header">
+            <h1>🏆 المراجعة النهائية الشاملة 🏆</h1>
+            <p>تشمل أهم الأفكار المتوقعة في الامتحان من المحاضرة 1 إلى المحاضرة 10</p>
+            <p style="color: #a78bfa; font-weight: bold; margin-top: 15px;">إعداد المهندس: Ahmed Amir Ahmed</p>
+        </div>
+
+        <!-- القسم الأول: توقع المخرجات (Output Questions) -->
+        <h2 style="color: #60a5fa; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; margin-top: 3rem;">القسم الأول: توقع المخرجات (What is the Output?) 🖥️</h2>
+
+        <div class="output-question-section">
+            <h3>Q1. Pointers & References (Lectures 4 & 5)</h3>
+            <pre class="slide-code" dir="ltr"><code>#include &lt;iostream&gt;
+using namespace std;
+
+void modify(int* p, int& r) {
+    *p = 10;
+    r = 20;
+}
+
+int main() {
+    int a = 5;
+    int b = 5;
+    modify(&a, b);
+    cout << a << " " << b << endl;
+    return 0;
+}</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong>Output:</strong><br>
+                    <pre dir="ltr" style="background: #111827; padding: 10px; border-radius: 8px; color: #a7f3d0;">10 20</pre>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <strong>Explanation:</strong>
+                    <p dir="ltr" style="color: #d1d5db; margin-bottom: 10px;">The function takes a pointer to `a` and a reference to `b`. Dereferencing `p` changes `a`'s actual value in memory to 10. Modifying `r` directly changes `b`'s value to 20 because it is passed by reference.</p>
+                    <p style="color: #9ca3af; font-size: 0.95rem;"><strong>بالعامية:</strong> هنا إحنا باعتين المتغير الأول <code>a</code> كـ Pointer يعني بعتنا عنوانه في الميموري، فلما غيرنا <code>*p</code> اتغيرت القيمة الأصلية لـ 10. والمتغير التاني <code>b</code> مبعوت كـ Reference (يعني اسم دلع لنفس المكان في الميموري)، فلما غيرنا <code>r</code> لـ 20، اتغيرت <code>b</code> الأصلية لـ 20 بردو. فالطباعة هتكون 10 20.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="output-question-section">
+            <h3>Q2. Inheritance & Constructors (Lectures 6 & 7)</h3>
+            <pre class="slide-code" dir="ltr"><code>#include &lt;iostream&gt;
+using namespace std;
+
+class Base {
+public:
+    Base() { cout << "B "; }
+    ~Base() { cout << "~B "; }
+};
+
+class Derived : public Base {
+public:
+    Derived() { cout << "D "; }
+    ~Derived() { cout << "~D "; }
+};
+
+int main() {
+    Derived obj;
+    return 0;
+}</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong>Output:</strong><br>
+                    <pre dir="ltr" style="background: #111827; padding: 10px; border-radius: 8px; color: #a7f3d0;">B D ~D ~B </pre>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <strong>Explanation:</strong>
+                    <p dir="ltr" style="color: #d1d5db; margin-bottom: 10px;">When a derived class object is created, the Base class constructor is called first, followed by the Derived class constructor. When the object goes out of scope, destructors are called in the exact reverse order: Derived first, then Base.</p>
+                    <p style="color: #9ca3af; font-size: 0.95rem;"><strong>بالعامية:</strong> القاعدة بتقول: وأنت بتبني العمارة بتبني الأساس (Base) الأول وبعدين الدور اللي فوقه (Derived). لكن وأنت بتهد (Destructor)، بتهد من فوق لتحت. عشان كده الـ Constructor بتاع الـ Base اشتغل الأول وطبع B، بعده الـ Derived طبع D. ولما البرنامج خلص، الـ Destructor بتاع الـ Derived اشتغل الأول وطبع ~D، وبعده بتاع الـ Base طبع ~B.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="output-question-section">
+            <h3>Q3. Run-time Polymorphism (Lecture 8)</h3>
+            <pre class="slide-code" dir="ltr"><code>#include &lt;iostream&gt;
+using namespace std;
+
+class Animal {
+public:
+    virtual void sound() { cout << "Animal "; }
+};
+
+class Dog : public Animal {
+public:
+    void sound() { cout << "Bark "; }
+};
+
+int main() {
+    Animal* ptr = new Dog();
+    ptr->sound();
+    delete ptr;
+    return 0;
+}</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong>Output:</strong><br>
+                    <pre dir="ltr" style="background: #111827; padding: 10px; border-radius: 8px; color: #a7f3d0;">Bark </pre>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <strong>Explanation:</strong>
+                    <p dir="ltr" style="color: #d1d5db; margin-bottom: 10px;">Because `sound()` is declared as `virtual` in the base class, C++ uses dynamic binding (run-time polymorphism). It looks at the actual object type (`Dog`) the pointer is pointing to, rather than the pointer's type (`Animal*`), and calls `Dog::sound()`.</p>
+                    <p style="color: #9ca3af; font-size: 0.95rem;"><strong>بالعامية:</strong> طالما حطينا كلمة <code>virtual</code> قبل الفانكشن في الـ Base class، يبقى الـ C++ هيستنى وقت التشغيل (Run-time) عشان يشوف البوينتر ده بيشاور على أوبجيكت نوعه إيه بالظبط. هنا هو بيشاور على <code>Dog</code>، فهينفذ الفانكشن بتاعت الكلب ويطبع Bark، ومش هيبص لنوع البوينتر نفسه.</p>
+                </div>
+            </details>
+        </div>
+
+
+        <!-- القسم الثاني: كتابة الكود (Write Code) -->
+        <h2 style="color: #34d399; border-bottom: 2px solid #10b981; padding-bottom: 10px; margin-top: 4rem;">القسم الثاني: كتابة الأكواد (Write Code / Missing Parts) ✍️</h2>
+
+        <div class="write-code-section">
+            <h3>Q4. Operator Overloading (Lectures 9 & 10)</h3>
+            <p>Write the missing member function to overload the <code>+</code> operator for the <code>Complex</code> class so that <code>c3 = c1 + c2</code> works correctly.</p>
+            <pre class="slide-code" dir="ltr"><code>class Complex {
+private:
+    int real, imag;
+public:
+    Complex(int r = 0, int i = 0) : real(r), imag(i) {}
+    
+    // Write the operator+ function here
+    _________________________________________
+    _________________________________________
+    _________________________________________
+    _________________________________________
+};</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong>Answer:</strong>
+                    <pre class="slide-code" dir="ltr" style="border-left: 4px solid #10b981;"><code>Complex operator+(const Complex& obj) {
+    Complex temp;
+    temp.real = real + obj.real;
+    temp.imag = imag + obj.imag;
+    return temp;
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <strong>Explanation:</strong>
+                    <p dir="ltr" style="color: #d1d5db; margin-bottom: 10px;">The overloaded operator takes a constant reference to another `Complex` object. It creates a temporary object, adds the calling object's properties with the passed object's properties, and returns the new temporary object.</p>
+                    <p style="color: #9ca3af; font-size: 0.95rem;"><strong>بالعامية:</strong> دالة الـ Overloading هنا بترجع أوبجيكت جديد من نوع <code>Complex</code>. بتاخد أوبجيكت تاني كـ Parameter (اللي هو <code>c2</code>). جوه الدالة بنعمل أوبجيكت مؤقت <code>temp</code>، بنجمع فيه الحقيقي مع الحقيقي والتخيلي مع التخيلي، وفي الآخر بنـ return الـ <code>temp</code> ده عشان يتخزن في <code>c3</code>.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="write-code-section">
+            <h3>Q5. Pure Virtual Functions (Lecture 8)</h3>
+            <p>Make the <code>Shape</code> class an <strong>Abstract Class</strong> by defining a pure virtual function called <code>draw()</code>.</p>
+            <pre class="slide-code" dir="ltr"><code>class Shape {
+public:
+    // Write the pure virtual function here
+    _________________________________________
+};</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong>Answer:</strong>
+                    <pre class="slide-code" dir="ltr" style="border-left: 4px solid #10b981;"><code>virtual void draw() = 0;</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <strong>Explanation:</strong>
+                    <p dir="ltr" style="color: #d1d5db; margin-bottom: 10px;">A pure virtual function is declared by assigning `0` to a virtual function. This makes the class abstract, meaning you cannot instantiate objects from it directly.</p>
+                    <p style="color: #9ca3af; font-size: 0.95rem;"><strong>بالعامية:</strong> عشان نخلي الكلاس Abstract (يعني كلاس وهمي مقدرش أعمل منه أوبجيكت صريح)، بنعمل دالة <code>virtual</code> وبنساويها بـ 0. ده معناه إن أي كلاس هيورث من <code>Shape</code> غصب عنه لازم يكتب الكود بتاع دالة <code>draw</code>.</p>
+                </div>
+            </details>
+        </div>
+
+
+        <!-- القسم الثالث: تحليل الأكواد (Code Analysis) -->
+        <h2 style="color: #f87171; border-bottom: 2px solid #ef4444; padding-bottom: 10px; margin-top: 4rem;">القسم الثالث: تحليل الأخطاء (Code Analysis & Bug Fixing) 🔍</h2>
+
+        <div class="code-analysis-section">
+            <h3>Q6. Deep vs Shallow Copy (Lecture 5)</h3>
+            <p>Identify the hidden bug in the following code and state how to fix it.</p>
+            <pre class="slide-code" dir="ltr"><code>class String {
+    char* data;
+public:
+    String(const char* str) {
+        data = new char[strlen(str) + 1];
+        strcpy(data, str);
+    }
+    ~String() { delete[] data; }
+};
+
+int main() {
+    String s1("Hello");
+    String s2 = s1; // What goes wrong here?
+    return 0;
+}</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong>The Bug:</strong>
+                    <p dir="ltr" style="color: #fca5a5; margin-bottom: 10px;"><strong>Shallow Copy causing a Double Free Error.</strong> When `s2` is created, the default copy constructor copies the pointer `data` exactly. Both `s1.data` and `s2.data` point to the SAME memory address. When `main()` ends, the destructor is called twice for the same memory, crashing the program.</p>
+                    <strong>The Fix:</strong>
+                    <p dir="ltr" style="color: #a7f3d0; margin-bottom: 10px;">Implement a Custom Copy Constructor (Deep Copy):</p>
+                    <pre class="slide-code" dir="ltr" style="border-left: 4px solid #10b981;"><code>String(const String& obj) {
+    data = new char[strlen(obj.data) + 1];
+    strcpy(data, obj.data);
+}</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <strong>Explanation:</strong>
+                    <p style="color: #9ca3af; font-size: 0.95rem;"><strong>بالعامية:</strong> المشكلة هنا خطيرة جداً! لما عملنا <code>s2 = s1</code> الكومبايلر عمل Shallow Copy (نسخ سطحي)، يعني خلى البوينتر بتاع <code>s2</code> يشاور على نفس المكان اللي بيشاور عليه <code>s1</code>. ولما البرنامج يخلص، هيمسح المكان ده مرتين (مرة لـ s1 ومرة لـ s2)، وده بيعمل Crash. الحل إننا نعمل Copy Constructor يعمل Deep Copy (نسخ عميق)، يعني يحجز مكان جديد في الميموري لـ <code>s2</code> وينسخ فيه الحروف.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h3>Q7. Constant Member Functions (Lecture 4)</h3>
+            <p>Why will this code generate a compilation error?</p>
+            <pre class="slide-code" dir="ltr"><code>class Point {
+    int x, y;
+public:
+    Point(int x=0, int y=0) : x(x), y(y) {}
+    void print() { cout << x << "," << y; }
+};
+
+void showPoint(const Point& p) {
+    p.print(); // ERROR here
+}</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong>The Bug:</strong>
+                    <p dir="ltr" style="color: #fca5a5; margin-bottom: 10px;">Calling a non-const function (`print`) on a `const` object (`p`).</p>
+                    <strong>The Fix:</strong>
+                    <p dir="ltr" style="color: #a7f3d0; margin-bottom: 10px;">Mark the `print` function as constant by adding the `const` keyword at the end of its declaration:</p>
+                    <pre class="slide-code" dir="ltr" style="border-left: 4px solid #10b981;"><code>void print() const { cout << x << "," << y; }</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <strong>Explanation:</strong>
+                    <p style="color: #9ca3af; font-size: 0.95rem;"><strong>بالعامية:</strong> في دالة <code>showPoint</code> إحنا باعتين الأوبجيكت كـ <code>const</code> يعني بنقول للكومبايلر "ممنوع أي حد يعدل في الأوبجيكت ده". لكن دالة <code>print</code> مش مكتوب جنبها إنها <code>const</code>، فالكومبايلر بيخاف يخليك تناديها لإنها ممكن تكون بتعدل في الداتا. الحل إننا نحط كلمة <code>const</code> بعد دالة <code>print</code> عشان نطمن الكومبايلر إنها دالة للقراءة فقط (Read-only).</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="output-question-section">
+            <h3>Q8. Static Members (Lecture 4)</h3>
+            <pre class="slide-code" dir="ltr"><code>#include &lt;iostream&gt;
+using namespace std;
+
+class Test {
+    static int count;
+public:
+    Test() { count++; }
+    static int getCount() { return count; }
+};
+
+int Test::count = 0;
+
+int main() {
+    Test t1, t2;
+    {
+        Test t3;
+        cout << Test::getCount() << " ";
+    }
+    cout << t1.getCount() << endl;
+    return 0;
+}</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong>Output:</strong><br>
+                    <pre dir="ltr" style="background: #111827; padding: 10px; border-radius: 8px; color: #a7f3d0;">3 3</pre>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <strong>Explanation:</strong>
+                    <p dir="ltr" style="color: #d1d5db; margin-bottom: 10px;">Static members are shared across all objects of the class. By the time `t3` is created, `count` is 3. When `t3` goes out of scope, the object is destroyed but the `count` is NOT decremented (since we didn't write `count--` in the destructor). Thus, `getCount()` still returns 3.</p>
+                    <p style="color: #9ca3af; font-size: 0.95rem;"><strong>بالعامية:</strong> المتغير الـ Static بيبقى مشترك بين كل الأوبجيكتس مش خاص بواحد بس. عملنا 3 أوبجيكتس (t1, t2, t3) فالـ count زاد 3 مرات وبقى بـ 3، فطبعنا 3. الأوبجيكت التالت t3 اتمسح بعد القوس، بس إحنا معملناش Destructor يقلل الـ count ففضلت قيمته 3 زي ما هي لما طبعنا تاني.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="output-question-section">
+            <h3>Q9. Virtual Destructors (Lecture 8)</h3>
+            <pre class="slide-code" dir="ltr"><code>#include &lt;iostream&gt;
+using namespace std;
+
+class Base {
+public:
+    Base() { cout << "B() "; }
+    ~Base() { cout << "~B() "; }
+};
+
+class Derived : public Base {
+public:
+    Derived() { cout << "D() "; }
+    ~Derived() { cout << "~D() "; }
+};
+
+int main() {
+    Base* ptr = new Derived();
+    delete ptr;
+    return 0;
+}</code></pre>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong>Output:</strong><br>
+                    <pre dir="ltr" style="background: #111827; padding: 10px; border-radius: 8px; color: #fca5a5;">B() D() ~B()</pre>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <strong>Explanation:</strong>
+                    <p dir="ltr" style="color: #d1d5db; margin-bottom: 10px;">This is a memory leak issue! Because the destructor in `Base` is NOT `virtual`, when we delete a `Base` pointer pointing to a `Derived` object, only the `Base` destructor is called. The `Derived` part of the object remains undeleted.</p>
+                    <p style="color: #9ca3af; font-size: 0.95rem;"><strong>بالعامية:</strong> ركز هنا! إحنا عملنا بوينتر نوعه <code>Base</code> بيشاور على <code>Derived</code>. لما جينا نعمل <code>delete</code>، الكومبايلر بيبص على نوع البوينتر عشان مفيش كلمة <code>virtual</code> قبل الـ Destructor، فقام ماسح الجزء بتاع الأب بس وطبع <code>~B()</code>. الجزء بتاع الابن فضل في الميموري وعملنا Memory Leak. عشان نصلح ده لازم نكتب <code>virtual ~Base()</code>.</p>
+                </div>
+            </details>
+        </div>
+
+
+        <!-- القسم الرابع: أسئلة الـ UML -->
+        <h2 style="color: #c084fc; border-bottom: 2px solid #a855f7; padding-bottom: 10px; margin-top: 4rem;">القسم الرابع: تصميم الـ UML (UML Diagrams) 📊</h2>
+
+        <div class="code-analysis-section">
+            <h3>Q10. UML Class Diagram to Code (Lectures 2 & 3)</h3>
+            <p>Write the C++ class declaration that matches the following UML diagram:</p>
+            <div style="background: white; color: black; padding: 15px; border-radius: 8px; font-family: monospace; width: fit-content; margin: 10px auto; border: 2px solid #333;">
+                <strong>BankAccount</strong><br>
+                -------------------<br>
+                - accountNumber: int<br>
+                - balance: double<br>
+                -------------------<br>
+                + BankAccount(accNum: int, bal: double)<br>
+                + deposit(amount: double): void<br>
+                + getBalance(): double<br>
+            </div>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong>Answer:</strong>
+                    <pre class="slide-code" dir="ltr" style="border-left: 4px solid #10b981;"><code>class BankAccount {
+private:
+    int accountNumber;
+    double balance;
+public:
+    BankAccount(int accNum, double bal);
+    void deposit(double amount);
+    double getBalance();
+};</code></pre>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <strong>Explanation:</strong>
+                    <p dir="ltr" style="color: #d1d5db; margin-bottom: 10px;">In UML, the `-` sign means `private` and the `+` sign means `public`. The colon `:` is used to indicate the return type or variable type.</p>
+                    <p style="color: #9ca3af; font-size: 0.95rem;"><strong>بالعامية:</strong> في الـ UML دايماً علامة الناقص <code>-</code> معناها إن الحاجة دي <code>private</code>، وعلامة الزائد <code>+</code> معناها <code>public</code>. وبنكتب اسم المتغير وبعدين نقطتين فوق بعض <code>:</code> وبعدين نوعه، ولما نيجي نحولها لكود بنقلب الترتيب ونخلي النوع الأول وبعده الاسم.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="code-analysis-section">
+            <h3>Q11. UML Relationships (Aggregation vs Composition)</h3>
+            <p>What is the difference between the solid diamond and the hollow diamond in a UML class diagram?</p>
+            <details class="essay-answer">
+                <summary class="reveal-answer">👁️ إظهار الإجابة والتفسير</summary>
+                <div class="answer-content">
+                    <strong>Answer:</strong>
+                    <p dir="ltr" style="color: #a7f3d0; margin-bottom: 10px;">
+                        <strong>Solid Diamond (Composition):</strong> "Part-of" relationship where the child object's lifecycle depends strictly on the parent. If the parent is destroyed, the child is destroyed.<br>
+                        <strong>Hollow Diamond (Aggregation):</strong> "Has-a" relationship where the child object can exist independently of the parent.
+                    </p>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <p style="color: #9ca3af; font-size: 0.95rem;"><strong>بالعامية:</strong> <br>
+                    - المعين المتظلل أسود (Solid Diamond) ده بيعبر عن الـ Composition يعني علاقة حياة أو موت. لو الكلاس الأب اتمسح، الابن هيتمسح معاه (زي الموبايل والبطارية الداخلية بتاعته).<br>
+                    - المعين الفاضي (Hollow Diamond) ده بيعبر عن الـ Aggregation يعني علاقة "عنده"، بس لو الأب اتمسح، الابن هيفضل موجود عادي (زي الطالب والمدرسة، لو المدرسة اتقفلت الطالب هيفضل موجود عادي).</p>
+                </div>
+            </details>
+        </div>
+
+    
+        
+    
+        <div style="text-align: center; margin: 4rem 0;">
+            <a href="mega_question_bank.html" style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 15px 30px; border-radius: 50px; font-size: 1.5rem; text-decoration: none; font-weight: bold; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4); transition: transform 0.3s ease;">
+                🚀 انتقل إلى بنك الأسئلة الشامل (Mega Question Bank)
+            </a>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+
+    
+    <!-- Vanilla-tilt.js -->
+    
+    <!-- Typed.js -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Vanilla-tilt
+            // VanillaTilt.init(document.querySelectorAll(".lecture-card"), {
+                max: 15,
+                speed: 400,
+                glare: true,
+                "max-glare": 0.2,
+                scale: 1.05
+            });
+
+            // Add particles container if not exists
+            if (!document.getElementById('particles-js')) {
+                const particlesDiv = document.createElement('div');
+                particlesDiv.id = 'particles-js';
+                particlesDiv.style.position = 'fixed';
+                particlesDiv.style.top = '0';
+                particlesDiv.style.left = '0';
+                particlesDiv.style.width = '100%';
+                particlesDiv.style.height = '100%';
+                particlesDiv.style.zIndex = '-1';
+                document.body.prepend(particlesDiv);
+                
+                // Initialize Particles
+                particlesJS('particles-js', {
+  "particles": {
+    "number": { "value": 100, "density": { "enable": true, "value_area": 800 } },
+    "color": { "value": "#ffffff" },
+    "shape": { "type": "circle" },
+    "opacity": { "value": 0.5, "random": false },
+    "size": { "value": 3, "random": true },
+    "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.4, "width": 1 },
+    "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+  },
+  "interactivity": {
+    "detect_on": "canvas",
+    "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+    "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "push": { "particles_nb": 4 } }
+  },
+  "retina_detect": true
+});
+            }
+
+            // Initialize Typed.js if typed-text element exists
+            if (document.querySelector('.typed-text')) {
+                new Typed('.typed-text', {
+                    strings: ['موسوعة البرمجة الكائنية (OOP)', 'تعلم البرمجة باحترافية', 'أفضل مرجع لطلاب حاسبات'],
+                    typeSpeed: 50,
+                    backSpeed: 30,
+                    loop: true,
+                    showCursor: true,
+                    cursorChar: '|'
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

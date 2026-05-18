@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ OOP - Lab Sheets & UML 📊</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Prism.js for beautiful Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    
+    <style>
+        .sheet-section {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        .sheet-header {
+            color: #a7f3d0;
+            border-bottom: 2px solid rgba(167, 243, 208, 0.3);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .sheet-header i {
+            font-size: 1.5rem;
+            color: #34d399;
+        }
+        .uml-box {
+            background: #0f172a;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            color: #93c5fd;
+            text-align: left;
+            direction: ltr;
+            margin: 20px 0;
+            white-space: pre;
+            overflow-x: auto;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+        }
+        .uml-title {
+            color: #60a5fa;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #3b82f6;
+            display: inline-block;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        pre[class*="language-"] {
+            border-radius: 8px;
+            margin: 1.5em 0;
+            font-family: 'Fira Code', monospace;
+            direction: ltr;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        code[class*="language-"] {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+        }
+        .token.comment {
+            color: #a7f3d0 !important;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.05rem;
+            font-style: normal;
+        }
+    </style>
+
+    <style>
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; }
+        .header-nav { position: sticky; z-index: 100; }
+        .floating-shapes {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-shapes span {
+            position: absolute;
+            display: block;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 50%;
+            animation: floatUp 25s linear infinite;
+        }
+        .floating-shapes span:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .floating-shapes span:nth-child(2) { width: 20px; height: 20px; left: 20%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-shapes span:nth-child(3) { width: 60px; height: 60px; left: 35%; animation-delay: 4s; animation-duration: 22s; }
+        .floating-shapes span:nth-child(4) { width: 40px; height: 40px; left: 50%; animation-delay: 0s; animation-duration: 18s; }
+        .floating-shapes span:nth-child(5) { width: 15px; height: 15px; left: 65%; animation-delay: 3s; animation-duration: 30s; }
+        .floating-shapes span:nth-child(6) { width: 90px; height: 90px; left: 75%; animation-delay: 5s; animation-duration: 27s; }
+        .floating-shapes span:nth-child(7) { width: 50px; height: 50px; left: 85%; animation-delay: 7s; animation-duration: 15s; }
+        .floating-shapes span:nth-child(8) { width: 25px; height: 25px; left: 45%; animation-delay: 1s; animation-duration: 35s; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .glow-cursor {
+            position: fixed;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        body:hover .glow-cursor { opacity: 1; }
+        .slide-container {
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .slide-container.vis { opacity: 1; transform: translateY(0); }
+        @media (max-width: 768px) {
+            .container { padding: 1rem !important; }
+            .slide-container { padding: 1.5rem !important; }
+            .header-nav { flex-direction: column; gap: 0.5rem; padding: 0.8rem !important; }
+            .header-nav h2 { font-size: 0.9rem !important; }
+        }
+    </style>
+
+</head>
+<body class="lecture-page">
+    <div id="particles-js" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; "></div>
+
+    <header class="main-header">
+        <a href="index.html" class="back-btn"><i class="fas fa-home"></i> العودة للرئيسية</a>
+        <h1>سكاشن اللابات والشيتات 👨‍💻</h1>
+        <p class="subtitle">جميع الشيتات من 1 لـ 9 مع الأسئلة، رسومات UML كاملة، وشرح الأكواد بالكارز والكومنتات الجانبية</p>
+        <p class="author" style="color: #a7f3d0; font-weight: bold; margin-top: 10px;">إعداد: Ahmed Amir Ahmed</p>
+    </header>
+
+    <div class="content-container">
+
+        <!-- Sheet 1 -->
+        <div class="sheet-section">
+            <h2 class="sheet-header"><i class="fas fa-play"></i> Sheet 1: Introduction to OOP & Structs</h2>
+            <p><strong>Question:</strong> Create a simple <code>struct Rectangle</code> that has length and width. Write a function to calculate the area and display the result.</p>
+            
+            <div class="uml-box" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
+<div class="uml-title">UML Class Diagram: Rectangle</div>
+---------------------------------------
+<< Struct >>
+Rectangle
+---------------------------------------
+- length: float
+- width: float
+---------------------------------------
++ calcArea(r: Rectangle): float
+---------------------------------------
+            </div>
+
+            <div class="code-analysis-section">
+                <h3>C++ Implementation</h3>
+                <details class="essay-answer" open>
+                    <summary class="reveal-answer">👁️ إظهار الكود بالتلوين والشرح</summary>
+                    <div class="answer-content">
+                        <pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt; // بنستدعي مكتبة الإدخال والإخراج الأساسية
+using namespace std; // عشان نكتب cout بدل std::cout
+
+// بنعمل Structure بيمثل المستطيل
+struct Rectangle {
+    float length; // الطول
+    float width;  // العرض
+};
+
+// دالة برة الـ struct بتاخد مستطيل وتحسب مساحته
+float calcArea(Rectangle r) {
+    return r.length * r.width; // المساحة = الطول في العرض
+}
+
+int main() {
+    Rectangle rect1; // عملنا أوبجيكت (متغير) من نوع المستطيل
+    rect1.length = 5.5; // إدينا قيمة للطول
+    rect1.width = 4.0;  // إدينا قيمة للعرض
+    
+    // بنطبع النتيجة وبننده على دالة المساحة
+    cout << "Area of Rectangle: " << calcArea(rect1) << endl; 
+    return 0; // إنهاء البرنامج بنجاح
+}</code></pre>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <!-- Sheet 2 -->
+        <div class="sheet-section">
+            <h2 class="sheet-header"><i class="fas fa-shapes"></i> Sheet 2: Function Overloading</h2>
+            <p><strong>Question:</strong> Write a program that overloads a function named <code>Area()</code> to calculate the area of a circle (taking one radius) and the area of a rectangle (taking length and width).</p>
+            
+            <div class="uml-box" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
+<div class="uml-title">UML Utility Functions: Area Calculator</div>
+---------------------------------------
+<< Functions >>
+---------------------------------------
++ Area(radius: float): float
++ Area(length: float, width: float): float
+---------------------------------------
+            </div>
+
+            <div class="code-analysis-section">
+                <h3>C++ Implementation</h3>
+                <details class="essay-answer">
+                    <summary class="reveal-answer">👁️ إظهار الكود بالتلوين والشرح</summary>
+                    <div class="answer-content">
+                        <pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+// Function 1: مساحة الدايرة (بتاخد باراميتر واحد بس)
+float Area(float radius) {
+    return 3.14159 * radius * radius; // ط نق تربيع
+}
+
+// Function 2: مساحة المستطيل (نفس الاسم بس بتاخد 2 باراميترز) - ده الـ Overloading
+float Area(float length, float width) {
+    return length * width; // الطول في العرض
+}
+
+int main() {
+    float r = 5.0; // نص القطر
+    float l = 4.0, w = 3.0; // الطول والعرض
+    
+    // الكومبايلر هنا هيشوف إننا باعتين باراميتر واحد فهيروح يحسب مساحة الدايرة
+    cout << "Circle Area: " << Area(r) << endl;
+    
+    // هنا بعتنا حاجتين، فالكومبايلر هيعرف إننا قاصدين مساحة المستطيل
+    cout << "Rectangle Area: " << Area(l, w) << endl;
+    
+    return 0;
+}</code></pre>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <!-- Sheet 3 -->
+        <div class="sheet-section">
+            <h2 class="sheet-header"><i class="fas fa-car"></i> Sheet 3: Classes & Objects (TollBooth)</h2>
+            <p><strong>Question:</strong> Model a tollbooth at a bridge. Cars paying 50-cent tolls, and cars passing without paying. Track total cars and total cash.</p>
+            
+            <div class="uml-box" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
+<div class="uml-title">UML Class Diagram: tollBooth</div>
+---------------------------------------
+tollBooth
+---------------------------------------
+- totalCars: unsigned int
+- totalCash: double
+---------------------------------------
++ tollBooth()
++ payingCar(): void
++ nopayCar(): void
++ display() const: void
+---------------------------------------
+            </div>
+
+            <div class="code-analysis-section">
+                <h3>C++ Implementation</h3>
+                <details class="essay-answer">
+                    <summary class="reveal-answer">👁️ إظهار الكود بالتلوين والشرح</summary>
+                    <div class="answer-content">
+                        <pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class tollBooth {
+private:
+    unsigned int totalCars; // متغير لعدد العربيات (استخدمنا unsigned عشان مينفعش رقم سالب)
+    double totalCash;       // متغير للفلوس اللي اتجمعت
+public:
+    // Constructor - بيشتغل أول ما الأوبجيكت يتكريت
+    tollBooth() {
+        totalCars = 0; // بنصفر العداد
+        totalCash = 0.0; // بنصفر الفلوس
+    }
+    
+    // دالة لو العربية دفعت الكارتة
+    void payingCar() {
+        totalCars++;        // بنزود العداد 1
+        totalCash += 0.50;  // بنزود نص دولار للخزنة
+    }
+    
+    // دالة لو العربية هربت ومفدعتش
+    void nopayCar() {
+        totalCars++;        // بنزود العداد 1 بس، مش بنزود فلوس خالص
+    }
+    
+    // دالة الطباعة (استخدمنا const عشان نأكد للكومبايلر إنها مش هتغير في الداتا)
+    void display() const {
+        cout << "Total Cars: " << totalCars << endl;
+        cout << "Total Cash: $" << totalCash << endl;
+    }
+};
+
+int main() {
+    tollBooth booth; // عملنا كشك كارتة جديد
+    char key;
+    
+    cout << "Press 'p' for paying car, 'n' for non-paying, 'e' to exit.
+";
+    
+    do {
+        cin >> key; // بناخد إدخال من اليوزر
+        if(key == 'p') {
+            booth.payingCar(); // لو اليوزر داس p نشغل دالة الدفع
+            cout << "Paid!
+";
+        } else if(key == 'n') {
+            booth.nopayCar(); // لو داس n نشغل دالة الهروب
+            cout << "Not Paid!
+";
+        }
+    } while(key != 'e'); // اللوب تفضل شغالة لحد ما اليوزر يدوس e عشان يخرج
+    
+    cout << "
+--- Final Totals ---
+";
+    booth.display(); // نطبع الملخص النهائي
+    return 0;
+}</code></pre>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <!-- Sheet 4 -->
+        <div class="sheet-section">
+            <h2 class="sheet-header"><i class="fas fa-ruler"></i> Sheet 4: EDistance (Feet & Inches)</h2>
+            <p><strong>Question:</strong> Implement a class <code>EDistance</code> representing English distance. Convert arrays of objects to meters. (1 Foot = 12 inches, 1 Foot = 0.3048 meters).</p>
+            
+            <div class="uml-box" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
+<div class="uml-title">UML Class Diagram: EDistance</div>
+---------------------------------------
+EDistance
+---------------------------------------
+- Feet: int
+- Inches: float
+---------------------------------------
++ EDistance()
++ EDistance(int f, float i)
++ Getdistance(): void
++ Showdistance() const: void
++ Add_D(d: EDistance): EDistance
++ ToMeters(): double
+---------------------------------------
+            </div>
+
+            <div class="code-analysis-section">
+                <h3>C++ Implementation</h3>
+                <details class="essay-answer">
+                    <summary class="reveal-answer">👁️ إظهار الكود بالتلوين والشرح</summary>
+                    <div class="answer-content">
+                        <pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class EDistance {
+private:
+    int Feet;      // القدم
+    float Inches;  // البوصة
+public:
+    // Default Constructor: بيصفر القيم
+    EDistance() {
+        Feet = 0; Inches = 0.0;
+    }
+    
+    // Parameterized Constructor: بياخد قيم ابتدائية جاهزة
+    EDistance(int f, float i) {
+        Feet = f; Inches = i;
+    }
+    
+    // دالة عشان اليوزر يدخل المسافة
+    void Getdistance() {
+        cout << "Enter feet: "; cin >> Feet;
+        cout << "Enter inches: "; cin >> Inches;
+    }
+    
+    // دالة لعرض المسافة بالشكل الكلاسيكي
+    void Showdistance() const {
+        cout << Feet << "'-" << Inches << """;
+    }
+    
+    // دالة لجمع مسافتين، بتاخد مسافة كـ Parameter، وبترجع مسافة جديدة
+    EDistance Add_D(EDistance d) {
+        EDistance temp; // أوبجيكت مؤقت نخزن فيه الناتج
+        temp.Inches = Inches + d.Inches; // جمعنا البوصات
+        temp.Feet = Feet + d.Feet;       // جمعنا الأقدام
+        
+        // لو البوصات عدت الـ 12، بنطرح 12 ونزود 1 للقدم (لأن 1 قدم = 12 بوصة)
+        if(temp.Inches >= 12.0) {
+            temp.Inches -= 12.0;
+            temp.Feet++;
+        }
+        return temp; // بنرجع الأوبجيكت الناتج
+    }
+    
+    // دالة للتحويل للمتر
+    double ToMeters() {
+        // بنقسم البوصة على 12 عشان نحولها لقدم، ونجمعها على القدم الكلي
+        double totalFeet = Feet + (Inches / 12.0);
+        // نضرب الإجمالي في 0.3048 عشان يتحول لمتر
+        return totalFeet * 0.3048; 
+    }
+};
+
+int main() {
+    EDistance d1(5, 10.5), d2; // عملنا أوبجيكت بقيم جاهزة، وواحد فاضي
+    cout << "Enter d2 details:
+";
+    d2.Getdistance(); // اليوزر هيدخل بيانات التاني
+    
+    // جمعنا المسافتين وحطيناهم في أوبجيكت تالت
+    EDistance d3 = d1.Add_D(d2); 
+    cout << "
+Total Distance (d1 + d2): ";
+    d3.Showdistance();
+    
+    cout << "
+
+Testing Array Conversion:
+";
+    // أراي مكون من 5 مسافات بقيم ثابتة
+    EDistance arr[5] = { EDistance(1,0), EDistance(2,6), EDistance(3,0), EDistance(4,0), EDistance(5,0) };
+    double meters[5];
+    
+    // بنلف عليهم بلوب نحول كل واحدة למتر
+    for(int i=0; i<5; i++) {
+        meters[i] = arr[i].ToMeters();
+        cout << "Distance " << i+1 << " in meters: " << meters[i] << "m
+";
+    }
+    return 0;
+}</code></pre>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <!-- Sheet 5 -->
+        <div class="sheet-section">
+            <h2 class="sheet-header"><i class="fas fa-users"></i> Sheet 5: Pointers to Objects (Person)</h2>
+            <p><strong>Question:</strong> Creates an array of pointers to the person class. Ask the user for names and store them dynamically using <code>new</code>.</p>
+            
+            <div class="uml-box" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
+<div class="uml-title">UML Class Diagram: Person</div>
+---------------------------------------
+Person
+---------------------------------------
+- name: string
+---------------------------------------
++ Setname(): void
++ Printname() const: void
+---------------------------------------
+            </div>
+
+            <div class="code-analysis-section">
+                <h3>C++ Implementation</h3>
+                <details class="essay-answer">
+                    <summary class="reveal-answer">👁️ إظهار الكود بالتلوين والشرح</summary>
+                    <div class="answer-content">
+                        <pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Person {
+private:
+    string name; // متغير الاسم
+public:
+    // دالة لإدخال الاسم
+    void Setname() {
+        cout << "Enter name: ";
+        cin >> name;
+    }
+    // دالة لطباعة الاسم
+    void Printname() const {
+        cout << "Name: " << name << endl;
+    }
+};
+
+int main() {
+    // التريكة هنا: عملنا مصفوفة بتشيل 100 مؤشر (Pointer) مش 100 أوبجيكت حقيقي
+    // يعني لسه مخلقناش حد في الميموري
+    Person* persPtr[100]; 
+    int count = 0; // عداد يحسب عدد الناس اللي دخلناهم
+    char choice;
+    
+    do {
+        // بنستخدم new عشان نكريت أوبجيكت في الـ Heap وقت التشغيل
+        persPtr[count] = new Person; 
+        
+        // عشان نستخدم دالة من جوه Pointer بنستخدم السهم -> بدل النقطة
+        persPtr[count]->Setname(); 
+        count++; // بنزود العداد
+        
+        cout << "Enter another person? (y/n): ";
+        cin >> choice;
+    } while(choice == 'y' && count < 100);
+    
+    cout << "
+--- Displaying All Names ---
+";
+    for(int i = 0; i < count; i++) {
+        persPtr[i]->Printname(); // بنطبع الأسماء باستخدام البوينترز
+    }
+    
+    // خطوة مهمة جداً: أي حاجة اتعملها new لازم تتشال بـ delete عشان الـ Memory Leak
+    for(int i = 0; i < count; i++) {
+        delete persPtr[i]; 
+    }
+    
+    return 0;
+}</code></pre>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <!-- Sheet 6 -->
+        <div class="sheet-section">
+            <h2 class="sheet-header"><i class="fas fa-sitemap"></i> Sheet 6: Multiple Inheritance (Publication & Sales)</h2>
+            <p><strong>Question:</strong> Create classes <code>Publication</code> and <code>Sales</code>. Then derive <code>Book</code> and <code>Tape</code> from BOTH using Multiple Inheritance.</p>
+
+            <div class="uml-box" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
+<div class="uml-title">UML Class Diagram: Multiple Inheritance</div>
+      +----------------+         +-----------------+
+      |  Publication   |         |      Sales      |
+      ------------------         -------------------
+      | # title: string|         | # salesData: [] |
+      | # price: float |         |                 |
+      ------------------         -------------------
+      | + getdata()    |         | + getdata()     |
+      | + putdata()    |         | + putdata()     |
+      +----------------+         +-----------------+
+              △                          △
+              |          +---------------+
+              |          |
+      +-------+----------+--------+
+      |                           |
++-----+------+              +-----+------+
+|   Book     |              |   Tape     |
+--------------              --------------
+| - pageCount|              | - playTime |
+--------------              --------------
+| + getdata()|              | + getdata()|
+| + putdata()|              | + putdata()|
++------------+              +------------+
+            </div>
+
+            <div class="code-analysis-section">
+                <h3>C++ Implementation</h3>
+                <details class="essay-answer">
+                    <summary class="reveal-answer">👁️ إظهار الكود بالتلوين والشرح</summary>
+                    <div class="answer-content">
+                        <pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+// الأب الأول (للمعلومات العامة للكتاب/الشريط)
+class Publication {
+protected: // استخدمنا protected عشان الأبناء يقدروا يشوفوا المتغيرات دي
+    string title;
+    float price;
+public:
+    void getdata() {
+        cout << "Enter title: "; cin >> title;
+        cout << "Enter price: "; cin >> price;
+    }
+    void putdata() const {
+        cout << "Title: " << title << ", Price: $" << price << endl;
+    }
+};
+
+// الأب التاني (للمبيعات)
+class Sales {
+protected:
+    float salesData[3]; // أراي لمبيعات آخر 3 شهور
+public:
+    void getdata() {
+        for(int i=0; i<3; i++) {
+            cout << "Enter month " << i+1 << " sales: $";
+            cin >> salesData[i];
+        }
+    }
+    void putdata() const {
+        for(int i=0; i<3; i++) {
+            cout << "Month " << i+1 << " sales: $" << salesData[i] << endl;
+        }
+    }
+};
+
+// الابن الأول: وارث من الأبين (Multiple Inheritance)
+class Book : public Publication, public Sales {
+private:
+    int pageCount; // حاجة خاصة بالكتاب بس (عدد الصفحات)
+public:
+    void getdata() {
+        Publication::getdata(); // ننده على إدخال البيانات الخاصة بالنشر
+        cout << "Enter page count: "; cin >> pageCount;
+        Sales::getdata(); // وننده على إدخال البيانات الخاصة بالمبيعات
+    }
+    void putdata() const {
+        Publication::putdata(); // طباعة بيانات النشر
+        cout << "Pages: " << pageCount << endl;
+        Sales::putdata(); // طباعة بيانات المبيعات
+    }
+};
+
+// الابن التاني: وارث من الأبين برضه
+class Tape : public Publication, public Sales {
+private:
+    float playingTime; // حاجة خاصة بالشريط بس (وقت التشغيل)
+public:
+    void getdata() {
+        Publication::getdata();
+        cout << "Enter playing time (mins): "; cin >> playingTime;
+        Sales::getdata();
+    }
+    void putdata() const {
+        Publication::putdata();
+        cout << "Playing Time: " << playingTime << " mins" << endl;
+        Sales::putdata();
+    }
+};
+
+int main() {
+    Book b1;
+    Tape t1;
+    
+    // مجرد ما ننده getdata للكتاب، هو هيسحب كل البيانات ليه ولأجداده
+    cout << "--- Book Data ---
+";
+    b1.getdata();
+    
+    cout << "
+--- Tape Data ---
+";
+    t1.getdata();
+    
+    cout << "
+
+=== Output ===
+";
+    b1.putdata();
+    cout << "---------
+";
+    t1.putdata();
+    
+    return 0;
+}</code></pre>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <!-- Sheet 7 -->
+        <div class="sheet-section">
+            <h2 class="sheet-header"><i class="fas fa-bank"></i> Sheet 7: Run-time Polymorphism (Account)</h2>
+            <p><strong>Question:</strong> Convert the UML into code. <code>Account</code> is an abstract class with a pure virtual function <code>calculateInterest() = 0</code>.</p>
+            
+            <div class="uml-box" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
+<div class="uml-title">UML Class Diagram: Bank Accounts</div>
+&lt;&lt;Abstract&gt;&gt;
+Account
+---------------------------------------
+- accountNumber: int
+- balance: double
+---------------------------------------
++ deposit(amount: double)
++ withdraw(amount: double)
++ calculateInterest() = 0
++ Displaybalance()
+---------------------------------------
+      △
+      |
++-------------+
+|             |
+SavingsAccount        CurrentAccount
+- interestRate: double  - overdraftLimit: double
++ calculateInterest()   + calculateInterest()
+            </div>
+
+            <div class="code-analysis-section">
+                <h3>C++ Implementation</h3>
+                <details class="essay-answer">
+                    <summary class="reveal-answer">👁️ إظهار الكود بالتلوين والشرح</summary>
+                    <div class="answer-content">
+                        <pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+// الأب: كلاس الحساب البنكي (Abstract Class)
+class Account {
+protected:
+    int accountNumber;
+    double balance;
+public:
+    Account(int accNum, double bal) {
+        accountNumber = accNum;
+        balance = bal;
+    }
+    
+    void deposit(double amount) {
+        balance += amount; // إيداع الفلوس بيزود الرصيد
+    }
+    
+    void withdraw(double amount) {
+        // السحب لازم يكون أقل من أو يساوي الرصيد المتاح
+        if (amount <= balance) balance -= amount;
+        else cout << "Insufficient funds!
+";
+    }
+    
+    // دالة وهمية نقية (Pure Virtual Function). 
+    // السطر ده خلى الكلاس ده Abstract، يعني منقدرش نعمل منه Object.
+    // ومجبورين نعمل Override للدالة دي في الأبناء.
+    virtual void calculateInterest() = 0; 
+    
+    void Displaybalance() const {
+        cout << "Account: " << accountNumber << " | Balance: $" << balance << endl;
+    }
+};
+
+// الابن الأول: حساب التوفير
+class SavingsAccount : public Account {
+private:
+    double interestRate; // الفايدة
+public:
+    // بنمرر البيانات الخاصة بالأب لكونستراكتور الأب عن طريق : Account(...)
+    SavingsAccount(int accNum, double bal, double rate) : Account(accNum, bal) {
+        interestRate = rate;
+    }
+    
+    // وفرنا تطبيق للدالة المجردة (Override)
+    void calculateInterest() override {
+        double interest = balance * interestRate;
+        cout << "Savings Interest: $" << interest << endl;
+    }
+};
+
+// الابن التاني: الحساب الجاري
+class CurrentAccount : public Account {
+private:
+    double overdraftLimit; // ليميت السحب على المكشوف
+public:
+    CurrentAccount(int accNum, double bal, double limit) : Account(accNum, bal) {
+        overdraftLimit = limit;
+    }
+    
+    // وفرنا تطبيق مختلف لنفس الدالة
+    void calculateInterest() override {
+        // الحساب الجاري ملهوش فايدة غالباً
+        cout << "Current Account Interest: $0" << endl;
+    }
+};
+
+int main() {
+    // السحر بيبدأ هنا: عملنا مصفوفة من Pointers بتشاور على الأب!
+    Account* accounts[2];
+    
+    // بس في الحقيقة هي بتشاور على الأبناء في الذاكرة
+    accounts[0] = new SavingsAccount(101, 5000.0, 0.05);
+    accounts[1] = new CurrentAccount(102, 2000.0, 500.0);
+    
+    for(int i=0; i<2; i++) {
+        accounts[i]->Displaybalance();
+        
+        // (Run-time Polymorphism)
+        // الكومبايلر بيعرف ينفذ أي دالة فايدة فيهم وقت التشغيل بناءً على نوع الأوبجيكت الفعلي
+        accounts[i]->calculateInterest(); 
+        cout << "-------------------
+";
+    }
+    
+    // تفريغ الذاكرة
+    delete accounts[0]; 
+    delete accounts[1];
+    return 0;
+}</code></pre>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <!-- Sheet 8 -->
+        <div class="sheet-section">
+            <h2 class="sheet-header"><i class="fas fa-plus-square"></i> Sheet 8: Operator Overloading (IntArray)</h2>
+            <p><strong>Question:</strong> Implement an <code>IntArray</code> class that mimics a dynamic integer array with operator overloading.</p>
+            
+            <div class="uml-box" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
+<div class="uml-title">UML Class Diagram: IntArray</div>
+---------------------------------------
+IntArray
+---------------------------------------
+- arr: int*
+- size: int
+---------------------------------------
++ IntArray(s: int)
++ ~IntArray()
++ operator[](index: int): int&
++ display() const: void
+---------------------------------------
+            </div>
+
+            <div class="code-analysis-section">
+                <h3>C++ Implementation</h3>
+                <details class="essay-answer">
+                    <summary class="reveal-answer">👁️ إظهار الكود بالتلوين والشرح</summary>
+                    <div class="answer-content">
+                        <pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class IntArray {
+private:
+    int* arr; // مؤشر للذاكرة عشان نحجز أراي ديناميكي
+    int size; // حجم الأراي
+public:
+    // الكونستراكتور بيحجز الميموري حسب الحجم المطلوب ويصفرها
+    IntArray(int s) {
+        size = s;
+        arr = new int[size];
+        for(int i = 0; i < size; i++) arr[i] = 0;
+    }
+    
+    // الهدام (Destructor) بيمسح الميموري بمجرد ما نخلص عشان ميحصلش تسريب
+    ~IntArray() {
+        delete[] arr;
+    }
+    
+    // Overloading لمُعامل الأقواس المربعة []
+    // مهم جداً إنها بترجع Reference (&) عشان نقدر نغير قيمة الخانة (زي myArray[0] = 10)
+    int& operator[](int index) {
+        // حماية (Bounds Checking): لو اليوزر اختار إنديكس سليم
+        if(index >= 0 && index < size) {
+            return arr[index]; // بنرجع المرجع بتاع الخانة
+        }
+        
+        // لو اليوزر اختار مكان برا الأراي، بنقفل البرنامج بأمان بدل الكراش العشوائي
+        cout << "Array index out of bound!
+";
+        exit(1);
+    }
+    
+    // دالة عرض للطباعة
+    void display() const {
+        for(int i = 0; i < size; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    IntArray myArray(5); // عملنا أراي حجمه 5
+    
+    // هنا إحنا بنستخدم الأقواس المربعة كأنه أراي C++ أصلي! (بفضل الـ Overloading)
+    myArray[0] = 10;
+    myArray[1] = 20;
+    myArray[2] = 30;
+    
+    cout << "Array contents: ";
+    myArray.display();
+    
+    // بنقدر كمان نقرأ منه بنفس الطريقة
+    cout << "Value at index 1 is: " << myArray[1] << endl;
+    
+    // myArray[10] = 50; // لو شغلنا السطر ده، حماية الكود هتقفل البرنامج لأن 10 برا الحجم
+    
+    return 0;
+}</code></pre>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <!-- Sheet 9 -->
+        <div class="sheet-section">
+            <h2 class="sheet-header"><i class="fas fa-layer-group"></i> Sheet 9: Templates (Generic Stack)</h2>
+            <p><strong>Question:</strong> Implement a generic <code>Stack&lt;T&gt;</code> using Templates (Compile-time Polymorphism). The stack should be able to hold elements of any data type.</p>
+            
+            <div class="uml-box" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
+<div class="uml-title">UML Class Diagram: Stack</div>
+&lt;&lt;Template class&gt;&gt;
+Stack&lt;T&gt;
+---------------------------------------
+- STK: T[max]
+- Top: int
+---------------------------------------
++ Stack()
++ Push(Val: T): void
++ Pop(): void
++ Peek(): T
++ isfull(): bool
++ isempty(): bool
+---------------------------------------
+            </div>
+
+            <div class="code-analysis-section">
+                <h3>C++ Implementation</h3>
+                <details class="essay-answer">
+                    <summary class="reveal-answer">👁️ إظهار الكود بالتلوين والشرح</summary>
+                    <div class="answer-content">
+                        <pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+const int MAX = 100;
+
+// سطر الـ Template: بنقول للكومبايلر إن حرف T ده مجرد بديل للنوع الحقيقي اللي هنستخدمه بعدين
+template &lt;class T&gt;
+class Stack {
+private:
+    T STK[MAX]; // الأراي من النوع الوهمي T
+    int Top;    // العداد اللي بيشاور على أخر عنصر فوق في الستاك
+public:
+    // الكونستراكتور بيصفر الستاك (بيخلي التوب بـ -1 عشان هو بيبدأ فاضي)
+    Stack() {
+        Top = -1; 
+    }
+    
+    // الدالة دي بتتشك لو الستاك فاضي
+    bool isempty() {
+        return Top == -1;
+    }
+    
+    // الدالة دي بتتشك لو الستاك مليان للآخر
+    bool isfull() {
+        return Top == MAX - 1;
+    }
+    
+    // إضافة قيمة (النوع T هيتحدد بعدين)
+    void Push(T Val) {
+        if(!isfull()) { // لو في مكان
+            Top++; // نرفع المؤشر لفوق
+            STK[Top] = Val; // نحط القيمة الجديدة
+        } else {
+            cout << "Stack is full!
+";
+        }
+    }
+    
+    // حذف قيمة من الستاك
+    void Pop() {
+        if(!isempty()) {
+            Top--; // بنقلل المؤشر بس (الحذف المنطقي)
+        } else {
+            cout << "Stack is empty!
+";
+        }
+    }
+    
+    // بترجع أخر قيمة فوق من غير ما تمسحها
+    T Peek() {
+        if(!isempty()) {
+            return STK[Top];
+        }
+        cout << "Error: Stack is empty!";
+        return T(); // بنرجع قيمة افتراضية للنوع T في حالة الخطأ
+    }
+};
+
+int main() {
+    // الكومبايلر هنا بيكريت نسخة كاملة من الكلاس وبيحط int مكان كل T (Compile-time Polymorphism)
+    Stack&lt;int&gt; intStack; 
+    intStack.Push(10);
+    intStack.Push(20);
+    cout << "Top of intStack: " << intStack.Peek() << endl; // هيطبع 20
+    intStack.Pop();
+    
+    cout << "---------------------
+";
+    
+    // الكومبايلر هنا بيكريت نسخة تانية خااالص وبيحط string مكان كل T
+    Stack&lt;string&gt; stringStack;
+    stringStack.Push("Hello");
+    stringStack.Push("World");
+    cout << "Top of stringStack: " << stringStack.Peek() << endl; // هيطبع World
+    
+    return 0;
+}</code></pre>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- مكتبات التلوين بتاعت الكود (Prism) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    
+    <script src="particles.js"></script>
+    <script src="app.js"></script>
+
+    
+    <!-- Vanilla-tilt.js -->
+    
+    <!-- Typed.js -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Vanilla-tilt
+            // VanillaTilt.init(document.querySelectorAll(".lecture-card"), {
+                max: 15,
+                speed: 400,
+                glare: true,
+                "max-glare": 0.2,
+                scale: 1.05
+            });
+
+            // Add particles container if not exists
+            if (!document.getElementById('particles-js')) {
+                const particlesDiv = document.createElement('div');
+                particlesDiv.id = 'particles-js';
+                particlesDiv.style.position = 'fixed';
+                particlesDiv.style.top = '0';
+                particlesDiv.style.left = '0';
+                particlesDiv.style.width = '100%';
+                particlesDiv.style.height = '100%';
+                particlesDiv.style.zIndex = '-1';
+                document.body.prepend(particlesDiv);
+                
+                // Initialize Particles
+                particlesJS('particles-js', {
+  "particles": {
+    "number": { "value": 100, "density": { "enable": true, "value_area": 800 } },
+    "color": { "value": "#ffffff" },
+    "shape": { "type": "circle" },
+    "opacity": { "value": 0.5, "random": false },
+    "size": { "value": 3, "random": true },
+    "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.4, "width": 1 },
+    "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+  },
+  "interactivity": {
+    "detect_on": "canvas",
+    "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+    "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "push": { "particles_nb": 4 } }
+  },
+  "retina_detect": true
+});
+            }
+
+            // Initialize Typed.js if typed-text element exists
+            if (document.querySelector('.typed-text')) {
+                new Typed('.typed-text', {
+                    strings: ['موسوعة البرمجة الكائنية (OOP)', 'تعلم البرمجة باحترافية', 'أفضل مرجع لطلاب حاسبات'],
+                    typeSpeed: 50,
+                    backSpeed: 30,
+                    loop: true,
+                    showCursor: true,
+                    cursorChar: '|'
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

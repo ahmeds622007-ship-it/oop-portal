@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة الأولى: Introduction to OOP - موسوعة الـ OOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+
+    <style>
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; }
+        .header-nav { position: sticky; z-index: 100; }
+        .floating-shapes {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-shapes span {
+            position: absolute;
+            display: block;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 50%;
+            animation: floatUp 25s linear infinite;
+        }
+        .floating-shapes span:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .floating-shapes span:nth-child(2) { width: 20px; height: 20px; left: 20%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-shapes span:nth-child(3) { width: 60px; height: 60px; left: 35%; animation-delay: 4s; animation-duration: 22s; }
+        .floating-shapes span:nth-child(4) { width: 40px; height: 40px; left: 50%; animation-delay: 0s; animation-duration: 18s; }
+        .floating-shapes span:nth-child(5) { width: 15px; height: 15px; left: 65%; animation-delay: 3s; animation-duration: 30s; }
+        .floating-shapes span:nth-child(6) { width: 90px; height: 90px; left: 75%; animation-delay: 5s; animation-duration: 27s; }
+        .floating-shapes span:nth-child(7) { width: 50px; height: 50px; left: 85%; animation-delay: 7s; animation-duration: 15s; }
+        .floating-shapes span:nth-child(8) { width: 25px; height: 25px; left: 45%; animation-delay: 1s; animation-duration: 35s; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .glow-cursor {
+            position: fixed;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        body:hover .glow-cursor { opacity: 1; }
+        .slide-container {
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .slide-container.vis { opacity: 1; transform: translateY(0); }
+        @media (max-width: 768px) {
+            .container { padding: 1rem !important; }
+            .slide-container { padding: 1.5rem !important; }
+            .header-nav { flex-direction: column; gap: 0.5rem; padding: 0.8rem !important; }
+            .header-nav h2 { font-size: 0.9rem !important; }
+        }
+    </style>
+
+</head>
+<body>
+
+    <div id="particles-js"></div>
+    <div class="floating-shapes">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="glow-cursor" id="glowCursor"></div>
+
+<div class="progress-bar-top" id="progressBar"></div>
+
+    <header class="header-nav">
+        <a href="../index.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            الرجوع للقائمة الرئيسية (Back to Home)
+        </a>
+        <h2 style="margin:0; font-size: 1.2rem;">Lecture 1: Introduction to OOP Using C++</h2>
+    </header>
+
+    <div class="container">
+        
+        <div class="header" style="margin-top: 2rem;">
+            <h1>المحاضرة الأولى: مقدمة في الـ OOP</h1>
+            <p>الشرح التفصيلي لجميع شرائح المحاضرة (Slide-by-Slide) مدعوم بشرح الأكواد سطراً بسطر والتريكات الهامة</p>
+        </div>
+
+        <!-- Removed Slides 1, 2, and 3 as requested -->
+
+        <!-- Slide 4 -->
+        <div class="slide-container" id="slide4">
+            <h2>Slide 4: لماذا؟ (Why OOP?)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_04.jpg" alt="Slide 4" class="slide-image">
+            <div class="slide-explanation">
+                <p>سؤال جوهري ومهم جداً: <strong>ليه بندرس الـ OOP أصلاً؟</strong></p>
+                <p>عشان نجاوب على السؤال ده، لازم نعمل رحلة في تاريخ البرمجة ونعرف إزاي المبرمجين كانوا بيكتبوا كود زمان قبل ما يظهر مفهوم الـ OOP. هنكتشف إن الطرق القديمة كان فيها عيوب خطيرة (Fatal Flaws) ومشاكل كبيرة جداً لما البرامج بتبدأ تكبر وتتعقد. الـ OOP جت كحل جذري عشان تحل كل المشاكل دي وتنظم هيكل الكود بالكامل.</p>
+            </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide-container" id="slide5">
+            <h2>Slide 5: أساليب البرمجة (Styles of Coding)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_05.jpg" alt="Slide 5" class="slide-image">
+            <div class="slide-explanation">
+                <p>على مدار تاريخ علوم الحاسب، ظهرت أساليب أو طرق مختلفة لكتابة الكود (Programming Paradigms). الدكتور بيقسمهم لـ 3 مراحل أساسية:</p>
+                <ol>
+                    <li><strong>Sequential (Linear) Programming:</strong> البرمجة المتسلسلة أو الخطية. كود بيتكتب ورا بعضه سطر سطر من غير أي تنظيم حقيقي.</li>
+                    <li><strong>Procedural Programming:</strong> البرمجة الإجرائية. في المرحلة دي، بدأنا ننظم الكود شوية في بلوكات صغيرة اسمها دوال (Functions).</li>
+                    <li><strong>Object Oriented Programming (OOP):</strong> البرمجة الكائنية. ودي أحدث وأقوى طريقة اللي هنعتمد عليها في منهجنا.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide-container" id="slide6">
+            <h2>Slide 6: ما هو البرنامج؟ (What is a program?)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_06.jpg" alt="Slide 6" class="slide-image">
+            <div class="slide-explanation">
+                <p>أبسط تعريف لأي برنامج كمبيوتر في الدنيا إنه بيتكون من 3 مكونات أساسية:</p>
+                <ul>
+                    <li><strong>Inputs (المدخلات):</strong> الداتا (Data) اللي بنديها للبرنامج (مثلاً: اسم المستخدم، رقم).</li>
+                    <li><strong>Processing (المعالجة):</strong> الكود أو العمليات الحسابية والمنطقية اللي البرنامج بيعملها على الـ Data دي عشان يوصل لنتيجة.</li>
+                    <li><strong>Outputs (المخرجات):</strong> النتيجة النهائية اللي بتظهر لليوزر.</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>⚠️ تريكة هامة:</strong> في أساليب البرمجة القديمة (Linear & Procedural) كنا بنركز بشكل كامل على الـ Processing (الكود والأفعال)، والداتا كانت مرمية ومشتتة في أي حتة في الميموري (Global Data). وده كان السبب الأساسي لمعظم كوارث ومشاكل البرمجة زمان لأن أي دالة كانت ممكن تعدل الداتا دي بالغلط.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7 -->
+        <div class="slide-container" id="slide7">
+            <h2>Slide 7: العيوب القاتلة للبرمجة الخطية (Four Fatal Flaws of Linear Code)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_07.jpg" alt="Slide 7" class="slide-image">
+            <div class="slide-explanation">
+                <p>في الـ Sequential أو Linear Programming، الكود بيكون عبارة عن أوامر ورا بعض. الطريقة دي فيها 4 عيوب قاتلة (4 Fatal Flaws)، وممكن جداً تيجي سؤال في الامتحان:</p>
+                <ul>
+                    <li><strong>1. Repetition (التكرار):</strong> لو محتاج تنفذ نفس العملية تاني في مكان مختلف، هتضطر تعمل Copy/Paste لنفس سطور الكود. وده بيخلي حجم الكود يكبر على الفاضي ويكون مليان حشو.</li>
+                    <li><strong>2. Disorganization (عدم التنظيم):</strong> الكود كله سايح على بعضه في فايل واحد (Spaghetti Code)، مفيش أي هيكلة واضحة. تخيل تدور على غلطة في فايل فيه 10 آلاف سطر!</li>
+                    <li><strong>3. Maintenance Nightmare (كابوس الصيانة):</strong> لو حصل مشكلة (Bug) أو حبيت تعدل ميزة معينة، هتلف على الكود كله سطر سطر عشان تعدلها، وممكن جداً وأنت بتعدل حاجة، تبوظ حاجة تانية شغالة.</li>
+                    <li><strong>4. Collaboration Blocker (عائق التعاون):</strong> صعب جداً كذا مبرمج يشتغلوا مع بعض في نفس الفايل الطويل ده في نفس الوقت من غير ما يمسحوا شغل بعض (Merge Conflicts).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 1: Evolution & Flaws of Linear Code</h3>
+            
+            <div class="question" data-answer="2">
+                <p>1. Which of the following is considered one of the "Fatal Flaws" of Linear (Sequential) Programming?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) Inability to define variables</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) Extremely slow execution speed on the CPU</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) Maintenance Nightmare</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) High memory consumption by default</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> The four fatal flaws are: Repetition, Disorganization, Maintenance Nightmare, and Collaboration Blocker.
+                </div>
+            </div>
+
+            <div class="question" data-answer="0">
+                <p>2. What is the correct chronological order of the evolution of programming paradigms?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) Sequential -> Procedural -> Object Oriented</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) Procedural -> Sequential -> Object Oriented</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) Object Oriented -> Procedural -> Sequential</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) Sequential -> Object Oriented -> Procedural</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: A.</strong> Programming started with Sequential (Linear), evolved to Procedural (using functions), and finally reached Object Oriented Programming.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8 -->
+        <div class="slide-container" id="slide8">
+            <h2>Slide 8: البرمجة الإجرائية (Procedural Programming)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_08.jpg" alt="Slide 8" class="slide-image">
+            <div class="slide-explanation">
+                <p>عشان نحل مشاكل البرمجة الخطية (خصوصاً مشكلة الـ Repetition التكرار)، ظهرت الـ <strong>Procedural Programming</strong> (البرمجة الإجرائية)، زي لغة C كده.</p>
+                <p>الفكرة هنا إننا بنقسم البرنامج الكبير لبرامج أو مهام صغيرة اسمها <strong>Functions</strong> (دوال). كل دالة بتعمل وظيفة معينة (مثلاً: دالة بتطبع، دالة بتحسب مجموع). لو احتجنا الوظيفة دي تاني، بنعمل استدعاء للدالة دي باسمها بدل ما نكتب سطور الكود من تاني.</p>
+                <div class="highlight-box">
+                    <strong>🚨 العيب القاتل في هذه الطريقة (The Fatal Flaw):</strong><br>
+                    البرمجة الإجرائية ركزت جداً على الأفعال (Functions) والمخرجات، بس للأسف <strong>أهملت البيانات (Data) بشكل كامل</strong>. الداتا كانت مفصولة تماماً عن الدوال اللي بتعالجها، وكانت الداتا متخزنة كـ (Global Variables)، يعني أي دالة في البرنامج ممكن تعدل في أي داتا بالغلط، وده بيعمل كوارث (Data Corruption) في البرامج الكبيرة.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9 -->
+        <div class="slide-container" id="slide9">
+            <h2>Slide 9: البرمجة الكائنية (Object Oriented Programming)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_09.jpg" alt="Slide 9" class="slide-image">
+            <div class="slide-explanation">
+                <p>وهنا بييجي الحل السحري! الـ <strong>OOP</strong>.</p>
+                <p>الـ OOP عملت تغيير جذري في التفكير. بدل ما نركز على "الدوال والأفعال" زي ما كنا بنعمل في البرمجة الإجرائية، بقينا نركز على حاجة اسمها <strong>الـ Objects (الكائنات)</strong> ككيان واحد متكامل.</p>
+                <p>يعني بدل ما أفكر "إزاي أحسب راتب الموظف؟" (تركيز على الفعل)، بقيت أفكر "أنا عندي كيان كامل اسمه (موظف)، الموظف ده جواه الداتا بتاعته زي الراتب، وجواه هو نفسه القدرة إنه يحسب الراتب بتاعه". التركيز أصبح على محاكاة الأشياء اللي في العالم الحقيقي وتجسيدها جوه الكود.</p>
+            </div>
+        </div>
+
+        <!-- Slide 10 -->
+        <div class="slide-container" id="slide10">
+            <h2>Slide 10: الكائنات (Objects)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_10.jpg" alt="Slide 10" class="slide-image">
+            <div class="slide-explanation">
+                <p>أي كائن (Object) في الدنيا، سواء في العالم الواقعي (زي العربية، الطالب، الكلب) أو في البرمجة، بيتكون من 3 خصائص أساسية جداً (موضع سؤال امتحان أكيد):</p>
+                <ol>
+                    <li><strong>State (الحالة):</strong> دي الداتا أو الخصائص اللي بتوصف الكائن ده في لحظة معينة. (مثلاً الكلب: لونه، عمره، فصيلته، اسمه). في البرمجة بنسميها (Data Members أو Attributes).</li>
+                    <li><strong>Behavior (السلوك):</strong> دي الأفعال والمهام اللي الكائن ده بيقدر يعملها. (مثلاً الكلب: بيهوهو، بيجري). في البرمجة بنسميها (Functions أو Methods).</li>
+                    <li><strong>Identity (الهوية):</strong> كل كائن ليه هوية فريدة بتميزه عن أي كائن تاني. الكلب "روي" غير الكلب "بامبو"، حتى لو ليهم نفس اللون ونفس الفصيلة (نفس الـ State). في البرمجة، الـ Identity هي العنوان اللي الكائن ده متخزن فيه في الميموري (Memory Address).</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 11 -->
+        <div class="slide-container" id="slide11">
+            <h2>Slide 11: الفشل الثاني: فخ إعادة الاستخدام (The Reusability Trap)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_11.jpg" alt="Slide 11" class="slide-image">
+            <div class="slide-explanation">
+                <p>هنا الدكتور بيشرح عيب تاني في البرمجة الإجرائية (Procedural). تخيل إننا بنعمل لعبة كرة قدم.</p>
+                <p>عندنا دالة بتخلي اللاعب يجري، سميناها <code>playerRun()</code>. وعندنا حكم في الملعب (Referee). هل ينفع من باب "إعادة الاستخدام" إننا نستخدم نفس الدالة دي للحكم ونسميها <code>refereeRun()</code> وناخد نفس الكود بالظبط؟</p>
+                <p><strong>Conflict (التعارض):</strong> سرعة اللاعب ومقدار طاقته غير سرعة الحكم، طريقة الجري (Behavior) مختلفة تماماً. لو اعتمدنا على الدوال بس، هنضطر نعمل دالة منفصلة لكل حاجة في الملعب، والداتا بتاعت السرعة هتكون سايحة (Global) في البرنامج وممكن دالة تجرية اللاعب تغير في سرعة الحكم بالغلط!</p>
+                <p>ده اسمه <strong>Flaw (عيب)</strong> في التصميم الإجرائي. الـ <strong>Result (النتيجة)</strong> هي كود معقد جداً وصعب الحفاظ عليه.</p>
+            </div>
+        </div>
+
+        <!-- Slide 12 -->
+        <div class="slide-container" id="slide12">
+            <h2>Slide 12: الحل: تجميع البيانات والمنطق (Grouping Data and Logic)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_12.jpg" alt="Slide 12" class="slide-image">
+            <div class="slide-explanation">
+                <p>إيه هو الحل للمشكلة اللي فاتت؟</p>
+                <p>الحل العبقري بتاع الـ OOP هو تجميع الداتا (State) والدوال (Behavior) <strong>المرتبطة ببعض (Related)</strong> ونحطهم مع بعض ونقفل عليهم في كبسولة واحدة. الكبسولة دي اسمها <strong>Class (الفئة/الصنف)</strong>.</p>
+                <p>يعني هنعمل Class مستقل اسمه <code>Player</code>، هنحط جواه الداتا بتاعته بس (سرعته هو) وهنحط جواه دواله بس (طريقة جريه هو). وهنعمل Class تاني خالص اسمه <code>Referee</code> جواه الداتا والدوال بتاعته. بالطريقة دي، مستحيل الداتا تدخل في بعضها أو يحصل تداخل.</p>
+                <div class="highlight-box" style="text-align: center; font-size: 1.3rem;">
+                    <strong>المعادلة الذهبية (The Golden Equation):<br>
+                    Related Data + Related Functions = CLASS</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13 -->
+        <div class="slide-container" id="slide13">
+            <h2>Slide 13: الفئات (Classes)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_13.jpg" alt="Slide 13" class="slide-image">
+            <div class="slide-explanation">
+                <p>طيب يعني إيه <strong>Class</strong> بالظبط؟</p>
+                <p>الـ Class هو <strong>Blueprint</strong> (مخطط هندسي أو نموذج أو قالب). هو مش شيء حقيقي ملموس في الذاكرة، هو مجرد رسمة أو فكرة بتوصف شكل الحاجة (الـ Object) المفروض يكون إيه، إيه البيانات اللي هيشيلها، وإيه الدوال اللي هيعملها.</p>
+                <p>لما مهندس معماري يبني عمارة، بيرسم الأول الخريطة على الورق. الخريطة دي هي الـ Class. لما العمال يبنوا العمارة فعلاً وتبقى حقيقية وموجودة في الشارع (واخدة مساحة)، العمارة الحقيقية دي هي الـ <strong>Object</strong>.</p>
+                <p>بمعنى أصح: الـ Class هو قالب (Template)، والـ Object هو النسخة الفعلية (Instance) اللي اتصبت من القالب ده.</p>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 2: Objects & Classes</h3>
+            
+            <div class="question" data-answer="1">
+                <p>1. Every Object is characterized by three essential elements. What are they?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) Functions, Variables, Pointers</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) State, Behavior, Identity</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) Inputs, Processing, Outputs</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) Interface, Implementation, Main</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> An object consists of State (Data members), Behavior (Methods), and a unique Identity (Memory address).
+                </div>
+            </div>
+
+            <div class="question" data-answer="3">
+                <p>2. Based on the OOP equation mentioned in the lecture, what does (Related Data + Related Functions) result in?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) A Function</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) An Object</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) A Program</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) A Class</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: D.</strong> Grouping related data and related functions together forms a Class (The Blueprint).
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14 -->
+        <div class="slide-container" id="slide14">
+            <h2>Slide 14: التفكير في وحدات وكيانات (Thinking in Modules and Entities)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_14.jpg" alt="Slide 14" class="slide-image">
+            <div class="slide-explanation">
+                <p>هنا بنشوف مثال عملي للتفكير بأسلوب الـ OOP. لو بعمل لاعب، بجمّع الداتا بتاعته (الاسم، السرعة) والدوال بتاعته (اجري، اشوط) في وحدة أو كيان واحد (Module). الأسلوب ده بيحقق 3 مميزات قوية جداً:</p>
+                <ol>
+                    <li><strong>Encapsulation (الكبسلة):</strong> حطيت الداتا والدوال في كبسولة واحدة ومقفولة عليهم (وهي الـ Class). الداتا دي بقت مستخبية ومحمية، ومحدش يقدر يعدلها من بره إلا بشروطي.</li>
+                    <li><strong>Navigation (سهولة البحث والتتبع):</strong> الكود بقى متنظم جداً. لو في مشكلة (Bug) في حركة اللاعب، أنا مش هلف في الكود كله، أنا هروح مباشرة أفتح الفايل بتاع الـ <code>Player Class</code> بس عشان أصلحها.</li>
+                    <li><strong>Reality Modeling (محاكاة الواقع):</strong> الكود بقى شبه الحقيقة. الحقيقة فيها كيان اسمه "لاعب" والكود برضه فيه Object اسمه "لاعب". وده بيسهل جداً فهم الكود وتصميمه.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 15 -->
+        <div class="slide-container" id="slide15">
+            <h2>Slide 15: مرحلة التصميم (Design Phase)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_15.jpg" alt="Slide 15" class="slide-image">
+            <div class="slide-explanation">
+                <p>قبل ما نفتح الـ IDE ونكتب كود على الكمبيوتر، لازم نصمم البرنامج الأول على ورق أو ببرامج رسم. مرحلة التصميم دي (Design Phase) من أهم الخطوات في هندسة البرمجيات.</p>
+                <p>عشان نعبر عن الـ Classes بتاعتنا في مرحلة التصميم، بنستخدم لغة نمذجة موحدة عالمياً اسمها <strong>UML</strong> (Unified Modeling Language).</p>
+                <p>رسمة الـ <strong>UML Class Diagram</strong> بتكون عبارة عن صندوق (Box) متقسم 3 أقسام رئيسية بالترتيب (من أعلى لأسفل):</p>
+                <ol>
+                    <li><strong>القسم العلوي (Top Compartment):</strong> بنكتب فيه اسم الـ Class (مثلاً: <code>Employee</code>).</li>
+                    <li><strong>القسم الأوسط (Middle Compartment):</strong> بنكتب فيه الداتا (Attributes أو Data members).</li>
+                    <li><strong>القسم السفلي (Bottom Compartment):</strong> بنكتب فيه الدوال والأفعال (Methods أو Operations).</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 16 -->
+        <div class="slide-container" id="slide16">
+            <h2>Slide 16: تطور الكود (The Evolution of Code)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_16.jpg" alt="Slide 16" class="slide-image">
+            <div class="slide-explanation">
+                <p>ملخص سريع (Quick Recap) لتطور أساليب البرمجة عشان نأكد على المفهوم:</p>
+                <ol>
+                    <li><strong>Sequential (Linear):</strong> كود سايح على بعضه، داتا سايحة، مفيش دوال. (فوضى عارمة).</li>
+                    <li><strong>Structured / Procedural:</strong> قسمنا الكود لـ Functions بتقدر تتعامل مع الداتا. الداتا نفسها لسه سايحة في البرنامج كله (Global data) ومكشوفة لأي Function. (تنظيم للأفعال مع إهمال حماية البيانات).</li>
+                    <li><strong>OOP:</strong> كل حزمة داتا (Data) جبنالها الـ Functions المتعلقة بيها، وقفلنا عليهم جوه صندوق أو كبسولة (Object). الداتا بقت محمية ومخفية عن باقي البرنامج (Encapsulation). (تنظيم وحماية معاً).</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 17 -->
+        <div class="slide-container" id="slide17">
+            <h2>Slide 17: مقارنة الأكواد (Code Example Comparison)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_17.jpg" alt="Slide 17" class="slide-image">
+            <div class="slide-explanation">
+                <p>الشريحة دي بتوريك شكل الكود الفعلي (Code Snippets) في الـ 3 أساليب:</p>
+                
+                <h3>1. Structured (Linear) Code:</h3>
+                <div class="slide-code">
+<span class="type">int</span> id = <span class="number">1</span>;
+<span class="type">float</span> salary = <span class="number">5000.0</span>;
+<span class="type">int</span> id2 = <span class="number">2</span>;
+<span class="type">float</span> salary2 = <span class="number">6000.0</span>;
+<span class="comment">// And so on... unreadable / error prone</span>
+                </div>
+                <div class="code-explanation">
+                    <ul>
+                        <li>بنعرف المتغيرات بشكل فردي بدون أي ترابط. كود طويل وممل، عرضة للأخطاء، وصعب جداً في القراءة.</li>
+                    </ul>
+                </div>
+
+                <h3>2. Procedural Code:</h3>
+                <div class="slide-code">
+<span class="keyword">struct</span> <span class="type">Employee</span> {
+    <span class="type">int</span> id;
+    <span class="type">float</span> salary;
+};
+
+<span class="type">void</span> printSalary(<span class="keyword">struct</span> <span class="type">Employee</span> e) {
+    cout &lt;&lt; e.salary;
+}
+                </div>
+                <div class="code-explanation">
+                    <ul>
+                        <li>سطر 1-4: عملنا <code>struct</code> لتجميع البيانات مع بعضها (id و salary).</li>
+                        <li>سطر 6-8: عملنا دالة <code>printSalary</code> منفصلة تماماً عن الـ struct، بتاخد الـ Employee كـ Parameter عشان تطبع راتبه.</li>
+                        <li><strong>النتيجة:</strong> الوضع أحسن شوية، بس البيانات لسه مش محمية ومفصولة عن الدوال اللي بتتعامل معاها.</li>
+                    </ul>
+                </div>
+
+                <h3>3. Object Oriented (C++):</h3>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Employee</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> id;
+    <span class="type">float</span> salary;
+<span class="keyword">public</span>:
+    <span class="type">void</span> printSalary() {
+        cout &lt;&lt; salary;
+    }
+};
+                </div>
+                <div class="code-explanation">
+                    <ul>
+                        <li>سطر 1: عرفنا قالب جديد باستخدام الكلمة المحجوزة <code>class</code>.</li>
+                        <li>سطر 2-4: تحت قسم الـ <code>private</code> (السري والمحمي)، حطينا البيانات (id و salary). محدش يقدر يعدلهم من بره الكلاس.</li>
+                        <li>سطر 5-8: تحت قسم الـ <code>public</code> (العام والمتاح)، حطينا الدالة <code>printSalary</code> اللي من حقها توصل للبيانات دي وتطبعها.</li>
+                        <li><strong>النتيجة:</strong> قمة التنظيم والحماية (Encapsulation). الداتا والدوال بقوا حتة واحدة.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 18 -->
+        <div class="slide-container" id="slide18">
+            <h2>Slide 18: شكل فئة الـ UML (UML Syntax of a class)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_18.jpg" alt="Slide 18" class="slide-image">
+            <div class="slide-explanation">
+                <p>هنا بنشوف إزاي نحول رسمة الـ UML لكود C++ حقيقي.</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">foo</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> data;
+<span class="keyword">public</span>:
+    <span class="type">void</span> memfunc(<span class="type">int</span> d) {
+        data = d;
+    }
+};
+                </div>
+                
+                <div class="code-explanation">
+                    <ul>
+                        <li><strong>سطر 1:</strong> بنبدأ بتعريف الكلاس باستخدام <code>class</code>، وبعدها بنكتب اسم الكلاس (هنا اسمه <code>foo</code>)، ونفتح القوس <code>{</code>.</li>
+                        <li><strong>محددات الوصول (Access Modifiers):</strong>
+                            <ul>
+                                <li><strong>سطر 2 (<code>private:</code>):</strong> أي حاجة تتكتب تحتها بتكون سرية ومخفية جوه الكلاس، محدش من بره الكلاس يقدر يوصلها. غالباً بنحط هنا الداتا (Variables).</li>
+                                <li><strong>سطر 4 (<code>public:</code>):</strong> أي حاجة تتكتب تحتها بتكون متاحة وممكن نستخدمها من أي مكان في البرنامج. غالباً بنحط هنا الدوال.</li>
+                            </ul>
+                        </li>
+                        <li><strong>سطر 8:</strong> بنقفل قوس الكلاس <code>}</code> <strong>ولازم ولازم ولازم</strong> نحط في الآخر فاصلة منقوطة (Semicolon <code>;</code>). نسيانها بيعمل Syntax Error (خطأ شهير جداً في الامتحانات).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 3: Design & Syntax</h3>
+            
+            <div class="question" data-answer="1">
+                <p>1. In a UML Class Diagram, the class box is divided into three compartments. What is the correct order from top to bottom?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) Class Name, Methods, Attributes</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) Class Name, Attributes, Methods</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) Attributes, Class Name, Methods</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) Methods, Attributes, Class Name</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> The correct top-to-bottom order is: Class Name, followed by Attributes (Data), followed by Methods (Functions).
+                </div>
+            </div>
+
+            <div class="question" data-answer="2">
+                <p>2. What is the role of the <code>private</code> access modifier in a C++ class definition?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) It makes methods globally accessible from anywhere in the program.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) It deletes the data from memory to save space.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) It hides the data, preventing direct access or modification from outside the class.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) It allows the class to inherit from another class.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> The <code>private</code> modifier enforces Encapsulation by hiding internal state and protecting it from unauthorized access.
+                </div>
+            </div>
+            
+            <div class="question" data-answer="0">
+                <p>3. What is the required syntax to correctly terminate a class definition in C++?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) A closing brace followed by a semicolon <code>};</code></button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) Just a closing brace <code>}</code></button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) A closing brace followed by a colon <code>}:</code></button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) The keyword <code>end class;</code></button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: A.</strong> A class definition must always end with a semicolon after the closing brace <code>};</code>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19 -->
+        <div class="slide-container" id="slide19">
+            <h2>Slide 19: مقارنة بين الفئة والكائن (Class vs Object)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_19.jpg" alt="Slide 19" class="slide-image">
+            <div class="slide-explanation">
+                <p>جدول مقارنة في غاية الأهمية (بييجي في الامتحانات كتير) بيوضح الفرق الجوهري بين الـ Class والـ Object:</p>
+                <ul>
+                    <li><strong>Class (الفئة):</strong> 
+                        <ul>
+                            <li>هو الـ <strong>Blueprint</strong> (الخريطة، القالب، أو النموذج).</li>
+                            <li>بيعرف شكل الداتا إيه والدوال إيه. مجرد تعريف نظري (Definition).</li>
+                            <li><strong>مهم جداً:</strong> الـ Class مبيسحبش أي مساحة من الـ Memory (Does NOT allocate memory space). هو مجرد حبر على ورق.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Object (الكائن):</strong> 
+                        <ul>
+                            <li>هو الـ <strong>Instance</strong> (النسخة الفعلية أو الكيان الحقيقي اللي اتعمل من القالب ده).</li>
+                            <li>هو ده الشيء الحقيقي اللي موجود وبيحتوي على القيم الفعلية (Actual values) بتاعت الداتا.</li>
+                            <li><strong>مهم جداً:</strong> الـ Object هو اللي بياخد ويسحب مساحة فعلية في الميموري أول ما يتم إنشاؤه.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 20 -->
+        <div class="slide-container" id="slide20">
+            <h2>Slide 20: مثال على الفئة والكائن (Example of Class & Object)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_20.jpg" alt="Slide 20" class="slide-image">
+            <div class="slide-explanation">
+                <p>تطبيق عملي: لو قررنا نعمل Class للموظف (Employee).</p>
+                <ul>
+                    <li><strong>الداتا (State / Attributes):</strong> محتاجين رقم تعريفي <code>ID</code>، اسم <code>Name</code>، وراتب <code>Salary</code>.</li>
+                    <li><strong>الأفعال (Behavior / Methods):</strong> محتاجين دالة تملى الداتا دي <code>getData()</code>، ودالة تطبع وتعرض الداتا دي <code>displayInfo()</code>.</li>
+                </ul>
+                <p>لو عملنا Object من الكلاس ده (يعني عينا موظف حقيقي) وسميناه <code>emp1</code>، ممكن نديله القيم الفعلية دي: ID=100, Name="ABC", Salary=10000. وكده بقى عندنا Object عايش في الميموري بياخد مساحة حقيقية.</p>
+            </div>
+        </div>
+
+        <!-- Slide 21 -->
+        <div class="slide-container" id="slide21">
+            <h2>Slide 21: رسمة UML للموظف (UML Class Diagram for Employee)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_21.jpg" alt="Slide 21" class="slide-image">
+            <div class="slide-explanation">
+                <p>دي رسمة الـ UML الهندسية للمثال اللي فات (ودايماً بتطلب في المسائل):</p>
+                <ul>
+                    <li><strong>القسم العلوي:</strong> مكتوب فيه <strong>Employee</strong> (اسم الكلاس).</li>
+                    <li><strong>القسم الأوسط (الداتا):</strong> مكتوب فيه:
+                        <br><code>- empid: int</code>
+                        <br><code>- empname: string</code>
+                        <br><code>- salary: float</code>
+                        <br><span class="highlight">ملاحظة هامة:</span> علامة الناقص <code>-</code> المكتوبة قبل المتغير في الـ UML معناها إن الـ Access Modifier هو <code>private</code> (محمي ومخفي).
+                    </li>
+                    <li><strong>القسم السفلي (الدوال):</strong> مكتوب فيه:
+                        <br><code>+ getdata(): void</code>
+                        <br><code>+ Displayinfo(): void</code>
+                        <br><span class="highlight">ملاحظة هامة:</span> علامة الزائد <code>+</code> المكتوبة قبل الدالة في الـ UML معناها إن الـ Access Modifier هو <code>public</code> (عام ومتاح).
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 22 -->
+        <div class="slide-container" id="slide22">
+            <h2>Slide 22: المرحلة الثانية - التنفيذ (Phase 2: Implementation Phase)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_22.jpg" alt="Slide 22" class="slide-image">
+            <div class="slide-explanation">
+                <p>بعد ما خلصنا مرحلة التصميم ورسمنا الـ UML على الورق، بندخل دلوقتي في <strong>Phase 2: Implementation Phase</strong>، أو مرحلة كتابة الكود الفعلي.</p>
+                <p>في المرحلة دي، وظيفتنا إننا نفتح برنامج الـ IDE ونترجم رسمة الـ UML دي لسطور كود فعلية بلغة C++ عشان الكمبيوتر يفهمها ويشغلها.</p>
+            </div>
+        </div>
+
+        <!-- Slide 23 -->
+        <div class="slide-container" id="slide23">
+            <h2>Slide 23: فصل الواجهة عن التنفيذ (Separation of Interface and Implementation)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_23.jpg" alt="Slide 23" class="slide-image">
+            <div class="slide-explanation">
+                <p>قاعدة احترافية ومهمة جداً في كتابة الـ OOP، وهي فصل الكود لملفين منفصلين:</p>
+                <ol>
+                    <li><strong>Interface (ملف الواجهة):</strong> ده ملف الـ Header اللي امتداده <code>.h</code>. في الملف ده بنكتب "إيه اللي الكلاس بيقدر يعمله؟" بنكتب جواه المتغيرات، ورؤوس الدوال بس (Prototypes) <strong>من غير ما نكتب تفاصيل الأكواد من جوه</strong>.</li>
+                    <li><strong>Implementation (ملف التنفيذ):</strong> ده ملف الـ Source اللي امتداده <code>.cpp</code>. في الملف ده بنكتب "إزاي الكلاس بينفذ الحاجات دي؟" بنكتب جواه الأكواد الفعلية وتفاصيل اللوجيك بتاع الدوال.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 24 -->
+        <div class="slide-container" id="slide24">
+            <h2>Slide 24: مُعامل تحديد النطاق (Scope Resolution Operator)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_24.jpg" alt="Slide 24" class="slide-image">
+            <div class="slide-explanation">
+                <p>لما نيجي نفتح ملف الـ <code>.cpp</code> عشان نكتب تفاصيل جسم الدالة، الكمبيوتر هيعرف منين إن الدالة دي تابعة للكلاس الفلاني؟</p>
+                <p>عشان نربط الدالة بالكلاس بتاعها، بنستخدم معامل مهم جداً اسمه <strong>Scope Resolution Operator (::)</strong> (نقطتين فوق بعض مرتين).</p>
+                
+                <h3>طريقة الكتابة (Syntax):</h3>
+                <div class="slide-code">
+<span class="type">returnType</span> ClassName<span class="operator">::</span>methodName(parameters) {
+    <span class="comment">// statements (body of the function);</span>
+}
+                </div>
+                
+                <div class="code-explanation">
+                    <ul>
+                        <li>بنكتب نوع الإرجاع الأول (زي <code>void</code>).</li>
+                        <li>بعدين <strong>اسم الكلاس</strong> اللي الدالة دي تابعه ليه.</li>
+                        <li>بعدين <strong>الـ Scope Resolution Operator <code>::</code></strong>. ده اللزق اللي بيربط الدالة بالكلاس.</li>
+                        <li>بعدين <strong>اسم الدالة</strong> ونفتح أقواس الـ Parameters ونكتب الكود جوه الأقواس <code>{}</code>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 25 -->
+        <div class="slide-container" id="slide25">
+            <h2>Slide 25: مثال عملي بالكود (Employee code example)</h2>
+            <img src="../slides/Lecture_1_-_Introduction_to_OOP_-_Why_OOP/slide_25.jpg" alt="Slide 25" class="slide-image">
+            <div class="slide-explanation">
+                <p>دي صورة بتوريك الملفين جنب بعض بشكل عملي لتطبيق كلاس الـ Employee:</p>
+                
+                <h3>ملف الواجهة: Employee.h (على الشمال)</h3>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Employee</span> {
+<span class="keyword">private</span>:    
+    <span class="type">int</span> empid;
+    <span class="type">string</span> empname;
+    <span class="type">float</span> salary;
+<span class="keyword">public</span>:     
+    <span class="type">void</span> getdata();      
+    <span class="type">void</span> Displayinfo();  
+};
+                </div>
+                <div class="code-explanation">
+                    <ul>
+                        <li>حطينا رؤوس الدوال (Prototypes) <code>getdata()</code> و <code>Displayinfo()</code> وحطينا في آخرهم <code>;</code> بدون أي أكواد تفصيلية.</li>
+                    </ul>
+                </div>
+
+                <h3>ملف التنفيذ: Employee.cpp (على اليمين)</h3>
+                <div class="slide-code">
+<span class="keyword">#include</span> <span class="string">"Employee.h"</span>
+
+<span class="type">void</span> Employee<span class="operator">::</span>getdata() {
+    empid = <span class="number">100</span>;
+    empname = <span class="string">"ABC"</span>;
+    salary = <span class="number">10000.0</span>;
+}
+
+<span class="type">void</span> Employee<span class="operator">::</span>Displayinfo() {
+    cout &lt;&lt; <span class="string">"Employee Id : "</span> &lt;&lt; empid &lt;&lt; endl;
+    cout &lt;&lt; <span class="string">"Employee Name : "</span> &lt;&lt; empname &lt;&lt; endl;
+    cout &lt;&lt; <span class="string">"Employee Salary : "</span> &lt;&lt; salary &lt;&lt; endl;
+}
+                </div>
+                <div class="code-explanation">
+                    <ul>
+                        <li>عملنا <code>#include "Employee.h"</code> عشان الفايل ده يشوف الكلاس اللي عرفناه هناك.</li>
+                        <li>استخدمنا <code>Employee::</code> قبل اسم كل دالة عشان الكومبايلر يفهم إن الأكواد دي تخص كلاس الموظف. <strong>بدون الـ <code>::</code> الكمبيوتر هيديك إيرور (Error).</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 4: Implementation Phase (C++)</h3>
+            
+            <div class="question" data-answer="1">
+                <p>1. In C++, which file is typically used to write the actual body and details (Implementation) of class methods?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) The Header file (.h)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) The Source file (.cpp)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) The Executable file (.exe)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) The UML file</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> The <code>.cpp</code> file contains the method definitions/implementation, while the <code>.h</code> file contains only the declarations (interface).
+                </div>
+            </div>
+
+            <div class="question" data-answer="2">
+                <p>2. What is the name of the operator used to define a method outside its class declaration, visually represented as (::)?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) The Pointer Operator</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) The Member Access Operator (.)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) The Scope Resolution Operator</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) The Inheritance Operator</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> The Scope Resolution Operator (::) is strictly required to tie the method implementation back to its specific class.
+                </div>
+            </div>
+            
+            <div class="question" data-answer="0">
+                <p>3. In a UML Class Diagram, what does the minus sign (-) before a variable name denote, and what is its C++ equivalent?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) It means the attribute is hidden, equivalent to 'private' in C++.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) It means the attribute is accessible globally, equivalent to 'public' in C++.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) It indicates that the variable should be deleted.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) It signifies a constant variable, equivalent to 'const' in C++.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: A.</strong> The (-) sign denotes a 'private' access modifier, enforcing encapsulation. The (+) sign denotes 'public'.
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY SECTION -->
+        <div class="summary-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> الملخص الشامل لأهم التريكات (Summary & Pro Tips)</h2>
+            <ul>
+                <li><strong>الفرق الجوهري بين الـ Class والـ Object:</strong> الـ Class هو مجرد حبر على ورق (Blueprint) لا يسحب أي مساحة في الميموري. بينما الـ Object هو الكيان الفعلي اللي بياخد مساحة ويحتفظ بالداتا.</li>
+                <li><strong>المعادلة الذهبية للـ OOP:</strong> هي تجميع (Related Data) مع (Related Functions) في كبسولة واحدة اسمها Class. وده بيمنع العشوائية الموجودة في البرمجة القديمة.</li>
+                <li><strong>عناصر الكائن الثلاثة:</strong> أي كائن ليه State (الداتا بتاعته)، Behavior (الدوال بتاعته)، و Identity (مكانه في الميموري). بتيجي كتير في الـ MCQs.</li>
+                <li><strong>علامات الـ UML:</strong> علامة <code>-</code> تعني <code>private</code> (حماية الداتا)، وعلامة <code>+</code> تعني <code>public</code> (للدوال المتاحة للاستخدام الخارجي).</li>
+                <li><strong>قاعدة الـ Semicolon:</strong> إياك تنسى الفاصلة المنقوطة <code>;</code> في نهاية تعريف الـ Class قبل الـ Main، بدونها البرنامج مش هيعمل Compile.</li>
+                <li><strong>الـ Scope Resolution Operator <code>::</code>:</strong> ده المعامل اللي بيربط بين الدالة المكتوبة في ملف الـ <code>.cpp</code> والكلاس الأصلي المكتوب في ملف الـ <code>.h</code>.</li>
+            </ul>
+        </div>
+
+        <!-- ESSAY QUESTION SECTION -->
+        <div class="essay-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> سؤال مقالي متوقع للامتحان (Essay Question)</h2>
+            
+            <div class="essay-question">
+                <p><strong>Question:</strong> Discuss the main differences between Procedural Programming and Object-Oriented Programming (OOP). Explain why OOP is considered a better approach for large and complex software systems.</p>
+            </div>
+            
+            <button class="toggle-answer-btn" onclick="document.getElementById('essayAnswer').classList.toggle('hidden')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"/></svg>
+                أظهر الإجابة النموذجية (Show Answer)
+            </button>
+            
+            <div id="essayAnswer" class="essay-answer hidden">
+                <h4>Model Answer:</h4>
+                <p>The main differences between Procedural Programming and Object-Oriented Programming (OOP) can be summarized as follows:</p>
+                <ul>
+                    <li><strong>Focus:</strong> Procedural programming focuses on functions and actions (verbs), while OOP focuses on objects and data (nouns).</li>
+                    <li><strong>Data Security:</strong> In procedural programming, data is often global and freely moving around the system, making it vulnerable to accidental modification by any function. In OOP, data is encapsulated within objects and hidden (using the `private` access modifier), ensuring data security and integrity.</li>
+                    <li><strong>Code Organization:</strong> Procedural code separates data from logic, leading to "Spaghetti code" as the project grows. OOP groups related data and related functions into a single unit called a Class, making the codebase highly organized.</li>
+                </ul>
+                <p><strong>Why OOP is better for large systems:</strong><br>
+                OOP is superior for complex systems because it provides <em>Encapsulation</em> (protecting data), <em>Reusability</em> (through inheritance and modularity), and makes the code much easier to maintain, debug, and collaborate on among multiple developers. It models the real world naturally.</p>
+            </div>
+        </div>
+
+        <!-- TYPE 2: What is the Output? -->
+        <div class="output-question-section">
+            <h2>🖥️ What is the output of the following code?</h2>
+
+            <div class="output-q">
+                <p>Q1: What is the output of the following code?</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Car</span> {
+<span class="keyword">public</span>:
+    <span class="type">string</span> color;
+    <span class="type">void</span> display() {
+        cout &lt;&lt; <span class="string">"Color: "</span> &lt;&lt; color &lt;&lt; endl;
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Car</span> c1, c2;
+    c1.color = <span class="string">"Red"</span>;
+    c2.color = <span class="string">"Blue"</span>;
+    c1.display();
+    c2.display();
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">Color: Red<br>Color: Blue</div>
+            </div>
+
+            <div class="output-q">
+                <p>Q2: What is the output of the following code?</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Counter</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> count;
+<span class="keyword">public</span>:
+    <span class="type">void</span> setCount(<span class="type">int</span> c) { count = c; }
+    <span class="type">int</span> getCount() { <span class="keyword">return</span> count; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Counter</span> obj;
+    obj.setCount(<span class="number">10</span>);
+    cout &lt;&lt; obj.getCount() &lt;&lt; endl;
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">10</div>
+            </div>
+        </div>
+
+        <!-- TYPE 3: Write a Line of Code -->
+        <div class="write-code-section">
+            <h2>✍️ Write a line of code for the following statements</h2>
+
+            <div class="write-q">
+                <p>Q1: Declare a class called <code>Student</code> with a private integer member called <code>id</code> and a public function called <code>setId</code>.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">
+                    <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Student</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> id;
+<span class="keyword">public</span>:
+    <span class="type">void</span> setId(<span class="type">int</span> i) { id = i; }
+};
+                    </div>
+                </div>
+            </div>
+
+            <div class="write-q">
+                <p>Q2: Create an object called <code>s1</code> from the class <code>Student</code>, then call the function <code>setId</code> with the value 101.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">
+                    <div class="slide-code">
+<span class="type">Student</span> s1;
+s1.setId(<span class="number">101</span>);
+                    </div>
+                </div>
+            </div>
+
+            <div class="write-q">
+                <p>Q3: Define the function <code>getGrade()</code> of class <code>Student</code> OUTSIDE the class using the Scope Resolution Operator.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">
+                    <div class="slide-code">
+<span class="type">char</span> <span class="type">Student</span>::getGrade() {
+    <span class="keyword">return</span> grade;
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TYPE 4: Code Analysis -->
+        <div class="code-analysis-section">
+            <h2>🔍 Based on the following code, answer all the following questions</h2>
+            <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Rectangle</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> length, width;
+<span class="keyword">public</span>:
+    <span class="type">void</span> setDimensions(<span class="type">int</span> l, <span class="type">int</span> w) {
+        length = l;
+        width = w;
+    }
+    <span class="type">int</span> getArea() {
+        <span class="keyword">return</span> length * width;
+    }
+    <span class="type">void</span> display() {
+        cout &lt;&lt; <span class="string">"Area = "</span> &lt;&lt; getArea() &lt;&lt; endl;
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Rectangle</span> r;
+    r.setDimensions(<span class="number">5</span>, <span class="number">3</span>);
+    r.display();
+}
+            </div>
+
+            <div class="analysis-q">
+                <p>a) What are the private data members of the class?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><code>length</code> and <code>width</code> (both are <code>int</code>).</div>
+            </div>
+            <div class="analysis-q">
+                <p>b) How many member functions does the class have? List them.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">3 functions: <code>setDimensions()</code>, <code>getArea()</code>, and <code>display()</code>.</div>
+            </div>
+            <div class="analysis-q">
+                <p>c) What is the output of the program?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><code>Area = 15</code></div>
+            </div>
+            <div class="analysis-q">
+                <p>d) Can we write <code>cout &lt;&lt; r.length;</code> inside <code>main()</code>? Explain why.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">No, because <code>length</code> is declared as <code>private</code>. Private members can only be accessed from inside the class's own member functions, not from <code>main()</code> or any external code.</div>
+            </div>
+        </div>
+
+    </div>
+
+
+        <!-- Progress Tracking -->
+        <div class="completion-section" style="text-align: center; margin-top: 3rem; margin-bottom: 2rem;">
+            <button class="completion-btn" onclick="markLectureCompleted(this, 'lec1')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                لقد أتممت المحاضرة
+            </button>
+        </div>
+    <script src="../app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Particles
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 60, "density": { "enable": true, "value_area": 900 } },
+                    "color": { "value": ["#8b5cf6", "#6366f1", "#3b82f6"] },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 } },
+                    "size": { "value": 3, "random": true },
+                    "line_linked": { "enable": true, "distance": 150, "color": "#6366f1", "opacity": 0.2, "width": 1 },
+                    "move": { "enable": true, "speed": 1.2, "direction": "none", "random": true, "out_mode": "out", "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                    "modes": { "grab": { "distance": 180, "line_linked": { "opacity": 0.6 } }, "push": { "particles_nb": 3 } }
+                },
+                "retina_detect": true
+            });
+        }
+        // Glow cursor
+        var gc = document.getElementById('glowCursor');
+        if (gc) { document.addEventListener('mousemove', function(e) { gc.style.left = e.clientX + 'px'; gc.style.top = e.clientY + 'px'; }); }
+        // Scroll reveal for slides
+        var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.slide-container, .quiz-section, .summary-section, .essay-section').forEach(function(el) { obs.observe(el); });
+    });
+    </script>
+
+</body>
+</html>

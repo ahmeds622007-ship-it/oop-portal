@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 9 و 10: Compile-time Polymorphism & Templates - موسوعة الـ OOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+
+    <style>
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; }
+        .header-nav { position: sticky; z-index: 100; }
+        .floating-shapes {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-shapes span {
+            position: absolute;
+            display: block;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 50%;
+            animation: floatUp 25s linear infinite;
+        }
+        .floating-shapes span:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .floating-shapes span:nth-child(2) { width: 20px; height: 20px; left: 20%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-shapes span:nth-child(3) { width: 60px; height: 60px; left: 35%; animation-delay: 4s; animation-duration: 22s; }
+        .floating-shapes span:nth-child(4) { width: 40px; height: 40px; left: 50%; animation-delay: 0s; animation-duration: 18s; }
+        .floating-shapes span:nth-child(5) { width: 15px; height: 15px; left: 65%; animation-delay: 3s; animation-duration: 30s; }
+        .floating-shapes span:nth-child(6) { width: 90px; height: 90px; left: 75%; animation-delay: 5s; animation-duration: 27s; }
+        .floating-shapes span:nth-child(7) { width: 50px; height: 50px; left: 85%; animation-delay: 7s; animation-duration: 15s; }
+        .floating-shapes span:nth-child(8) { width: 25px; height: 25px; left: 45%; animation-delay: 1s; animation-duration: 35s; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .glow-cursor {
+            position: fixed;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        body:hover .glow-cursor { opacity: 1; }
+        .slide-container {
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .slide-container.vis { opacity: 1; transform: translateY(0); }
+        @media (max-width: 768px) {
+            .container { padding: 1rem !important; }
+            .slide-container { padding: 1.5rem !important; }
+            .header-nav { flex-direction: column; gap: 0.5rem; padding: 0.8rem !important; }
+            .header-nav h2 { font-size: 0.9rem !important; }
+        }
+    </style>
+
+</head>
+<body>
+
+    <div id="particles-js"></div>
+    <div class="floating-shapes">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="glow-cursor" id="glowCursor"></div>
+
+<div class="progress-bar-top" id="progressBar"></div>
+
+    <header class="header-nav">
+        <a href="../index.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            الرجوع للقائمة الرئيسية (Back to Home)
+        </a>
+        <h2 style="margin:0; font-size: 1.2rem;">Lecture 9 & 10: Compile-time Polymorphism</h2>
+    </header>
+
+    <div class="container">
+        
+        <div class="header" style="margin-top: 2rem;">
+            <h1>المحاضرة 9 و 10: تعدد الأشكال المبكر (Compile-time Polymorphism)</h1>
+            <p>الشرح التفصيلي لجميع شرائح المحاضرة (Slide-by-Slide) مدعوم بشرح الأكواد سطراً بسطر (Line-by-Line Code Explanation)</p>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide-container" id="slide3">
+            <h2>Slide 3: الـ Compile-Time Polymorphism (الربط المبكر)</h2>
+            <img src="../slides/Lecture_9_10_-_Compile-time_Polymoriphsm__Function_and_Operator_Overloading__Template_fucntionand_class_imgs/slide_03.jpg" alt="Slide 3" class="slide-image">
+            <div class="slide-explanation">
+                <p>في المحاضرة اللي فاتت اتكلمنا عن الـ Run-Time Polymorphism (الـ Virtual Functions). النهاردة هنتكلم عن النوع التاني وهو <strong>Compile-Time Polymorphism</strong>.</p>
+                <p>هنا الكومبايلر بيكون ذكي كفاية إنه يحدد <span class="highlight">أثناء الترجمة (قبل ما البرنامج يشتغل أصلاً)</span> أي دالة بالظبط اللي هتتنفذ.</p>
+                <p>النوع ده بيتحقق بطريقتين أساسيتين:</p>
+                <ol>
+                    <li><strong>Function Overloading (تعدد تحميل الدوال)</strong>.</li>
+                    <li><strong>Operator Overloading (تعدد تحميل المعاملات)</strong>.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide-container" id="slide4">
+            <h2>Slide 4: تحميل الدوال (Function Overloading)</h2>
+            <img src="../slides/Lecture_9_10_-_Compile-time_Polymoriphsm__Function_and_Operator_Overloading__Template_fucntionand_class_imgs/slide_04.jpg" alt="Slide 4" class="slide-image">
+            <div class="slide-explanation">
+                <p>الـ <strong>Function Overloading</strong> معناه إنك تعمل <strong class="highlight">أكتر من دالة بنفس الاسم بالظبط</strong> جوه نفس الكلاس أو البرنامج.</p>
+                <p>طب إزاي الكومبايلر مش هيتلخبط؟ الكومبايلر بيفرق بينهم عن طريق الـ <strong>Signature (التوقيع)</strong>، واللي هو عبارة عن:</p>
+                <ul>
+                    <li>عدد المعاملات (Number of Parameters).</li>
+                    <li>نوع المعاملات (Data Type of Parameters).</li>
+                    <li>ترتيب المعاملات (Sequence of Parameters).</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>⚠️ ملاحظة هامة:</strong> الـ Return Type (زي <code>int</code> أو <code>void</code>) <span class="highlight">لا يُعتبر جزء من الـ Signature!</span> يعني مينفعش تعمل دالتين بنفس الاسم ونفس الـ Parameters وتقولي أنا مغير الـ Return Type، الكومبايلر هيديك Error فوراً!
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide-container" id="slide6">
+            <h2>Slide 6: كود تحميل الدوال (Function Overloading Example)</h2>
+            <img src="../slides/Lecture_9_10_-_Compile-time_Polymoriphsm__Function_and_Operator_Overloading__Template_fucntionand_class_imgs/slide_06.jpg" alt="Slide 6" class="slide-image">
+            <div class="slide-explanation">
+                <p>تعالوا نشوف إزاي نستخدم نفس الدالة عشان نجمع أرقام صحيحة وأرقام عشرية:</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Maths</span> {
+<span class="keyword">public</span>:
+    <span class="comment">// Function 1: Adds two integers</span>
+    <span class="type">int</span> sum(<span class="type">int</span> a, <span class="type">int</span> b) {
+        <span class="keyword">return</span> a + b;
+    }
+    
+    <span class="comment">// Function 2: Adds three integers (Different Number of Params)</span>
+    <span class="type">int</span> sum(<span class="type">int</span> a, <span class="type">int</span> b, <span class="type">int</span> c) {
+        <span class="keyword">return</span> a + b + c;
+    }
+    
+    <span class="comment">// Function 3: Adds two floats (Different Type of Params)</span>
+    <span class="type">float</span> sum(<span class="type">float</span> a, <span class="type">float</span> b) {
+        <span class="keyword">return</span> a + b;
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Maths</span> obj;
+    cout &lt;&lt; obj.sum(<span class="number">10</span>, <span class="number">20</span>);         <span class="comment">// Calls Function 1</span>
+    cout &lt;&lt; obj.sum(<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>);     <span class="comment">// Calls Function 2</span>
+    cout &lt;&lt; obj.sum(<span class="number">10.5f</span>, <span class="number">20.5f</span>);   <span class="comment">// Calls Function 3</span>
+}
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9 -->
+        <div class="slide-container" id="slide9">
+            <h2>Slide 9: تحميل المعاملات (Operator Overloading)</h2>
+            <img src="../slides/Lecture_9_10_-_Compile-time_Polymoriphsm__Function_and_Operator_Overloading__Template_fucntionand_class_imgs/slide_09.jpg" alt="Slide 9" class="slide-image">
+            <div class="slide-explanation">
+                <p>ميزة عبقرية في الـ C++ هي الـ <strong>Operator Overloading</strong>.</p>
+                <p>لو عندك متغيرين عاديين (<code>int x, y;</code>)، تقدر تجمعهم بعلامة الزائد <code>x + y</code>. بس لو عندك كائنين (Objects) من كلاس إنت عامله (زي كلاس <code>ComplexNumber</code>)، الكومبايلر ميعرفش إزاي يجمعهم لو كتبت <code>obj1 + obj2</code> وهيديك Error.</p>
+                <p>هنا بييجي دورك إنك <span class="highlight">تدي معنى جديد لعظمة الـ <code>+</code></span> (أو أي Operator تاني) عشان الكومبايلر يفهم إزاي يجمع الـ Objects دي مع بعض.</p>
+            </div>
+        </div>
+
+        <!-- Slide 10 -->
+        <div class="slide-container" id="slide10">
+            <h2>Slide 10: قواعد تحميل المعاملات (Rules of Operator Overloading)</h2>
+            <img src="../slides/Lecture_9_10_-_Compile-time_Polymoriphsm__Function_and_Operator_Overloading__Template_fucntionand_class_imgs/slide_10.jpg" alt="Slide 10" class="slide-image">
+            <div class="slide-explanation">
+                <p>العملية دي مش سايبة، ليها قواعد صارمة جداً بتيجي دايماً كـ True/False في الامتحانات:</p>
+                <ul>
+                    <li><strong class="highlight">1. معاني أساسية:</strong> متقدرش تغير الطريقة اللي الـ Operator بيشتغل بيها مع الـ Built-in types (يعني متقدرش تخلي الـ <code>+</code> يطرح الأرقام الصحيحة العادية).</li>
+                    <li><strong class="highlight">2. قواعد الـ Syntax:</strong> متقدرش تغير أولوية المعاملات (Precedence) ولا اتجاهها (Associativity). الضرب هيفضل يتنفذ قبل الجمع.</li>
+                    <li><strong class="highlight">3. المعاملات الممنوعة:</strong> فيه 4 معاملات <span class="highlight">مستحيل تعامل معاهم Overloading</span>: 
+                        <br> <code>.</code> (Dot operator)
+                        <br> <code>::</code> (Scope resolution)
+                        <br> <code>?:</code> (Ternary conditional)
+                        <br> <code>sizeof</code>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 12 -->
+        <div class="slide-container" id="slide12">
+            <h2>Slide 12: تحميل المعاملات الأحادية (Unary Operator Overloading)</h2>
+            <img src="../slides/Lecture_9_10_-_Compile-time_Polymoriphsm__Function_and_Operator_Overloading__Template_fucntionand_class_imgs/slide_12.jpg" alt="Slide 12" class="slide-image">
+            <div class="slide-explanation">
+                <p>الـ Unary Operators هي المعاملات اللي بتشتغل على متغير واحد بس (زي <code>++</code> أو <code>--</code> أو <code>-</code> اللي بتعكس الإشارة).</p>
+                <p>لما بنيجي نعملها Overloading جوه الكلاس، الدالة <strong class="highlight">مبتاخدش أي Parameters</strong> (أقواسها فاضية)، لأنها بتشتغل على الـ Object اللي نادى عليها مباشرة عن طريق الـ <code>this</code> pointer.</p>
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Counter</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> count;
+<span class="keyword">public</span>:
+    <span class="type">Counter</span>() { count = <span class="number">0</span>; }
+    
+    <span class="comment">// Overloading the prefix ++ operator (Syntax: returnType operator OP ())</span>
+    <span class="type">void</span> <span class="keyword">operator</span> ++ () {
+        count = count + <span class="number">1</span>;
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Counter</span> c1;
+    ++c1; <span class="comment">// This implicitly calls c1.operator++()</span>
+}
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15 -->
+        <div class="slide-container" id="slide15">
+            <h2>Slide 15: تحميل المعاملات الثنائية (Binary Operator Overloading)</h2>
+            <img src="../slides/Lecture_9_10_-_Compile-time_Polymoriphsm__Function_and_Operator_Overloading__Template_fucntionand_class_imgs/slide_15.jpg" alt="Slide 15" class="slide-image">
+            <div class="slide-explanation">
+                <p>الـ Binary Operators هي المعاملات اللي محتاجة طرفين (يمين وشمال) عشان تشتغل (زي <code>+</code> و <code>-</code> و <code>*</code> و <code>&lt;</code>).</p>
+                <p>هنا القاعدة مختلفة: لما نكتب <code>obj1 + obj2</code>، اللي بيحصل إن <span class="highlight">الكائن اللي على الشمال (obj1) هو اللي بينادي الدالة</span>، وبياخد <span class="highlight">الكائن اللي على اليمين (obj2) كـ Parameter</span>!</p>
+                <p>عشان كده دالة الـ Binary Overloading دايماً <strong>بتاخد One Parameter فقط</strong> (الطرف اليمين).</p>
+                
+                <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Complex</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> real, imag;
+<span class="keyword">public</span>:
+    <span class="type">Complex</span>(<span class="type">int</span> r=<span class="number">0</span>, <span class="type">int</span> i=<span class="number">0</span>) { real = r; imag = i; }
+    
+    <span class="comment">// Binary Overloading for +</span>
+    <span class="comment">// Returns a new Complex object. Takes right side as parameter.</span>
+    <span class="type">Complex</span> <span class="keyword">operator</span> + (<span class="keyword">const</span> <span class="type">Complex</span> <span class="operator">&amp;</span>obj2) {
+        <span class="type">Complex</span> temp;
+        <span class="comment">// 'real' is from the calling object (left side)</span>
+        <span class="comment">// 'obj2.real' is from the parameter (right side)</span>
+        temp.real = real + obj2.real;
+        temp.imag = imag + obj2.imag;
+        <span class="keyword">return</span> temp;
+    }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Complex</span> c1(<span class="number">10</span>, <span class="number">5</span>), c2(<span class="number">2</span>, <span class="number">4</span>);
+    <span class="type">Complex</span> c3;
+    
+    <span class="comment">// Compiler translates this to: c3 = c1.operator+(c2);</span>
+    c3 = c1 + c2; 
+}
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 1: Overloading Mechanics</h3>
+            
+            <div class="question" data-answer="3">
+                <p>1. Which of the following C++ operators CANNOT be overloaded under any circumstances?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) The assignment operator (=)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) The equality operator (==)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) The insertion operator (<<)</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) The scope resolution operator (::)</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: D.</strong> The Scope Resolution `::`, Dot `.`, Ternary `?:`, and `sizeof` operators cannot be overloaded.
+                </div>
+            </div>
+
+            <div class="question" data-answer="0">
+                <p>2. When overloading a Binary Operator (like `+`) as a standard member function of a class, how many parameters should the function take?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) Exactly 1 parameter (the right-hand side operand).</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) Exactly 2 parameters (left and right operands).</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) 0 parameters, it uses the `this` pointer for both.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) It depends on the return type.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: A.</strong> The left-hand operand is implicitly passed via the `this` pointer (the object calling the function), so you only explicitly pass the 1 right-hand operand.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 23 -->
+        <div class="slide-container" id="slide23">
+            <h2>Slide 23: القوالب (Templates - Generic Programming)</h2>
+            <img src="../slides/Lecture_9_10_-_Compile-time_Polymoriphsm__Function_and_Operator_Overloading__Template_fucntionand_class_imgs/slide_23.jpg" alt="Slide 23" class="slide-image">
+            <div class="slide-explanation">
+                <p>في الـ Function Overloading، لو عايز دالة تجمع أرقام صحيحة، بتكتب كود، ولو عايز نفس الدالة تجمع أرقام عشرية، بتضطر <strong>تكرر نفس الكود بالظبط</strong> بس تغير الـ Data Type من <code>int</code> لـ <code>float</code>!</p>
+                <p>دي حاجة مرهقة جداً وبتخالف مبدأ الـ OOP في عدم التكرار. الحل العبقري هو الـ <strong>Templates (القوالب)</strong>، أو ما يسمى بـ <span class="highlight">Generic Programming</span> (البرمجة العامة).</p>
+                <p>الـ Template بيخليك تكتب الدالة أو الكلاس <strong class="highlight">مرة واحدة بس</strong>، وتسيب الـ Data Type مجهول (Generic). والكومبايلر هو اللي هيستنتج النوع المناسب وقت التشغيل!</p>
+            </div>
+        </div>
+
+        <!-- Slide 24 -->
+        <div class="slide-container" id="slide24">
+            <h2>Slide 24: قوالب الدوال (Function Templates)</h2>
+            <img src="../slides/Lecture_9_10_-_Compile-time_Polymoriphsm__Function_and_Operator_Overloading__Template_fucntionand_class_imgs/slide_24.jpg" alt="Slide 24" class="slide-image">
+            <div class="slide-explanation">
+                <p>عشان نحول أي دالة عادية لـ Template، بنكتب قبلها سطر تعويذة: <code><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</code> أو <code><span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</code>.</p>
+                <p>حرف الـ <code>T</code> ده بيمثل الـ Data Type المجهول. (ممكن تسميه أي اسم، بس <code>T</code> هو العرف السائد).</p>
+                
+                <div class="slide-code">
+<span class="comment">// One function to rule them all!</span>
+<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;
+T get_max(T x, T y) {
+    <span class="keyword">if</span> (x > y)
+        <span class="keyword">return</span> x;
+    <span class="keyword">else</span>
+        <span class="keyword">return</span> y;
+}
+
+<span class="type">int</span> main() {
+    <span class="comment">// Compiler creates an 'int' version automatically</span>
+    cout &lt;&lt; get_max&lt;<span class="type">int</span>&gt;(<span class="number">3</span>, <span class="number">7</span>) &lt;&lt; endl; 
+    
+    <span class="comment">// Compiler creates a 'double' version automatically</span>
+    cout &lt;&lt; get_max&lt;<span class="type">double</span>&gt;(<span class="number">3.5</span>, <span class="number">1.2</span>) &lt;&lt; endl; 
+    
+    <span class="comment">// Compiler creates a 'char' version automatically</span>
+    cout &lt;&lt; get_max&lt;<span class="type">char</span>&gt;(<span class="string">'g'</span>, <span class="string">'e'</span>) &lt;&lt; endl; 
+}
+                </div>
+                <div class="highlight-box">
+                    <strong>💡 ملحوظة:</strong> في أحدث نسخ الـ C++، إنت مش مضطر تكتب الـ Type بين أقواس الزاوية <code>&lt;int&gt;</code> وإنت بتنادي الدالة، الكومبايلر بيقدر يستنتجه لوحده من نوع الأرقام اللي إنت باعتها!
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 27 -->
+        <div class="slide-container" id="slide27">
+            <h2>Slide 27: قوالب الكلاسات (Class Templates)</h2>
+            <img src="../slides/Lecture_9_10_-_Compile-time_Polymoriphsm__Function_and_Operator_Overloading__Template_fucntionand_class_imgs/slide_27.jpg" alt="Slide 27" class="slide-image">
+            <div class="slide-explanation">
+                <p>نفس فكرة الـ Function Templates بتطبق على الكلاسات بالكامل! لو عندك كلاس بيخزن بيانات (زي كلاس Box)، وإنت عايز اليوزر يحدد هل الـ Box ده هيشيل <code>int</code> ولا <code>string</code> ولا <code>double</code>؟</p>
+                
+                <div class="slide-code">
+<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;
+<span class="keyword">class</span> <span class="type">Box</span> {
+<span class="keyword">private</span>:
+    T data; <span class="comment">// Variable of generic type T</span>
+<span class="keyword">public</span>:
+    <span class="type">Box</span>(T d) { data = d; }
+    T get_data() { <span class="keyword">return</span> data; }
+};
+
+<span class="type">int</span> main() {
+    <span class="comment">// For Class Templates, you MUST specify the type in angle brackets!</span>
+    <span class="type">Box</span>&lt;<span class="type">int</span>&gt; intBox(<span class="number">123</span>);
+    cout &lt;&lt; intBox.get_data() &lt;&lt; endl;
+    
+    <span class="type">Box</span>&lt;<span class="type">string</span>&gt; strBox(<span class="string">"Hello Templates!"</span>);
+    cout &lt;&lt; strBox.get_data() &lt;&lt; endl;
+}
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Final Quiz: Templates</h3>
+            
+            <div class="question" data-answer="1">
+                <p>1. What is the main purpose of using Templates in C++?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) To increase the execution speed of the program.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) To write generic code that works with any data type, avoiding code duplication.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) To securely hide data from hackers.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) To allow multiple inheritance in classes.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> Templates enable "Generic Programming", allowing one block of code to handle `int`, `float`, `string`, etc.
+                </div>
+            </div>
+
+            <div class="question" data-answer="2">
+                <p>2. Which of the following is the correct syntax to instantiate an object of a Class Template named `Stack` to hold integers?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) Stack obj(int);</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) int Stack obj;</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) Stack&lt;int&gt; obj;</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) template&lt;int&gt; Stack obj;</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> For Class Templates, you must explicitly specify the data type inside angle brackets `< >` right after the class name during object creation.
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY SECTION -->
+        <div class="summary-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> الملخص الشامل لأهم التريكات (Summary & Pro Tips)</h2>
+            <ul>
+                <li><strong>Function Overloading:</strong> أكتر من دالة بنفس الاسم بس الـ Signature مختلف (عدد/نوع/ترتيب الـ Parameters). <span class="highlight">الـ Return Type مش جزء من الـ Signature!</span></li>
+                <li><strong>Operator Overloading:</strong> تدي معنى جديد لمعامل (زي <code>+</code>) عشان يشتغل مع الـ Objects. الـ Syntax: <code>returnType operator OP (params)</code>.</li>
+                <li><strong>Unary Overloading:</strong> الدالة مبتاخدش Parameters (بتستخدم <code>this</code>). Binary Overloading: بتاخد Parameter واحد (الطرف اليمين).</li>
+                <li><strong>المعاملات الممنوعة:</strong> <code>.</code> و <code>::</code> و <code>?:</code> و <code>sizeof</code> ← مستحيل نعملهم Overloading.</li>
+                <li><strong>Templates = Generic Programming:</strong> تكتب الكود مرة واحدة بنوع مجهول <code>T</code> والكومبايلر بيعمل نسخة لكل نوع بيانات تستخدمه.</li>
+                <li><strong>Function Template:</strong> <code>template &lt;typename T&gt; T func(T x) { }</code>. Class Template: نفس الفكرة بس على كلاس كامل ولازم تحدد النوع وإنت بتعمل Object: <code>Box&lt;int&gt; b;</code>.</li>
+            </ul>
+        </div>
+
+        <!-- ESSAY QUESTION SECTION -->
+        <div class="essay-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> سؤال مقالي متوقع للامتحان (Essay Question)</h2>
+            
+            <div class="essay-question">
+                <p><strong>Question:</strong> Explain Function Overloading and Operator Overloading as forms of Compile-Time Polymorphism. List the operators that cannot be overloaded. Then explain Templates (Function and Class) and how they achieve Generic Programming.</p>
+            </div>
+            
+            <button class="toggle-answer-btn" onclick="document.getElementById('essayAnswer9').classList.toggle('hidden')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"/></svg>
+                أظهر الإجابة النموذجية (Show Answer)
+            </button>
+            
+            <div id="essayAnswer9" class="essay-answer hidden">
+                <h4>Model Answer:</h4>
+                <p><strong>Function Overloading:</strong> Multiple functions share the same name but differ in their parameter signature (count, type, or order). The compiler resolves the correct function at compile time. The return type alone cannot distinguish overloaded functions.</p>
+                <p><strong>Operator Overloading:</strong> Redefines how operators work with user-defined types. Unary operators take 0 parameters (use <code>this</code>), binary operators take 1 parameter (the right operand). Operators <code>.</code>, <code>::</code>, <code>?:</code>, and <code>sizeof</code> cannot be overloaded.</p>
+                <p><strong>Templates:</strong> Allow writing generic code once using a placeholder type <code>T</code>. Function Templates: <code>template &lt;typename T&gt; T func(T x) { }</code>. Class Templates: same concept for entire classes. For class templates, the type must be specified explicitly: <code>Stack&lt;int&gt; s;</code>.</p>
+            </div>
+        </div>
+
+        <!-- TYPE 2: What is the Output? -->
+        <div class="output-question-section">
+            <h2>🖥️ What is the output of the following code?</h2>
+            <div class="output-q">
+                <p>Q1:</p>
+                <div class="slide-code">
+<span class="type">void</span> print(<span class="type">int</span> a) { cout &lt;&lt; <span class="string">"Integer: "</span> &lt;&lt; a &lt;&lt; endl; }
+<span class="type">void</span> print(<span class="type">double</span> a) { cout &lt;&lt; <span class="string">"Double: "</span> &lt;&lt; a &lt;&lt; endl; }
+
+<span class="type">int</span> main() {
+    print(<span class="number">5</span>);
+    print(<span class="number">3.14</span>);
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">Integer: 5<br>Double: 3.14<br>(Function Overloading resolves based on argument type)</div>
+            </div>
+            <div class="output-q">
+                <p>Q2:</p>
+                <div class="slide-code">
+<span class="keyword">template</span> &lt;<span class="keyword">typename</span> <span class="type">T</span>&gt;
+<span class="type">T</span> add(<span class="type">T</span> a, <span class="type">T</span> b) {
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="type">int</span> main() {
+    cout &lt;&lt; add&lt;<span class="type">int</span>&gt;(<span class="number">10</span>, <span class="number">20</span>) &lt;&lt; <span class="string">" "</span>;
+    cout &lt;&lt; add&lt;<span class="type">string</span>&gt;(<span class="string">"A"</span>, <span class="string">"B"</span>) &lt;&lt; endl;
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">30 AB<br>(Template automatically handles integers and concatenates strings)</div>
+            </div>
+        </div>
+
+        <!-- TYPE 3: Write a Line of Code -->
+        <div class="write-code-section">
+            <h2>✍️ Write a line of code for the following statements</h2>
+            <div class="write-q">
+                <p>Q1: Write the signature of an overloaded <code>+</code> operator as a member function of class <code>Complex</code> that adds two Complex objects.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">Complex</span> <span class="keyword">operator</span>+(<span class="type">Complex</span> c);</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q2: Write the signature of an overloaded prefix <code>++</code> operator as a member function of class <code>Counter</code>.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">Counter</span> <span class="keyword">operator</span>++();</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q3: Write the signature of a generic Function Template called <code>findMax</code> that returns the larger of two values of type <code>T</code>.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> <span class="type">T</span>&gt;
+<span class="type">T</span> findMax(<span class="type">T</span> a, <span class="type">T</span> b);</div></div>
+            </div>
+        </div>
+
+        <!-- TYPE 4: Code Analysis -->
+        <div class="code-analysis-section">
+            <h2>🔍 Based on the following code, answer all the following questions</h2>
+            <div class="slide-code">
+<span class="keyword">class</span> <span class="type">Point</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span> x, y;
+<span class="keyword">public</span>:
+    <span class="type">Point</span>(<span class="type">int</span> x=<span class="number">0</span>, <span class="type">int</span> y=<span class="number">0</span>) { <span class="keyword">this</span><span class="operator">-&gt;</span>x = x; <span class="keyword">this</span><span class="operator">-&gt;</span>y = y; }
+    <span class="type">Point</span> <span class="keyword">operator</span>+(<span class="type">Point</span> p2) {
+        <span class="type">Point</span> temp;
+        temp.x = x + p2.x;
+        temp.y = y + p2.y;
+        <span class="keyword">return</span> temp;
+    }
+    <span class="type">void</span> print() { cout &lt;&lt; x &lt;&lt; <span class="string">","</span> &lt;&lt; y &lt;&lt; endl; }
+};
+
+<span class="type">int</span> main() {
+    <span class="type">Point</span> p1(<span class="number">1</span>, <span class="number">2</span>), p2(<span class="number">3</span>, <span class="number">4</span>);
+    <span class="type">Point</span> p3 = p1 + p2;
+    p3.print();
+}
+            </div>
+            <div class="analysis-q">
+                <p>a) What is the output?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><code>4,6</code></div>
+            </div>
+            <div class="analysis-q">
+                <p>b) In the expression <code>p1 + p2</code>, which object is implicitly passed and which is explicitly passed as a parameter?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><code>p1</code> is implicitly passed (its members are accessed directly as <code>x</code> and <code>y</code> via the <code>this</code> pointer). <code>p2</code> is explicitly passed as the parameter.</div>
+            </div>
+            <div class="analysis-q">
+                <p>c) Can we overload the <code>sizeof</code> operator in C++?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><strong>No.</strong> <code>sizeof</code>, <code>::</code>, <code>.</code>, and <code>?:</code> cannot be overloaded.</div>
+            </div>
+        </div>
+
+    </div>
+
+
+        <!-- Progress Tracking -->
+        <div class="completion-section" style="text-align: center; margin-top: 3rem; margin-bottom: 2rem;">
+            <button class="completion-btn" onclick="markLectureCompleted(this, 'lec9')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                لقد أتممت المحاضرة
+            </button>
+        </div>
+    <script src="../app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Particles
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 60, "density": { "enable": true, "value_area": 900 } },
+                    "color": { "value": ["#8b5cf6", "#6366f1", "#3b82f6"] },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 } },
+                    "size": { "value": 3, "random": true },
+                    "line_linked": { "enable": true, "distance": 150, "color": "#6366f1", "opacity": 0.2, "width": 1 },
+                    "move": { "enable": true, "speed": 1.2, "direction": "none", "random": true, "out_mode": "out", "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                    "modes": { "grab": { "distance": 180, "line_linked": { "opacity": 0.6 } }, "push": { "particles_nb": 3 } }
+                },
+                "retina_detect": true
+            });
+        }
+        // Glow cursor
+        var gc = document.getElementById('glowCursor');
+        if (gc) { document.addEventListener('mousemove', function(e) { gc.style.left = e.clientX + 'px'; gc.style.top = e.clientY + 'px'; }); }
+        // Scroll reveal for slides
+        var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.slide-container, .quiz-section, .summary-section, .essay-section').forEach(function(el) { obs.observe(el); });
+    });
+    </script>
+
+</body>
+</html>

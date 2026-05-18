@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 11: File I/O & Exception Handling - موسوعة الـ OOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+
+    <style>
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; }
+        .header-nav { position: sticky; z-index: 100; }
+        .floating-shapes {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-shapes span {
+            position: absolute;
+            display: block;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 50%;
+            animation: floatUp 25s linear infinite;
+        }
+        .floating-shapes span:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .floating-shapes span:nth-child(2) { width: 20px; height: 20px; left: 20%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-shapes span:nth-child(3) { width: 60px; height: 60px; left: 35%; animation-delay: 4s; animation-duration: 22s; }
+        .floating-shapes span:nth-child(4) { width: 40px; height: 40px; left: 50%; animation-delay: 0s; animation-duration: 18s; }
+        .floating-shapes span:nth-child(5) { width: 15px; height: 15px; left: 65%; animation-delay: 3s; animation-duration: 30s; }
+        .floating-shapes span:nth-child(6) { width: 90px; height: 90px; left: 75%; animation-delay: 5s; animation-duration: 27s; }
+        .floating-shapes span:nth-child(7) { width: 50px; height: 50px; left: 85%; animation-delay: 7s; animation-duration: 15s; }
+        .floating-shapes span:nth-child(8) { width: 25px; height: 25px; left: 45%; animation-delay: 1s; animation-duration: 35s; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .glow-cursor {
+            position: fixed;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        body:hover .glow-cursor { opacity: 1; }
+        .slide-container {
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .slide-container.vis { opacity: 1; transform: translateY(0); }
+        @media (max-width: 768px) {
+            .container { padding: 1rem !important; }
+            .slide-container { padding: 1.5rem !important; }
+            .header-nav { flex-direction: column; gap: 0.5rem; padding: 0.8rem !important; }
+            .header-nav h2 { font-size: 0.9rem !important; }
+        }
+    </style>
+
+</head>
+<body>
+
+    <div id="particles-js"></div>
+    <div class="floating-shapes">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="glow-cursor" id="glowCursor"></div>
+
+<div class="progress-bar-top" id="progressBar"></div>
+
+    <header class="header-nav">
+        <a href="../index.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            الرجوع للقائمة الرئيسية (Back to Home)
+        </a>
+        <h2 style="margin:0; font-size: 1.2rem;">Lecture 11: File I/O & Exceptions</h2>
+    </header>
+
+    <div class="container">
+        
+        <div class="header" style="margin-top: 2rem;">
+            <h1>المحاضرة 11: التعامل مع الملفات ومعالجة الأخطاء (File I/O & Exception Handling)</h1>
+            <p>الشرح التفصيلي لجميع شرائح المحاضرة (Slide-by-Slide) مدعوم بشرح الأكواد سطراً بسطر (Line-by-Line Code Explanation)</p>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide-container" id="slide3">
+            <h2>Slide 3: مفهوم التيارات (Introduction to Streams)</h2>
+            <img src="../slides/Lecture_11-_File_IO_and__Exception_Handling/slide_03.jpg" alt="Slide 3" class="slide-image">
+            <div class="slide-explanation">
+                <p>في لغة الـ C++، عملية إدخال وإخراج البيانات (I/O) بتتم عن طريق حاجة اسمها <strong>Stream (تيار)</strong>.</p>
+                <p>التيار ده عبارة عن مجرى وهمي بتنتقل فيه البيانات بايت ورا بايت (Byte by Byte) من المصدر للهدف. إحنا استخدمنا التيارات دي كتير قبل كده:</p>
+                <ul>
+                    <li><strong class="highlight">cin:</strong> تيار الإدخال (Input Stream) اللي بياخد البيانات من الكيبورد ويدخلها للبرنامج.</li>
+                    <li><strong class="highlight">cout:</strong> تيار الإخراج (Output Stream) اللي بياخد البيانات من البرنامج ويطلعها على الشاشة.</li>
+                </ul>
+                <p>المشكلة إن البيانات دي بمجرد ما تقفل البرنامج <span class="highlight">بتطير (Volatile)</span>. عشان كده إحنا محتاجين تيارات جديدة تقدر تتعامل مع <strong>الملفات (Files)</strong> عشان نحفظ الداتا بشكل دائم على الهارد ديسك.</p>
+            </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide-container" id="slide5">
+            <h2>Slide 5: مكتبة التعامل مع الملفات (The 'fstream' Library)</h2>
+            <img src="../slides/Lecture_11-_File_IO_and__Exception_Handling/slide_05.jpg" alt="Slide 5" class="slide-image">
+            <div class="slide-explanation">
+                <p>عشان نقدر نفتح ملفات ونكتب فيها أو نقرا منها، لازم نعمل <code>#include &lt;fstream&gt;</code> (File Stream). المكتبة دي بتوفرلنا 3 كلاسات (Classes) أساسية:</p>
+                <ol>
+                    <li><strong class="highlight">ofstream (Output File Stream):</strong> ده كلاس وظيفته <strong>الكتابة (Write)</strong> في الملفات. زيه زي الـ <code>cout</code> بالظبط بس بدل ما بيطبع على الشاشة، بيطبع جوه ملف.</li>
+                    <li><strong class="highlight">ifstream (Input File Stream):</strong> ده كلاس وظيفته <strong>القراءة (Read)</strong> من الملفات. زيه زي الـ <code>cin</code>، بس بدل ما بياخد من الكيبورد، بياخد من الملف.</li>
+                    <li><strong class="highlight">fstream:</strong> ده الكلاس الشامل اللي يقدر يعمل <strong>القراءة والكتابة مع بعض</strong>.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 8 -->
+        <div class="slide-container" id="slide8">
+            <h2>Slide 8: أوضاع فتح الملفات (File Opening Modes)</h2>
+            <img src="../slides/Lecture_11-_File_IO_and__Exception_Handling/slide_08.jpg" alt="Slide 8" class="slide-image">
+            <div class="slide-explanation">
+                <p>لما بنيجي نفتح ملف باستخدام دالة <code>open()</code>، ممكن نحدد إحنا هنفتحه عشان نعمل فيه إيه بالظبط عن طريق الـ <strong>File Modes</strong>. دي بتيجي في الاختيارات دايماً:</p>
+                <ul>
+                    <li><code>ios::out</code> : فتح الملف للكتابة (ولو الملف موجود هيمسح كل اللي فيه ويبدأ من جديد!).</li>
+                    <li><code>ios::in</code> : فتح الملف للقراءة فقط.</li>
+                    <li><strong class="highlight">ios::app (Append):</strong> فتح الملف للكتابة، بس بيحتفظ بالكلام القديم وبيكمل (بيلزق) عليه في الآخر. (مهمة جداً لملفات الـ Logs).</li>
+                    <li><code>ios::trunc</code> : تدمير/مسح محتوى الملف القديم بالكامل عند فتحه.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 11 -->
+        <div class="slide-container" id="slide11">
+            <h2>Slide 11: كود الكتابة في ملف (Writing to a File)</h2>
+            <img src="../slides/Lecture_11-_File_IO_and__Exception_Handling/slide_11.jpg" alt="Slide 11" class="slide-image">
+            <div class="slide-explanation">
+                <p>تعالوا نشوف إزاي بنعمل Object من نوع <code>ofstream</code> عشان نكتب جوه ملف <code>.txt</code>:</p>
+                
+                <div class="slide-code">
+<span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;fstream&gt;</span> <span class="comment">// Mandatory for File I/O</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="type">int</span> main() {
+    <span class="comment">// 1. Create an output stream object</span>
+    <span class="type">ofstream</span> outFile;
+    
+    <span class="comment">// 2. Open the file (it will create it if it doesn't exist)</span>
+    outFile.open(<span class="string">"student_data.txt"</span>);
+    
+    <span class="comment">// Defensive Programming: Check if file opened successfully</span>
+    <span class="keyword">if</span> (!outFile) {
+        cout &lt;&lt; <span class="string">"Error opening file!"</span> &lt;&lt; endl;
+        <span class="keyword">return</span> <span class="number">1</span>;
+    }
+    
+    <span class="comment">// 3. Write data to the file using the insertion operator <<</span>
+    outFile &lt;&lt; <span class="string">"Name: Ahmed Ali"</span> &lt;&lt; endl;
+    outFile &lt;&lt; <span class="string">"Grade: A+"</span> &lt;&lt; endl;
+    
+    <span class="comment">// 4. CRITICAL: Always close the file when done!</span>
+    outFile.close();
+    
+    cout &lt;&lt; <span class="string">"Data saved successfully."</span> &lt;&lt; endl;
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14 -->
+        <div class="slide-container" id="slide14">
+            <h2>Slide 14: كود القراءة من ملف (Reading from a File)</h2>
+            <img src="../slides/Lecture_11-_File_IO_and__Exception_Handling/slide_14.jpg" alt="Slide 14" class="slide-image">
+            <div class="slide-explanation">
+                <p>عشان نقرا البيانات اللي إحنا لسه كاتبينها دي ونعرضها على الشاشة، هنستخدم <code>ifstream</code>:</p>
+                
+                <div class="slide-code">
+<span class="type">int</span> main() {
+    <span class="type">ifstream</span> inFile; <span class="comment">// Input stream object</span>
+    inFile.open(<span class="string">"student_data.txt"</span>);
+    
+    <span class="keyword">if</span> (!inFile) {
+        cout &lt;&lt; <span class="string">"Error: File not found!"</span> &lt;&lt; endl;
+        <span class="keyword">return</span> <span class="number">1</span>;
+    }
+    
+    <span class="type">string</span> line;
+    <span class="comment">// Read the file line by line until End Of File (EOF)</span>
+    <span class="keyword">while</span> ( getline(inFile, line) ) {
+        cout &lt;&lt; line &lt;&lt; endl; <span class="comment">// Print each line to the screen</span>
+    }
+    
+    inFile.close(); <span class="comment">// Don't forget to close!</span>
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+                </div>
+                <div class="code-explanation">
+                    <ul>
+                        <li>دالة <code>getline()</code> بتاخد سطر كامل من الملف (بالمسافات اللي فيه) وتخزنه في متغير الـ String. وبتفضل شغالة جوه الـ <code>while</code> لحد ما الملف يخلص خالص.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Quiz 1: File Streams</h3>
+            
+            <div class="question" data-answer="2">
+                <p>1. Which file mode should you use if you want to write new data to the END of an existing file without deleting its current contents?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) ios::out</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) ios::in</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) ios::app</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) ios::trunc</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> `ios::app` (Append) adds data to the end of the file. `ios::out` by itself will overwrite and delete existing data.
+                </div>
+            </div>
+
+            <div class="question" data-answer="0">
+                <p>2. What is the correct class to use if you ONLY want to READ data from a file into your program?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) ifstream</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) ofstream</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) cin</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) outstream</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: A.</strong> `ifstream` stands for Input File Stream, used exclusively for reading data from files.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17 -->
+        <div class="slide-container" id="slide17">
+            <h2>Slide 17: معالجة الأخطاء (Exception Handling)</h2>
+            <img src="../slides/Lecture_11-_File_IO_and__Exception_Handling/slide_17.jpg" alt="Slide 17" class="slide-image">
+            <div class="slide-explanation">
+                <p>تخيل بتعمل برنامج آلة حاسبة، واليوزر الغبي راح قسم رقم على 0. إيه اللي هيحصل؟ البرنامج <strong>هينفجر (Crash)</strong> ويقفل في وشه فجأة! ده اسمه <strong>Run-time Error</strong>.</p>
+                <p>عشان نمنع الـ Crash المهين ده ونخلي البرنامج محترم ويطلع رسالة خطأ شيك ويكمل شغل، بنستخدم الـ <strong>Exception Handling (معالجة الاستثناءات/الأخطاء)</strong>.</p>
+            </div>
+        </div>
+
+        <!-- Slide 18 -->
+        <div class="slide-container" id="slide18">
+            <h2>Slide 18: الكلمات المفتاحية الثلاث (Try, Throw, Catch)</h2>
+            <img src="../slides/Lecture_11-_File_IO_and__Exception_Handling/slide_18.jpg" alt="Slide 18" class="slide-image">
+            <div class="slide-explanation">
+                <p>السيستم ده بيعتمد على 3 كلمات (لازم يجوا مع بعض زي الترس):</p>
+                <ul>
+                    <li><strong class="highlight">try (حاول):</strong> ده البلوك اللي بنحط جواه الكود اللي "شاكين" إنه ممكن يعمل كارثة (زي كود القسمة). بنقول للبرنامج: حاول تنفذ ده، ولو حصلت مصيبة عينك عليها.</li>
+                    <li><strong class="highlight">throw (ارمي):</strong> لو الكارثة حصلت فعلاً (زي إن المقام طلع بصفر)، بنستخدم الكلمة دي عشان نرمي الـ Error (الاستثناء) بره الـ try block.</li>
+                    <li><strong class="highlight">catch (امسك):</strong> ده بلوك عامل زي شبكة الإنقاذ. واقف تحت الـ try مستني أي error يترمي عشان يمسكه ويطلع رسالة لليوزر، ويخلي البرنامج <span class="highlight">ما يقفلش</span> ويكمل عادي.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 20 -->
+        <div class="slide-container" id="slide20">
+            <h2>Slide 20: كود القسمة على صفر (Division by Zero Example)</h2>
+            <img src="../slides/Lecture_11-_File_IO_and__Exception_Handling/slide_20.jpg" alt="Slide 20" class="slide-image">
+            <div class="slide-explanation">
+                <p>ده أشهر كود بيوضح فكرة الـ Exception Handling في كل الجامعات:</p>
+                
+                <div class="slide-code">
+<span class="type">int</span> main() {
+    <span class="type">int</span> a = <span class="number">10</span>;
+    <span class="type">int</span> b;
+    cout &lt;&lt; <span class="string">"Enter denominator: "</span>;
+    cin >> b;
+    
+    <span class="keyword">try</span> {
+        <span class="comment">// 1. The dangerous code block</span>
+        <span class="keyword">if</span> (b == <span class="number">0</span>) {
+            <span class="comment">// 2. If problem happens, throw an error value (could be int, string, etc.)</span>
+            <span class="keyword">throw</span> <span class="string">"Division by Zero is not allowed!"</span>; 
+        }
+        
+        <span class="comment">// If b is NOT 0, this runs normally and 'throw' is ignored</span>
+        <span class="type">int</span> result = a / b;
+        cout &lt;&lt; <span class="string">"Result = "</span> &lt;&lt; result &lt;&lt; endl;
+    }
+    <span class="comment">// 3. The Catch block waiting for a string error (const char*)</span>
+    <span class="keyword">catch</span> (<span class="keyword">const</span> <span class="type">char</span>* errorMessage) {
+        <span class="comment">// Graceful failure: Print error but don't crash</span>
+        cout &lt;&lt; <span class="string">"Exception Caught: "</span> &lt;&lt; errorMessage &lt;&lt; endl;
+    }
+    
+    <span class="comment">// This line WILL print even if an error occurred! The program survived!</span>
+    cout &lt;&lt; <span class="string">"Program continues normally..."</span> &lt;&lt; endl;
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h3 class="quiz-title"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Final Quiz: Exceptions</h3>
+            
+            <div class="question" data-answer="2">
+                <p>1. What is the primary purpose of the `try` block in Exception Handling?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) To try compiling the code multiple times.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) To catch errors thrown by other functions.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) To enclose the risky code that might generate a runtime anomaly or error.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) To throw an error back to the Operating System.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: C.</strong> The `try` block wraps the code that you suspect might fail (like connecting to a database or dividing numbers).
+                </div>
+            </div>
+
+            <div class="question" data-answer="1">
+                <p>2. What happens to the program's execution immediately after a `throw` statement is executed inside a `try` block?</p>
+                <div class="options">
+                    <button class="option-btn" onclick="checkAnswer(this, 0)">A) The program immediately terminates and crashes.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 1)">B) The remaining code in the `try` block is skipped, and control jumps directly to the matching `catch` block.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 2)">C) The program asks the user if they want to ignore the error.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, 3)">D) The code pauses and waits for debugger attached.</button>
+                </div>
+                <div class="feedback">
+                    <strong>Correct Answer: B.</strong> Once `throw` is hit, execution halts inside the `try` block and immediately hands the thrown value to the nearest matching `catch` block.
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY SECTION -->
+        <div class="summary-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> الملخص الشامل لأهم التريكات (Summary & Pro Tips)</h2>
+            <ul>
+                <li><strong>Stream = تيار:</strong> مجرى بيانات. <code>cin</code> (من الكيبورد)، <code>cout</code> (للشاشة). مكتبة <code>fstream</code> بتضيف تيارات للملفات.</li>
+                <li><strong>3 كلاسات ملفات:</strong> <code>ofstream</code> (كتابة فقط)، <code>ifstream</code> (قراءة فقط)، <code>fstream</code> (الاتنين).</li>
+                <li><strong>أوضاع الفتح:</strong> <code>ios::out</code> (كتابة بمسح القديم)، <code>ios::in</code> (قراءة)، <span class="highlight"><code>ios::app</code> (إلحاق من غير مسح)</span>، <code>ios::trunc</code> (مسح كامل).</li>
+                <li><strong>دايماً اعمل <code>.close()</code>:</strong> عشان تضمن إن البيانات اتكتبت والملف اتقفل بأمان.</li>
+                <li><strong>دالة <code>getline()</code>:</strong> بتقرا سطر كامل (بالمسافات). بنستخدمها في <code>while</code> loop عشان نقرا الملف كله لحد الآخر (EOF).</li>
+                <li><strong>Exception Handling:</strong> <code>try</code> (حط الكود الخطير)، <code>throw</code> (ارمي الخطأ)، <code>catch</code> (امسك الخطأ واتعامل معاه). البرنامج مبيقفلش!</li>
+                <li><strong>Best Practice:</strong> دايماً تشيك إن الملف اتفتح صح: <code>if (!outFile) { ... }</code> قبل ما تبدأ تكتب فيه.</li>
+            </ul>
+        </div>
+
+        <!-- ESSAY QUESTION SECTION -->
+        <div class="essay-section">
+            <h2><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> سؤال مقالي متوقع للامتحان (Essay Question)</h2>
+            
+            <div class="essay-question">
+                <p><strong>Question:</strong> Explain File I/O in C++ using the `fstream` library. Discuss the three main classes (`ofstream`, `ifstream`, `fstream`) and the different file opening modes. Then explain Exception Handling using `try`, `throw`, and `catch` with a practical example.</p>
+            </div>
+            
+            <button class="toggle-answer-btn" onclick="document.getElementById('essayAnswer11').classList.toggle('hidden')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"/></svg>
+                أظهر الإجابة النموذجية (Show Answer)
+            </button>
+            
+            <div id="essayAnswer11" class="essay-answer hidden">
+                <h4>Model Answer:</h4>
+                <p><strong>File I/O:</strong> The <code>&lt;fstream&gt;</code> library provides three classes: <code>ofstream</code> for writing, <code>ifstream</code> for reading, and <code>fstream</code> for both. Files are opened using <code>.open("filename")</code> and must always be closed with <code>.close()</code>.</p>
+                <p><strong>File Modes:</strong> <code>ios::out</code> opens for writing (overwrites), <code>ios::in</code> for reading, <code>ios::app</code> for appending without deleting existing content, and <code>ios::trunc</code> for truncating. Always check if the file opened successfully before using it.</p>
+                <p><strong>Exception Handling:</strong> Uses three keywords: <code>try</code> wraps risky code, <code>throw</code> sends an error value when a problem occurs, and <code>catch</code> receives and handles the error gracefully. Example: wrapping a division operation in <code>try</code>, throwing a string message if the denominator is zero, and catching it to display an error instead of crashing.</p>
+            </div>
+        </div>
+
+        <!-- TYPE 2: What is the Output? -->
+        <div class="output-question-section">
+            <h2>🖥️ What is the output of the following code?</h2>
+            <div class="output-q">
+                <p>Q1:</p>
+                <div class="slide-code">
+<span class="type">int</span> main() {
+    <span class="keyword">try</span> {
+        cout &lt;&lt; <span class="string">"A "</span>;
+        <span class="keyword">throw</span> <span class="number">404</span>;
+        cout &lt;&lt; <span class="string">"B "</span>;
+    }
+    <span class="keyword">catch</span> (<span class="type">int</span> e) {
+        cout &lt;&lt; <span class="string">"Error "</span> &lt;&lt; e &lt;&lt; <span class="string">" "</span>;
+    }
+    cout &lt;&lt; <span class="string">"C"</span>;
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">A Error 404 C<br>(Throws immediately after A, skips B, goes to catch block, then resumes normal execution at C)</div>
+            </div>
+            <div class="output-q">
+                <p>Q2:</p>
+                <div class="slide-code">
+<span class="type">int</span> main() {
+    <span class="type">ofstream</span> file(<span class="string">"data.txt"</span>, ios::trunc);
+    file &lt;&lt; <span class="string">"Hello "</span>;
+    file.close();
+    
+    <span class="type">ofstream</span> file2(<span class="string">"data.txt"</span>, ios::app);
+    file2 &lt;&lt; <span class="string">"World"</span>;
+    file2.close();
+}
+                </div>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">The file <code>data.txt</code> will contain: <code>Hello World</code><br>(First opens in trunc mode and writes "Hello ". Then opens in append mode and adds "World" without deleting what was there.)</div>
+            </div>
+        </div>
+
+        <!-- TYPE 3: Write a Line of Code -->
+        <div class="write-code-section">
+            <h2>✍️ Write a line of code for the following statements</h2>
+            <div class="write-q">
+                <p>Q1: Include the necessary library for File Input/Output operations.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="keyword">#include</span> &lt;fstream&gt;</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q2: Open a file named <code>log.txt</code> for writing in APPEND mode so previous data isn't deleted.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code"><span class="type">ofstream</span> myFile(<span class="string">"log.txt"</span>, ios::app);</div></div>
+            </div>
+            <div class="write-q">
+                <p>Q3: Write a line of code that reads an entire string containing spaces from the keyboard into a string variable <code>fullName</code>.</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden"><div class="slide-code">getline(cin, fullName);</div></div>
+            </div>
+        </div>
+
+        <!-- TYPE 4: Code Analysis -->
+        <div class="code-analysis-section">
+            <h2>🔍 Based on the following code, answer all the following questions</h2>
+            <div class="slide-code">
+<span class="type">int</span> main() {
+    <span class="type">ifstream</span> inFile;
+    inFile.open(<span class="string">"scores.txt"</span>);
+    
+    <span class="keyword">if</span> (!inFile) {
+        cout &lt;&lt; <span class="string">"File not found!"</span> &lt;&lt; endl;
+        <span class="keyword">return</span> <span class="number">1</span>;
+    }
+    
+    <span class="type">int</span> sum = <span class="number">0</span>, num;
+    <span class="keyword">while</span> (inFile &gt;&gt; num) {
+        sum += num;
+    }
+    
+    cout &lt;&lt; <span class="string">"Sum = "</span> &lt;&lt; sum &lt;&lt; endl;
+    inFile.close();
+}
+            </div>
+            <div class="analysis-q">
+                <p>a) What is the purpose of the <code>if (!inFile)</code> check?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">It validates that the file actually exists and was opened successfully before attempting to read from it. If the file is missing, it prints an error and exits to prevent crashing.</div>
+            </div>
+            <div class="analysis-q">
+                <p>b) What does the condition <code>while (inFile &gt;&gt; num)</code> do?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">It attempts to read an integer from the file into the variable <code>num</code>. If it successfully reads a number, the loop continues. It automatically stops when it reaches the end of the file (EOF).</div>
+            </div>
+            <div class="analysis-q">
+                <p>c) What is the direction of the stream arrows (<code>&gt;&gt;</code>) when reading from a file, and what do they point to?</p>
+                <button class="reveal-answer" onclick="this.nextElementSibling.classList.toggle('hidden')">👁️ Show Answer</button>
+                <div class="answer-box hidden">They point from the file object (<code>inFile</code>) to the variable (<code>num</code>), meaning "extract data from the file and put it into this variable". (Just like <code>cin &gt;&gt; num;</code>)</div>
+            </div>
+        </div>
+
+    </div>
+
+
+        <!-- Progress Tracking -->
+        <div class="completion-section" style="text-align: center; margin-top: 3rem; margin-bottom: 2rem;">
+            <button class="completion-btn" onclick="markLectureCompleted(this, 'lec11')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                لقد أتممت المحاضرة
+            </button>
+        </div>
+    <script src="../app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Particles
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 60, "density": { "enable": true, "value_area": 900 } },
+                    "color": { "value": ["#8b5cf6", "#6366f1", "#3b82f6"] },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 } },
+                    "size": { "value": 3, "random": true },
+                    "line_linked": { "enable": true, "distance": 150, "color": "#6366f1", "opacity": 0.2, "width": 1 },
+                    "move": { "enable": true, "speed": 1.2, "direction": "none", "random": true, "out_mode": "out", "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                    "modes": { "grab": { "distance": 180, "line_linked": { "opacity": 0.6 } }, "push": { "particles_nb": 3 } }
+                },
+                "retina_detect": true
+            });
+        }
+        // Glow cursor
+        var gc = document.getElementById('glowCursor');
+        if (gc) { document.addEventListener('mousemove', function(e) { gc.style.left = e.clientX + 'px'; gc.style.top = e.clientY + 'px'; }); }
+        // Scroll reveal for slides
+        var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.slide-container, .quiz-section, .summary-section, .essay-section').forEach(function(el) { obs.observe(el); });
+    });
+    </script>
+
+</body>
+</html>
